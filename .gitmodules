@@ -1,3 +1,6 @@
 [submodule "42_MyLibC"]
 	path = 42_MyLibC
 	url = git@github.com:iluvshiwoon/42_MyLibC.git
+[submodule "minilibx-linux"]
+	path = minilibx-linux
+	url = git@github.com:42Paris/minilibx-linux.git
