@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 21:20:43 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/19 22:56:52 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/01/20 15:05:38 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ t_link_list *init_alloc(t_link_list **list)
 void free_heap(t_rt *rt)
 {
     if (rt->graphic_heap)
+    {
         rt->graphic_heap->pf_lstclear(&rt->graphic_heap->first_node, free);
+        free(rt->graphic_heap);
+    }
 }
 
 void	*wrap_malloc(t_rt *rt, size_t size)

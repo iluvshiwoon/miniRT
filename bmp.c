@@ -6,24 +6,26 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:15 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/19 20:48:04 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/01/20 00:48:06 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 
-void save_img(const char * filename, const unsigned char * pixels, int W, int H) // rgb pixel
+int init_bmp(int fd, int W, int H)
 {
-    unsigned char bmpfileheader[14] = {'B','M', 0,0,0,0, 0,0, 0,0, 54,0,0,0 };
-    unsigned char bmpinfoheader[40] = {40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0 };
-    unsigned char bmppad[3] = {0,0,0};
-
-    int filesize = 54 + 3 * W * H;
+    unsigned char *bmpfileheader;
+    unsigned char *bmpinfoheader;
+    int filesize;
+    size_t bytes;
+ 
+    filesize = 54 + 3 * W * H;
+    bmpfileheader = (unsigned char[14]){'B','M', 0,0,0,0, 0,0, 0,0, 54,0,0,0 };
     bmpfileheader[2] = (unsigned char)(filesize);
     bmpfileheader[3] = (unsigned char)(filesize >> 8);
     bmpfileheader[4] = (unsigned char)(filesize >> 16);
     bmpfileheader[5] = (unsigned char)(filesize >> 24);
-
+    bmpinfoheader = (unsigned char[40]){40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0 };
     bmpinfoheader[4] = (unsigned char)(W);
     bmpinfoheader[5] = (unsigned char)(W >> 8);
     bmpinfoheader[6] = (unsigned char)(W >> 16);
@@ -32,22 +34,39 @@ void save_img(const char * filename, const unsigned char * pixels, int W, int H)
     bmpinfoheader[9] = (unsigned char)(H >> 8);
     bmpinfoheader[10] = (unsigned char)(H >> 16);
     bmpinfoheader[11] = (unsigned char)(H >> 24);
-    
-    int fd = open(filename, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+    bytes = write(fd, bmpfileheader, 14);
+    bytes += write(fd, bmpinfoheader, 40);
+    return (bytes);
+}
+
+int init_img(int W, int H)
+{
+    int fd;
+    size_t bytes;
+
+    fd = open("out.bmp", O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
     if (fd == -1)
     {
         perror("open");
-        return;
+        return 0;
     }
-    size_t bytes = write(fd, bmpfileheader, 14);
-    bytes += write(fd, bmpinfoheader, 40);
+    bytes = init_bmp(fd, W, H); 
     if (bytes != 14 + 40)
-    {
-        perror("write");
-        return;
-    }
-    unsigned char * bgr_pixels = malloc(sizeof(unsigned char)*(W*H *3));
-    int i = -1;
+        return 0;
+    return fd;
+}
+
+void save_img(t_rt * rt, const unsigned char * pixels, int W, int H) // rgb pixel
+{
+    unsigned char *bmppad;
+    unsigned char * bgr_pixels;
+    int i;
+    int fd;
+
+    i = -1;
+    bmppad = (unsigned char[3]){0,0,0};
+    fd = init_img(W, H); 
+    bgr_pixels = wrap_malloc(rt, sizeof(unsigned char)*(W*H *3));
     while (++i < W * H)
     {
         bgr_pixels[i * 3] = pixels[i * 3 + 2];
@@ -61,24 +80,4 @@ void save_img(const char * filename, const unsigned char * pixels, int W, int H)
         write(fd, bmppad, (4 - ( W * 3 ) % 4) % 4);
     }
     close(fd); 
-}
-
-int main ()
-{
-    int W = 1024;
-    int H = 1024;
-    unsigned char * image = malloc(sizeof(unsigned char)*W*H*3);
-    int i = -1;
-    while (++i < H)
-    {
-        int j = -1;
-        while (++j < W)
-        {
-            image[(i*W + j) * 3 + 0] = 55;
-            image[(i*W + j) * 3 + 1] = 50;
-            image[(i*W + j) * 3 + 2] = 100;
-        }
-    }
-    save_img("red.bmp", image, W, H);
-    return 0;
 }
