@@ -6,7 +6,7 @@
 /*   By: kgriset <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:37:42 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/20 00:58:32 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/01/20 22:59:25 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,14 @@
 # include <math.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <stdbool.h>
 # include "42_MyLibC/mylibc.h"
 
 
 typedef struct s_rt {
+    int W;
+    int H;
+    double fov;
     t_link_list * graphic_heap;
     t_link_list * current_heap;
 } t_rt;
@@ -32,13 +36,6 @@ typedef struct s_vec {
     double x;
     double y;
     double z;
-    t_vec (*pf_vec_plus)(const t_vec, const t_vec);
-    t_vec (*pf_vec_minus)(const t_vec, const t_vec);
-    t_vec (*pf_vec_mult)(double, const t_vec);
-    t_vec (*pf_vec_div)(const t_vec, double);
-    double (*pf_vec_scal)(const t_vec, const t_vec);
-    double (*pf_norm2)(const t_vec);
-    void (*pf_normalize)(t_vec *);
 } t_vec;
 
 typedef struct s_ray {
@@ -59,9 +56,8 @@ t_vec vec_div(const t_vec v, double k);
 double vec_scal(const t_vec a, const t_vec b);
 
 // vector1.c
-void init_vec(t_vec * vec);
 double norm2(const t_vec v);
-void normalize(t_vec * v);
+t_vec normalize(const t_vec v);
 
 // wrap_malloc.c
 void	*wrap_malloc(t_rt *rt, size_t size);
