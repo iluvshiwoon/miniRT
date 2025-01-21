@@ -6,50 +6,91 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/21 01:14:11 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/01/21 20:27:46 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 
-bool intersection(const t_ray ray, const t_sphere sphere, t_vec * P, t_vec * N)
+bool second_degree_solve(const t_ray ray, const t_sphere sphere, double * s)
 {
     // res a*t^2 + b*t + c = 0
-    double a;
-    double b;
-    double c;
+    double a[3];
+    double t[2];
     double delta; 
-    double t2;
-    double t1;
-    double t;
-    
-    a = 1;
-    b = 2 * vec_scal(ray.direction,vec_minus(ray.origin,sphere.origin));
-    c = norm2(vec_minus(ray.origin,sphere.origin)) - sphere.radius * sphere.radius;
-    delta = b * b - 4 * a * c;
+
+    a[0] = 1;
+    a[1] = 2 * vec_scal(ray.direction,vec_minus(ray.origin,sphere.origin));
+    a[2] = norm2(vec_minus(ray.origin,sphere.origin)) - sphere.radius * sphere.radius;
+    delta = a[1] * a[1] - 4 * a[0] * a[2];
     if (delta < 0)
         return false;
-    t2 = (-b + sqrt(delta)) / (2 * a);
-    if (t2 < 0)
+    t[1] = (-a[1] + sqrt(delta)) / (2 * a[0]);
+    if (t[1] < 0)
         return false;
-    t1 = (-b - sqrt(delta)) / (2 * a);
-    if (t1 > 0)
-        t = t1;
+    t[0] = (-a[1] - sqrt(delta)) / (2 * a[0]);
+    if (t[0] > 0)
+        *s = t[0];
     else 
-        t = t2;
-    *P = vec_plus(ray.origin, vec_mult(t,ray.direction)); 
-    *N = normalize(vec_minus(*P, sphere.origin));
+        *s = t[1];
     return true;
+}
+
+bool intersection(const t_ray ray, const t_sphere sphere, t_vec * P, t_vec * N, double * t)
+{
+    bool has_sol;
+    
+    has_sol = second_degree_solve(ray, sphere, t);
+    if (has_sol == true)
+    {
+        *P = vec_plus(ray.origin, vec_mult(*t,ray.direction)); 
+        *N = normalize(vec_minus(*P, sphere.origin));
+    }
+    return (has_sol);
+}
+
+bool intersections(const t_ray ray, t_scene scene, t_vec * P, t_vec * N, int *sphere_id)
+{
+    t_vec local_P;
+    t_vec local_N;
+    bool has_inter;
+    double min_t;
+    double t;
+
+    min_t = 1e99;
+    has_inter = false;
+    while (scene.sphere_nb)
+    {
+        if (intersection(ray, scene.spheres[scene.sphere_nb - 1], &local_P, &local_N, &t))
+        {
+            has_inter = true;
+            if (t < min_t)
+            {
+                min_t = t;
+                *P = local_P;
+                *N = local_N;
+                *sphere_id = scene.sphere_nb - 1;
+            }
+        }
+        scene.sphere_nb--;
+    }
+    return has_inter;
 }
 
 unsigned char * render (t_rt * rt)
 {
     unsigned char * image;
-    t_sphere sphere;
     int i;
     int j;
 
-    sphere = (t_sphere){{0,0,-55},20, {1,0,0}};
+    rt->scene.sphere_nb = 6;
+    rt->scene.spheres = wrap_malloc(rt,sizeof(t_sphere) * rt->scene.sphere_nb);
+    rt->scene.spheres[0] = (t_sphere){{0,0,-55},20, {1,0,0}}; // sphere
+    rt->scene.spheres[1] = (t_sphere){{0,-2000-20,0},2000, {1,1,1}}; // sol
+    rt->scene.spheres[2] = (t_sphere){{0,2000+100,0},2000, {1,1,1}}; // plafond;
+    rt->scene.spheres[3] = (t_sphere){{-2000-50,0,0},2000, {0,1,0}}; // mur gaughe;
+    rt->scene.spheres[4] = (t_sphere){{2000+50,0,0},2000, {0,0,1}}; // mur droit;
+    rt->scene.spheres[5] = (t_sphere){{0,0,-2000 - 100},2000, {0,1,1}}; // mur fond;
     t_vec light = {15, 60, -40};
     double intensity = 1000000;
     image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
@@ -65,9 +106,10 @@ unsigned char * render (t_rt * rt)
             t_vec P;
             t_vec N;
             t_vec pixel_intensity = {0,0,0};
-            if (intersection(ray, sphere, &P, &N))
+            int sphere_id = 0;
+            if (intersections(ray, rt->scene, &P, &N, &sphere_id))
             {
-                pixel_intensity = vec_mult(intensity * vec_scal(normalize(vec_minus(light, P)),N) / norm2(vec_minus(light,P)),sphere.albedo);
+                pixel_intensity = vec_mult(intensity * vec_scal(normalize(vec_minus(light, P)),N) / norm2(vec_minus(light,P)),rt->scene.spheres[sphere_id].albedo);
                 image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(10, pixel_intensity.x));
                 image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pixel_intensity.y));
                 image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pixel_intensity.z));
@@ -88,7 +130,7 @@ int main ()
     t_rt rt;
 
     rt = (t_rt){};
-    rt.fov = 60 * M_PI / 180;
+    rt.fov = 80 * M_PI / 180;
     rt.W = 1024;
     rt.H = 1024;
     rt.graphic_heap = init_alloc(&rt.graphic_heap); 
