@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/20 23:29:51 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/01/21 01:14:11 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ unsigned char * render (t_rt * rt)
     int i;
     int j;
 
-    sphere = (t_sphere){{0,0,-55},20};
+    sphere = (t_sphere){{0,0,-55},20, {1,0,0}};
     t_vec light = {15, 60, -40};
     double intensity = 1000000;
     image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
@@ -64,20 +64,19 @@ unsigned char * render (t_rt * rt)
             t_ray ray = {{0,0,0},direction};
             t_vec P;
             t_vec N;
-            double pixel_intensity = 0;
+            t_vec pixel_intensity = {0,0,0};
             if (intersection(ray, sphere, &P, &N))
             {
-                pixel_intensity = intensity * vec_scal(normalize(vec_minus(light, P)),N) / norm2(vec_minus(light,P));
-                pixel_intensity = fmin(255, fmax(10, pixel_intensity));
-                image[((rt->H-i-1)*rt->W + j) * 3 + 0] = pixel_intensity;
-                image[((rt->H-i-1)*rt->W + j) * 3 + 1] = pixel_intensity;
-                image[((rt->H-i-1)*rt->W + j) * 3 + 2] = pixel_intensity;
+                pixel_intensity = vec_mult(intensity * vec_scal(normalize(vec_minus(light, P)),N) / norm2(vec_minus(light,P)),sphere.albedo);
+                image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(10, pixel_intensity.x));
+                image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pixel_intensity.y));
+                image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pixel_intensity.z));
             }
             else
             {
-                image[((rt->H-i-1)*rt->W + j) * 3 + 0] = pixel_intensity;
-                image[((rt->H-i-1)*rt->W + j) * 3 + 1] = pixel_intensity;
-                image[((rt->H-i-1)*rt->W + j) * 3 + 2] = pixel_intensity;
+                image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pixel_intensity.x));
+                image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pixel_intensity.y));
+                image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pixel_intensity.z));
             }
         }
     }

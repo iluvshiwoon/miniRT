@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 23:27:57 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/20 22:59:19 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/01/21 01:06:08 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,14 @@ t_vec normalize(const t_vec v)
     n_v.y = v.y /norm;
     n_v.z = v.z /norm;
     return n_v;
+}
+
+t_vec vec_m_vec(const t_vec a, const t_vec b)
+{
+    t_vec m_v;
+
+    m_v.x = a.x * b.x;
+    m_v.y = a.y * b.y;
+    m_v.z = a.z * b.z;
+    return m_v;
 }

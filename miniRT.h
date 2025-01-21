@@ -6,7 +6,7 @@
 /*   By: kgriset <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:37:42 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/20 22:59:25 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/01/21 01:07:28 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_ray {
 typedef struct s_sphere {
     t_vec origin;
     double radius;
+    t_vec albedo;
 }t_sphere;
 
 // vector.c 
@@ -58,6 +59,7 @@ double vec_scal(const t_vec a, const t_vec b);
 // vector1.c
 double norm2(const t_vec v);
 t_vec normalize(const t_vec v);
+t_vec vec_m_vec(const t_vec a, const t_vec b);
 
 // wrap_malloc.c
 void	*wrap_malloc(t_rt *rt, size_t size);
