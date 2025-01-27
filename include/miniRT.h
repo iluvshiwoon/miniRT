@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:37:42 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/23 14:20:31 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/27 09:53:34 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,40 +35,40 @@ typedef struct s_ray {
 } t_ray;
 
 typedef struct s_sphere {
-    t_vec origin;
+    t_vec *origin;
     double radius;
-    t_vec albedo;
+    t_vec *albedo;
 }t_sphere;
 
 typedef struct s_ambient_light {
     double intensity;
-    t_vec color;
+    t_vec *color;
 } t_ambient_light;
 
 typedef struct s_light {
-    t_vec origin;
+    t_vec *origin;
     double intensity;
-    t_vec color;
+    t_vec *color;
 } t_light;
 
 typedef struct s_camera {
-    t_vec origin;
-    t_vec direction;
+    t_vec *origin;
+    t_vec *direction;
     double fov;
 } t_camera;
 
 typedef struct s_plane {
-    t_vec origin;
-    t_vec normal;
-    t_vec albedo;
+    t_vec *origin;
+    t_vec *normal;
+    t_vec *albedo;
 } t_plane;
 
 typedef struct s_cylinder {
-    t_vec origin;
-    t_vec direction;
+    t_vec *origin;
+    t_vec *direction;
     double radius;
     double height;
-    t_vec albedo;
+    t_vec *albedo;
 } t_cylinder;
 
 typedef struct s_scene {

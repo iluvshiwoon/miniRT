@@ -27,13 +27,14 @@ double absolut_value(const char *s)
         else if (*s == '.' && !decimal_found)
             decimal_found = 1;
         else
-            return ()
+            return ();
         s++;
     }
     return (result);
 }
 
-double atoi_double(const char *s) {
+double ft_atoi_double(char *s) 
+{
     if (s == NULL) {
         fprintf(stderr, "La chaîne est NULL\n");
         exit(EXIT_FAILURE);
