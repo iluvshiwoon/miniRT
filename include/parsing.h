@@ -25,6 +25,8 @@ t_rt *alloc_rt(t_file **file);
 // element/element_utils.c
 t_vec *parse_color(char *line);
 t_vec *parse_vec(char *line);
+void free_tab_char(char **tab);
+void print_scene(t_rt *rt);
 
 // element/Ambient_light.c
 int parse_amb_light(t_rt *rt, char *line);

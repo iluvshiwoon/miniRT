@@ -6,31 +6,50 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:32:15 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/27 16:32:50 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/28 14:37:04 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/parsing.h"
+
+static int find_sphere_id(t_sphere *sphere)
+{
+    int i;
+
+    i = 0;
+    if (sphere[0].id == 0)
+        return (i);
+    while (i)
+    {
+        if (sphere[i].id == 0)
+            return (i);
+        i++;
+    }
+    return (i);
+}
 
 int parse_sphere(t_rt *rt, char *line)
 {
     char **tab;
     int i;
 
-    i = 0;
+    i = find_sphere_id(rt->scene.sphere);
+    rt->scene.sphere[i].id = i + 1;
     tab = ft_split(line, ' ');
     if (!tab)
         return (1);
     if (tab[1] && tab[2] && tab[3])
     {
-        rt->scene.sphere->origin = parse_vec(tab[1]);
-        rt->scene.sphere->radius = ft_atoi_double(tab[2]);
-        rt->scene.sphere->albedo = parse_color(tab[3]);
-        if (!rt->scene.sphere->albedo)
+        rt->scene.sphere[i].origin = parse_vec(tab[1]);
+        if (!rt->scene.sphere[i].origin)
             return (1);
-        while (tab[i])
-            free(tab[i++]);
-        free(tab);
+        rt->scene.sphere[i].radius = ft_atoi_double(tab[2]);
+        if (rt->scene.sphere[i].radius < 0)
+            return (ft_putstr_fd("Error: Invalid radius for sphere\n", 2), 1);
+        rt->scene.sphere[i].albedo = parse_color(tab[3]);
+        if (!rt->scene.sphere[i].albedo)
+            return (1);
+        // free_tab(tab);
         return (0);
     }
     return (ft_putstr_fd("Error: Invalid number of arguments for sphere\n", 2), 1);

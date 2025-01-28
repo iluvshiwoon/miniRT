@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:37:42 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/27 09:53:34 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/28 12:09:20 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct s_ray {
 } t_ray;
 
 typedef struct s_sphere {
+    int id;
     t_vec *origin;
     double radius;
     t_vec *albedo;
@@ -58,12 +59,14 @@ typedef struct s_camera {
 } t_camera;
 
 typedef struct s_plane {
+    int id;
     t_vec *origin;
     t_vec *normal;
     t_vec *albedo;
 } t_plane;
 
 typedef struct s_cylinder {
+    int id;
     t_vec *origin;
     t_vec *direction;
     double radius;
@@ -77,7 +80,7 @@ typedef struct s_scene {
     t_camera * camera;
     
     int sphere_nb;
-    t_sphere * spheres;
+    t_sphere * sphere;
     
     int plane_nb;
     t_plane * plane;

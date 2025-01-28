@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:32 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/23 15:21:16 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/28 14:08:51 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void print_lst_file(t_file **file)
 	tmp = *file;
 	while (tmp)
 	{
-		printf("%s", tmp->line);
+		printf("%s\n", tmp->line);
 		tmp = tmp->next;
 	}
 }
@@ -71,6 +71,7 @@ int alloc_file_lst(t_file **file, int fd)
     t_file *node;
     char *line;
 
+    node = *file;
     while (!*file || node->line)
     {
         line = get_next_line(fd);
@@ -78,6 +79,7 @@ int alloc_file_lst(t_file **file, int fd)
             break ;
         if (line[0] != '\n')
         {
+            line[ft_strlen(line) - 1] = '\0';
             node = lstnew_file(line);
             if (!node)
                 return (free_lst_file(file), ft_putstr_fd("Error memory\n", 2), 1);
@@ -105,7 +107,10 @@ t_file **open_file(char *namefile)
     if (!line)
         return (ft_putstr_fd("Error file can't be read\n", 2), NULL);
     if (line[0] != '\n')
+    {
+        line[ft_strlen(line) - 1] = '\0';
         *file = lstnew_file(line);
+    }
     if (alloc_file_lst(file, fd))
         return (NULL);
     return (file);
