@@ -1,0 +1,10 @@
+duplicate_ambient: SUCCESS
+empty: SUCCESS
+invalid_normal: SUCCESS
+invalid_sphere: SUCCESS
+map_ok: SUCCESS
+no_ambient: SUCCESS
+no_camera: SUCCESS
+no_light: SUCCESS
+out_of_bounds: SUCCESS
+random_order: SUCCESS

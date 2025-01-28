@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 09:38:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/28 14:41:04 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/28 16:08:31 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,49 +129,52 @@ void print_scene(t_rt *rt)
     int i;
 
     i = 0;
-    printf("Sphere\n");
     while (i < rt->scene.sphere_nb)
     {
-        printf("Sphere %d\n", rt->scene.sphere[i].id);
-        printf("Origin: %f %f %f\n", rt->scene.sphere[i].origin->x, rt->scene.sphere[i].origin->y, rt->scene.sphere[i].origin->z);
-        printf("Radius: %f\n", rt->scene.sphere[i].radius);
-        printf("Color: %f %f %f\n", rt->scene.sphere[i].albedo->x, rt->scene.sphere[i].albedo->y, rt->scene.sphere[i].albedo->z);
+        printf("S ");
+        printf("%f,%f,%f ", rt->scene.sphere[i].origin->x, rt->scene.sphere[i].origin->y, rt->scene.sphere[i].origin->z);
+        printf("%f ", rt->scene.sphere[i].radius);
+        printf("%f,%f,%f", rt->scene.sphere[i].albedo->x, rt->scene.sphere[i].albedo->y, rt->scene.sphere[i].albedo->z);
+        printf("\n");
         i++;
     }
     i = 0;
-    printf("Plane\n");
     while (i < rt->scene.plane_nb)
     {
-        printf("Plane %d\n", i);
-        printf("Origin: %f %f %f\n", rt->scene.plane[i].origin->x, rt->scene.plane[i].origin->y, rt->scene.plane[i].origin->z);
-        printf("Normal: %f %f %f\n", rt->scene.plane[i].normal->x, rt->scene.plane[i].normal->y, rt->scene.plane[i].normal->z);
-        printf("Color: %f %f %f\n", rt->scene.plane[i].albedo->x, rt->scene.plane[i].albedo->y, rt->scene.plane[i].albedo->z);
+        printf("pl ");
+        printf("%f,%f,%f ", rt->scene.plane[i].origin->x, rt->scene.plane[i].origin->y, rt->scene.plane[i].origin->z);
+        printf("%f,%f,%f ", rt->scene.plane[i].normal->x, rt->scene.plane[i].normal->y, rt->scene.plane[i].normal->z);
+        printf("%f,%f,%f", rt->scene.plane[i].albedo->x, rt->scene.plane[i].albedo->y, rt->scene.plane[i].albedo->z);
+        printf("\n");
         i++;
     }
     i = 0;
-    printf("Cylinder\n");
     while (i < rt->scene.cylinder_nb)
     {
-        printf("Cylinder %d\n", i);
-        printf("Origin: %f %f %f\n", rt->scene.cylinder[i].origin->x, rt->scene.cylinder[i].origin->y, rt->scene.cylinder[i].origin->z);
-        printf("Direction: %f %f %f\n", rt->scene.cylinder[i].direction->x, rt->scene.cylinder[i].direction->y, rt->scene.cylinder[i].direction->z);
-        printf("Radius: %f\n", rt->scene.cylinder[i].radius);
-        printf("Height: %f\n", rt->scene.cylinder[i].height);
-        printf("Color: %f %f %f\n", rt->scene.cylinder[i].albedo->x, rt->scene.cylinder[i].albedo->y, rt->scene.cylinder[i].albedo->z);
+        printf("cy ");
+        printf("%f,%f,%f ", rt->scene.cylinder[i].origin->x, rt->scene.cylinder[i].origin->y, rt->scene.cylinder[i].origin->z);
+        printf("%f,%f,%f ", rt->scene.cylinder[i].direction->x, rt->scene.cylinder[i].direction->y, rt->scene.cylinder[i].direction->z);
+        printf("%f ", rt->scene.cylinder[i].radius);
+        printf("%f ", rt->scene.cylinder[i].height);
+        printf("%f,%f,%f ", rt->scene.cylinder[i].albedo->x, rt->scene.cylinder[i].albedo->y, rt->scene.cylinder[i].albedo->z);
+        printf("\n");
         i++;
     }
-    printf("Light\n");
-    printf("Origin: %f %f %f\n", rt->scene.light->origin->x, rt->scene.light->origin->y, rt->scene.light->origin->z);
-    printf("Color: %f %f %f\n", rt->scene.light->color->x, rt->scene.light->color->y, rt->scene.light->color->z);
+    printf("L ");
+    printf("%f,%f,%f ", rt->scene.light->origin->x, rt->scene.light->origin->y, rt->scene.light->origin->z);
+    printf("%f,%f,%f ", rt->scene.light->color->x, rt->scene.light->color->y, rt->scene.light->color->z);
+    printf("\n");
 
-    printf("Ambient light\n");
-    printf("Color: %f %f %f\n", rt->scene.ambient_light->color->x, rt->scene.ambient_light->color->y, rt->scene.ambient_light->color->z);
-    printf("Intensity: %f\n", rt->scene.ambient_light->intensity);
+    printf("A ");
+    printf("%f,%f,%f ", rt->scene.ambient_light->color->x, rt->scene.ambient_light->color->y, rt->scene.ambient_light->color->z);
+    printf("%f ", rt->scene.ambient_light->intensity);
+    printf("\n");
     
-    printf("Camera\n");
-    printf("Origin: %f %f %f\n", rt->scene.camera->origin->x, rt->scene.camera->origin->y, rt->scene.camera->origin->z);
-    printf("Direction: %f %f %f\n", rt->scene.camera->direction->x, rt->scene.camera->direction->y, rt->scene.camera->direction->z);
-    printf("Fov: %f\n", rt->scene.camera->fov);
+    printf("C ");
+    printf("%f,%f,%f", rt->scene.camera->origin->x, rt->scene.camera->origin->y, rt->scene.camera->origin->z);
+    printf("%f,%f,%f ", rt->scene.camera->direction->x, rt->scene.camera->direction->y, rt->scene.camera->direction->z);
+    printf("%f ", rt->scene.camera->fov);
+    printf("\n");
     
 }
 
