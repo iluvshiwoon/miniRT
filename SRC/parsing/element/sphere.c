@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:32:15 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/28 14:37:04 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:56:23 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int parse_sphere(t_rt *rt, char *line)
         rt->scene.sphere[i].albedo = parse_color(tab[3]);
         if (!rt->scene.sphere[i].albedo)
             return (1);
-        // free_tab(tab);
+        free_tab_char(tab);
         return (0);
     }
     return (ft_putstr_fd("Error: Invalid number of arguments for sphere\n", 2), 1);

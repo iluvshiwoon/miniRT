@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:41 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/28 13:53:36 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:57:38 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,9 +216,7 @@ t_rt *alloc_rt(t_file **file)
     }
     if (creat_scene(rt, file))
         return (NULL);
-    printf("Creation de la scene semble ok\n");
     if (alloc_element(rt, file))
         return (NULL);
-    printf("Creation des elements semble ok\n");
     return (rt);
 }

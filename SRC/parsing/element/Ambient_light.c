@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 11:04:52 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/28 14:11:59 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:54:58 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@ int parse_amb_light(t_rt *rt, char *line)
         rt->scene.ambient_light->color = parse_color(tab[2]);
         if (!rt->scene.ambient_light->color)
             return (1);
-        while (tab[i])
-            free(tab[i++]);
-        free(tab);
+        free_tab_char(tab);
         return (0);
     }
     return (ft_putstr_fd("Error: Invalid number of arguments for ambient light\n", 2), 1);

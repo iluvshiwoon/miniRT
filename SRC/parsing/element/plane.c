@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:33:07 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/28 14:37:56 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:56:08 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int parse_plane(t_rt *rt, char *line)
         rt->scene.plane[i].albedo = parse_color(tab[3]);
         if (!rt->scene.plane[i].albedo)
             return (1);
+        free_tab_char(tab);
         return (0);
     }
     return (ft_putstr_fd("Error: Invalid number of arguments for plane\n", 2), 1);

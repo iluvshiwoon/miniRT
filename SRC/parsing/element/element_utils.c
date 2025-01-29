@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 09:38:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/28 16:08:31 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:54:31 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,9 @@ t_vec *parse_color(char *line)
     if (check_color(tab[2]))
         return (NULL);
     color->z = ft_atoi(tab[2]);
-    free(tab[0]);
-    free(tab[1]);
-    free(tab[2]);
-    free(tab);
+    free_tab_char(tab);
+    if (color->x < 0 || color->y < 0 || color->z < 0 || color->x > 255 || color->y > 255 || color->z > 255)
+        return (ft_putstr_fd("Error: Invalid color\n", 2), NULL);
     return (color);
 }
 
@@ -107,10 +106,7 @@ t_vec *parse_vec(char *line)
     if (check_vec(tab[2]))
         return (NULL);
     vec->z = ft_atoi_double(tab[2]);
-    free(tab[0]);
-    free(tab[1]);
-    free(tab[2]);
-    free(tab);
+    free_tab_char(tab);
     return (vec);
 }
 
