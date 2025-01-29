@@ -1,10 +1,18 @@
-#include "../../../include/parsing.h"
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   atoi_double.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/29 13:51:53 by gschwand          #+#    #+#             */
+/*   Updated: 2025/01/29 14:00:25 by gschwand         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// Attention a gerer les caracteres qu'il ne faut pas
-double absolut_value(const char *s) 
+#include "../../../include/parsing.h"
+
+double absolut_value(const char *s)
 {
     double result;
     int decimal_found;
@@ -17,9 +25,10 @@ double absolut_value(const char *s)
     {
         if (isdigit((unsigned char)*s)) 
         {
-            if (!decimal_found) {
+            if (!decimal_found)
                 result = result * 10.0 + (*s - '0');
-            } else {
+            else 
+            {
                 result += (*s - '0') / decimal_divisor;
                 decimal_divisor *= 10.0;
             }
@@ -33,36 +42,22 @@ double absolut_value(const char *s)
     return (result);
 }
 
-double ft_atoi_double(char *s) 
+double  ft_atoi_double(char *s)
 {
-    if (s == NULL) {
-        fprintf(stderr, "La chaîne est NULL\n");
-        exit(EXIT_FAILURE);
-    }
+    if (!s)
+        return (0.0);
     double result;
-    double sign = 1.0;
-    while (isspace((unsigned char)*s)) {
+    double sign;
+    sign = 1.0;
+    while (isspace((unsigned char)*s))
         s++;
-    }
-    if (*s == '-') {
+    if (*s == '-') 
+    {
         sign = -1.0;
         s++;
-    } else if (*s == '+') {
+    } 
+    else if (*s == '+')
         s++;
-    }
-    result = absolut_value(s);
-    return (sign * result);
+    result = absolut_value(s) * sign;
+    return (result);
 }
-
-
-// int main() {
-//     const char *test1 = "-123.456";
-//     const char *test2 = "42";
-//     const char *test3 = "0.001";
-
-//     printf("%f\n", atoi_double(test1));  
-//     printf("%f\n", atoi_double(test2));  
-//     printf("%f\n", atoi_double(test3));  
-
-//     return 0;
-// }
