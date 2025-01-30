@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 13:51:53 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/29 14:00:25 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/30 15:19:12 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ double absolut_value(const char *s)
     decimal_divisor = 10.0;
     while (*s) 
     {
-        if (isdigit((unsigned char)*s)) 
+        if (ft_isdigit((unsigned char)*s)) 
         {
             if (!decimal_found)
                 result = result * 10.0 + (*s - '0');
@@ -49,8 +49,6 @@ double  ft_atoi_double(char *s)
     double result;
     double sign;
     sign = 1.0;
-    while (isspace((unsigned char)*s))
-        s++;
     if (*s == '-') 
     {
         sign = -1.0;
