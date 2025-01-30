@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:32:15 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/29 11:56:23 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/30 15:33:21 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int find_sphere_id(t_sphere *sphere)
     i = 0;
     if (sphere[0].id == 0)
         return (i);
-    while (i)
+    while (1)
     {
         if (sphere[i].id == 0)
             return (i);

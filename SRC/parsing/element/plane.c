@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:33:07 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/29 11:56:08 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/30 15:34:21 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int find_plane_id(t_plane *plane)
     i = 0;
     if (plane[0].id == 0)
         return (i);
-    while (i)
+    while (1)
     {
         if (plane[i].id == 0)
             return (i);

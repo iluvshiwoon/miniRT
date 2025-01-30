@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:35:47 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/29 11:55:06 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/30 15:34:31 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int find_cylinder_id(t_cylinder *cylinder)
     i = 0;
     if (cylinder[0].id == 0)
         return (i);
-    while (i)
+    while (1)
     {
         if (cylinder[i].id == 0)
             return (i);
