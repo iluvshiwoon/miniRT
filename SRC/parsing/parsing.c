@@ -6,16 +6,16 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:23 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/28 16:06:43 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/31 09:43:29 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parsing.h"
 
-int parsing_minirt(char *namefile)
+int	parsing_minirt(char *namefile)
 {
-	t_rt *rt;
-	t_file **file;
+	t_rt	*rt;
+	t_file	**file;
 
 	file = open_file(namefile);
 	if (!file)
@@ -28,4 +28,3 @@ int parsing_minirt(char *namefile)
 	free_lst_file(file);
 	return (0);
 }
-

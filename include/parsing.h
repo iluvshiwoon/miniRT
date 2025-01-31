@@ -8,6 +8,11 @@ typedef struct s_file {
     struct s_file   *next;
 }   t_file;
 
+typedef struct s_parser {
+    char *id;
+    int (*parse)(t_rt *rt, char *line);
+}  t_parser;
+
 // parsing.c
 int parsing_minirt(char *namefile);
 

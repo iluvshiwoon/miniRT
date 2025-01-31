@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:37 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/23 10:48:38 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/31 09:43:15 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,14 @@ static int	ft_strrncmp(const char *s1, const char *s2, size_t n)
 	while (lens1 - i >= 0 && lens2 - i >= 0 && i < (int)n)
 	{
 		if (s1[lens1 - i] != s2[lens2 - i])
-			return (((unsigned char *)s1)[lens1 - i] - ((unsigned char *)s2)[lens2 - i]);
+			return (((unsigned char *)s1)[lens1 - i]
+				- ((unsigned char *)s2)[lens2 - i]);
 		i++;
 	}
 	return (0);
 }
 
-int check_args(int ac, char **av)
+int	check_args(int ac, char **av)
 {
 	if (ac != 2)
 		return (ft_putstr_fd("Error: Wrong number of arguments\n", 2), 1);
@@ -46,8 +47,10 @@ int check_args(int ac, char **av)
 // 	// Test ft_strrncmp
 // 	printf("Testing ft_strrncmp:\n");
 // 	printf("Test 1: %d\n", ft_strrncmp("hello.rt", ".rt", 3)); // Expected: 0
-// 	printf("Test 2: %d\n", ft_strrncmp("hello.txt", ".rt", 3)); // Expected: non-zero
-// 	printf("Test 3: %d\n", ft_strrncmp("hello.rt", ".txt", 3)); // Expected: non-zero
+// 	printf("Test 2: %d\n", ft_strrncmp("hello.txt", ".rt", 3));
+		// Expected: non-zero
+// 	printf("Test 3: %d\n", ft_strrncmp("hello.rt", ".txt", 3));
+		// Expected: non-zero
 // 	printf("Test 4: %d\n", ft_strrncmp("hello.rt", ".rt", 0)); // Expected: 0
 // 	// Test check_args
 // 	printf("\nTesting check_args:\n");
@@ -57,5 +60,5 @@ int check_args(int ac, char **av)
 // 	printf("Test 2: %d\n", check_args(2, args2)); // Expected: 1
 // 	char *args3[] = {"program"};
 // 	printf("Test 3: %d\n", check_args(1, args3)); // Expected: 1
-// 	return 0;
+// 	return (0);
 // }
