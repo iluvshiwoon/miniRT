@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 09:44:53 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/31 10:33:09 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 int	mini_rt(char *file)
 {
-	parsing_minirt(file);
+	t_rt	*rt;
+	
+	rt = parsing_minirt(file);
 	return (0);
 }
 

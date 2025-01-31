@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 11:04:52 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 09:42:25 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/31 11:20:22 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	parse_amb_light(t_rt *rt, char *line)
 			|| rt->scene.ambient_light->intensity > 1)
 			return (ft_putstr_fd("Error: Invalid ratio for ambient light\n", 2),
 				1);
-		rt->scene.ambient_light->color = parse_color(tab[2]);
+		rt->scene.ambient_light->color = parse_color(rt, tab[2]);
 		if (!rt->scene.ambient_light->color)
 			return (1);
 		free_tab_char(tab);

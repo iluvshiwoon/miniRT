@@ -1,4 +1,5 @@
 SRC		:= 	main.c	\
+			wrap_malloc.c \
 			parsing/parsing.c \
 			parsing/check_args.c \
 			parsing/open_file.c \

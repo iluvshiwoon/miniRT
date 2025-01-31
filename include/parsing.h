@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/31 11:01:40 by gschwand          #+#    #+#             */
+/*   Updated: 2025/01/31 11:19:46 by gschwand         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PARSING_H
 # define PARSING_H
 
@@ -14,7 +26,7 @@ typedef struct s_parser {
 }  t_parser;
 
 // parsing.c
-int parsing_minirt(char *namefile);
+t_rt *parsing_minirt(char *namefile);
 
 // check_args.c
 int check_args(int ac, char **av);
@@ -28,8 +40,8 @@ void free_lst_file(t_file **file);
 t_rt *alloc_rt(t_file **file);
 
 // element/element_utils.c
-t_vec *parse_color(char *line);
-t_vec *parse_vec(char *line);
+t_vec *parse_color(t_rt *rt, char *line);
+t_vec *parse_vec(t_rt *rt, char *line);
 void free_tab_char(char **tab);
 void print_scene(t_rt *rt);
 

@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:35:47 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 09:42:33 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/31 11:18:58 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,24 +40,23 @@ int	parse_cylinder(t_rt *rt, char *line)
 		return (1);
 	if (tab[1] && tab[2] && tab[3] && tab[4] && tab[5])
 	{
-		rt->scene.cylinder[i].origin = parse_vec(tab[1]);
+		rt->scene.cylinder[i].origin = parse_vec(rt, tab[1]);
 		if (!rt->scene.cylinder[i].origin)
-			return (1);
-		rt->scene.cylinder[i].direction = parse_vec(tab[2]);
+			return (free_tab_char(tab), 1);
+		rt->scene.cylinder[i].direction = parse_vec(rt, tab[2]);
 		if (!rt->scene.cylinder[i].direction)
-			return (1);
+			return (free_tab_char(tab), 1);
 		rt->scene.cylinder[i].radius = ft_atoi_double(tab[3]);
 		if (rt->scene.cylinder[i].radius < 0)
-			return (ft_putstr_fd("Error: Invalid radius for cylinder\n", 2), 1);
+			return (free_tab_char(tab), ft_putstr_fd("Error: Invalid radius for cylinder\n", 2), 1);
 		rt->scene.cylinder[i].height = ft_atoi_double(tab[4]);
 		if (rt->scene.cylinder[i].height < 0)
-			return (ft_putstr_fd("Error: Invalid height for cylinder\n", 2), 1);
-		rt->scene.cylinder[i].albedo = parse_color(tab[5]);
+			return (free_tab_char(tab), ft_putstr_fd("Error: Invalid height for cylinder\n", 2), 1);
+		rt->scene.cylinder[i].albedo = parse_color(rt, tab[5]);
 		if (!rt->scene.cylinder[i].albedo)
-			return (1);
+			return (free_tab_char(tab), 1);
 		free_tab_char(tab);
 		return (0);
 	}
-	return (ft_putstr_fd("Error: Invalid number of arguments for cylinder\n",
-			2), 1);
+	return (free_tab_char(tab), ft_putstr_fd("Error: Invalid number of arguments for cylinder\n", 2), 1);
 }

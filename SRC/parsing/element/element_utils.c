@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 09:38:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 09:51:42 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/31 11:18:58 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,12 @@ int	check_size_tab(char **tab)
 	int	i;
 
 	i = 0;
+	if (!tab)
+		return (0);
 	while (tab[i])
 		i++;
+	if (i != 3)
+		return (free_tab_char(tab), ft_putstr_fd("Error: Invalid number of arguments\n", 2), 1);
 	return (i);
 }
 
@@ -30,10 +34,7 @@ int	check_color(char *line)
 	while (line[i])
 	{
 		if (!ft_isdigit(line[i]))
-		{
-			printf("%sd\n", line);
 			return (ft_putstr_fd("Error: Invalid color\n", 2), 1);
-		}
 		i++;
 	}
 	return (0);
@@ -49,10 +50,7 @@ int	check_vec(char *line)
 	while (line[i])
 	{
 		if (!ft_isdigit(line[i]) && i == 0 && line[i] != '-')
-		{
-			printf("%s\n", line);
 			return (ft_putstr_fd("Error: Invalid vector\n", 2), 1);
-		}
 		else if (line[i] == '.')
 			point++;
 		i++;
@@ -62,26 +60,25 @@ int	check_vec(char *line)
 	return (0);
 }
 
-t_vec	*parse_color(char *line)
+t_vec	*parse_color(t_rt *rt, char *line)
 {
 	t_vec	*color;
 	char	**tab;
 
 	tab = ft_split(line, ',');
 	if (check_size_tab(tab) != 3)
-		return (ft_putstr_fd("Error: Invalid number of arguments for color\n",
-				2), NULL);
-	color = malloc(sizeof(t_vec));
-	if (!color)
-		return (ft_putstr_fd("Error: Memory allocation failed\n", 2), NULL);
-	if (check_color(tab[0]))
 		return (NULL);
+	color = wrap_malloc(rt, sizeof(t_vec));
+	if (!color)
+		return (free_tab_char(tab), ft_putstr_fd("Error: Memory allocation failed\n", 2), NULL);
+	if (check_color(tab[0]))
+		return (free_tab_char(tab), NULL);
 	color->x = ft_atoi(tab[0]);
 	if (check_color(tab[1]))
-		return (NULL);
+		return (free_tab_char(tab), NULL);
 	color->y = ft_atoi(tab[1]);
 	if (check_color(tab[2]))
-		return (NULL);
+		return (free_tab_char(tab), NULL);
 	color->z = ft_atoi(tab[2]);
 	free_tab_char(tab);
 	if (color->x < 0 || color->y < 0 || color->z < 0 || color->x > 255
@@ -90,24 +87,23 @@ t_vec	*parse_color(char *line)
 	return (color);
 }
 
-t_vec	*parse_vec(char *line)
+t_vec	*parse_vec(t_rt *rt, char *line)
 {
 	t_vec	*vec;
 	char	**tab;
 
 	tab = ft_split(line, ',');
 	if (check_size_tab(tab) != 3)
-		return (ft_putstr_fd("Error: Invalid number of arguments for vector\n",
-				2), NULL);
-	vec = malloc(sizeof(t_vec));
-	if (check_vec(tab[0]))
 		return (NULL);
+	vec = wrap_malloc(rt, sizeof(t_vec));
+	if (check_vec(tab[0]))
+		return (free_tab_char(tab), NULL);
 	vec->x = ft_atoi_double(tab[0]);
 	if (check_vec(tab[1]))
-		return (NULL);
+		return (free_tab_char(tab), NULL);
 	vec->y = ft_atoi_double(tab[1]);
 	if (check_vec(tab[2]))
-		return (NULL);
+		return (free_tab_char(tab), NULL);
 	vec->z = ft_atoi_double(tab[2]);
 	free_tab_char(tab);
 	return (vec);

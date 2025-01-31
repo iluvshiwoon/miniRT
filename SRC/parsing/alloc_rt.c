@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:41 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 10:23:57 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/31 10:39:59 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,20 +82,17 @@ void	init_null_element(t_rt *rt)
 
 int	alloc_nbr_element(t_rt *rt)
 {
-	rt->scene.sphere = malloc(sizeof(t_sphere) * rt->scene.sphere_nb);
+	rt->scene.sphere = wrap_malloc(rt, sizeof(t_sphere) * rt->scene.sphere_nb);
 	if (!rt->scene.sphere)
 		return (ft_putstr_fd("Error: Memory allocation failed\n", 2), 1);
-	rt->scene.plane = malloc(sizeof(t_plane) * rt->scene.plane_nb);
+	rt->scene.plane = wrap_malloc(rt, sizeof(t_plane) * rt->scene.plane_nb);
 	if (!rt->scene.plane)
 	{
-		free(rt->scene.sphere);
 		return (ft_putstr_fd("Error: Memory allocation failed\n", 2), 1);
 	}
-	rt->scene.cylinder = malloc(sizeof(t_cylinder) * rt->scene.cylinder_nb);
+	rt->scene.cylinder = wrap_malloc(rt, sizeof(t_cylinder) * rt->scene.cylinder_nb);
 	if (!rt->scene.cylinder)
 	{
-		free(rt->scene.sphere);
-		free(rt->scene.plane);
 		return (ft_putstr_fd("Error: Memory allocation failed\n", 2), 1);
 	}
 	init_null_element(rt);
@@ -104,30 +101,20 @@ int	alloc_nbr_element(t_rt *rt)
 
 int	alloc_single_element(t_rt *rt)
 {
-	rt->scene.ambient_light = malloc(sizeof(t_ambient_light));
+	rt->scene.ambient_light = wrap_malloc(rt, sizeof(t_ambient_light));
 	if (!rt->scene.ambient_light)
 		return (ft_putstr_fd("Error: Memory allocation failed\n", 2), 1);
-	rt->scene.light = malloc(sizeof(t_light));
+	rt->scene.light = wrap_malloc(rt, sizeof(t_light));
 	if (!rt->scene.light)
 	{
-		free(rt->scene.ambient_light);
 		return (ft_putstr_fd("Error: Memory allocation failed\n", 2), 1);
 	}
-	rt->scene.camera = malloc(sizeof(t_camera));
+	rt->scene.camera = wrap_malloc(rt, sizeof(t_camera));
 	if (!rt->scene.camera)
 	{
-		free(rt->scene.ambient_light);
-		free(rt->scene.light);
 		return (ft_putstr_fd("Error: Memory allocation failed\n", 2), 1);
 	}
 	return (0);
-}
-
-void	free_alloc_nbr_element(t_rt *rt)
-{
-	free(rt->scene.sphere);
-	free(rt->scene.plane);
-	free(rt->scene.cylinder);
 }
 
 int	alloc_scene(t_rt *rt, t_file **file)
@@ -148,7 +135,7 @@ int	alloc_scene(t_rt *rt, t_file **file)
 	if (alloc_nbr_element(rt))
 		return (1);
 	if (alloc_single_element(rt))
-		return (free_alloc_nbr_element(rt), 1);
+		return (1);
 	return (0);
 }
 
@@ -209,6 +196,7 @@ t_rt	*alloc_rt(t_file **file)
 		ft_putstr_fd("Error: Memory allocation failed\n", 2);
 		return (NULL);
 	}
+	rt->current_heap = init_alloc(&rt->graphic_heap);
 	if (creat_scene(rt, file))
 		return (NULL);
 	if (alloc_element(rt, file))

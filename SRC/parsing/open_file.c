@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:32 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 09:43:20 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/01/31 11:23:07 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	free_lst_file(t_file **file)
 		free(tmp2->line);
 		free(tmp2);
 	}
+	free(file);
 }
 
 t_file	*lstnew_file(char *line)
