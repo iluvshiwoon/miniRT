@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/21 20:27:46 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/02/03 02:51:55 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,24 +49,23 @@ bool intersection(const t_ray ray, const t_sphere sphere, t_vec * P, t_vec * N, 
     return (has_sol);
 }
 
-bool intersections(const t_ray ray, t_scene scene, t_vec * P, t_vec * N, int *sphere_id)
+bool intersections(const t_ray ray, t_scene scene, t_vec * P, t_vec * N, int *sphere_id, double * min_t)
 {
     t_vec local_P;
     t_vec local_N;
     bool has_inter;
-    double min_t;
     double t;
 
-    min_t = 1e99;
+    *min_t = 1e99;
     has_inter = false;
     while (scene.sphere_nb)
     {
         if (intersection(ray, scene.spheres[scene.sphere_nb - 1], &local_P, &local_N, &t))
         {
             has_inter = true;
-            if (t < min_t)
+            if (t < *min_t)
             {
-                min_t = t;
+                *min_t = t;
                 *P = local_P;
                 *N = local_N;
                 *sphere_id = scene.sphere_nb - 1;
@@ -105,21 +104,26 @@ unsigned char * render (t_rt * rt)
             t_ray ray = {{0,0,0},direction};
             t_vec P;
             t_vec N;
-            t_vec pixel_intensity = {0,0,0};
+            t_vec pixel_intensity;
             int sphere_id = 0;
-            if (intersections(ray, rt->scene, &P, &N, &sphere_id))
+            double t;
+            if (intersections(ray, rt->scene, &P, &N, &sphere_id, &t))
             {
-                pixel_intensity = vec_mult(intensity * vec_scal(normalize(vec_minus(light, P)),N) / norm2(vec_minus(light,P)),rt->scene.spheres[sphere_id].albedo);
-                image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(10, pixel_intensity.x));
-                image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pixel_intensity.y));
-                image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pixel_intensity.z));
+                t_ray ray_light = {vec_plus(P,vec_mult(0.01,N)),normalize(vec_minus(light,P))};
+                t_vec P_light;
+                t_vec N_light;
+                int sphere_id_light = 0;
+                double t_light;
+                bool inter = intersections(ray_light,rt->scene, &P_light, &N_light, &sphere_id_light, &t_light);
+                double d_light2 = norm2(vec_minus(light,P));
+                if (inter && t_light*t_light < d_light2)
+                    pixel_intensity = (t_vec){0,0,0};
+                else
+                    pixel_intensity = vec_mult(intensity * vec_scal(normalize(vec_minus(light, P)),N) / d_light2,rt->scene.spheres[sphere_id].albedo);
             }
-            else
-            {
-                image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pixel_intensity.x));
-                image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pixel_intensity.y));
-                image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pixel_intensity.z));
-            }
+            image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pixel_intensity.x));
+            image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pixel_intensity.y));
+            image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pixel_intensity.z));
         }
     }
     return image;
