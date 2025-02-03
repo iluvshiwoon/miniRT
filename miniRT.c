@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/02/03 02:51:55 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/02/03 03:08:56 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ unsigned char * render (t_rt * rt)
     rt->scene.spheres[4] = (t_sphere){{2000+50,0,0},2000, {0,0,1}}; // mur droit;
     rt->scene.spheres[5] = (t_sphere){{0,0,-2000 - 100},2000, {0,1,1}}; // mur fond;
     t_vec light = {15, 60, -40};
-    double intensity = 1000000;
+    double intensity = 100000000;
     image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
     i = -1;
     while (++i < rt->H)
@@ -119,11 +119,11 @@ unsigned char * render (t_rt * rt)
                 if (inter && t_light*t_light < d_light2)
                     pixel_intensity = (t_vec){0,0,0};
                 else
-                    pixel_intensity = vec_mult(intensity * vec_scal(normalize(vec_minus(light, P)),N) / d_light2,rt->scene.spheres[sphere_id].albedo);
+                    pixel_intensity = vec_mult(intensity * fmax(0,vec_scal(normalize(vec_minus(light, P)),N)) / d_light2,rt->scene.spheres[sphere_id].albedo);
             }
-            image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pixel_intensity.x));
-            image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pixel_intensity.y));
-            image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pixel_intensity.z));
+            image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2)));
+            image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2)));
+            image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)));
         }
     }
     return image;
