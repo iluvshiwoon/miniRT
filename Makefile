@@ -1,5 +1,4 @@
-SRC		:= 	main.c	\
-			wrap_malloc.c \
+SRC		:= 	wrap_malloc.c \
 			parsing/parsing.c \
 			parsing/check_args.c \
 			parsing/open_file.c \
@@ -11,11 +10,11 @@ SRC		:= 	main.c	\
 			parsing/element/sphere.c \
 			parsing/element/cylinder.c \
 			parsing/element/element_utils.c \
-			parsing/element/atoi_double.c 
-			bmp.c 
-			miniRT.c 
-			vector1.c 
-			vector.c 
+			parsing/element/atoi_double.c \
+			bmp.c \
+			miniRT.c \
+			vector1.c \
+			vector.c \
 			wrap_malloc.c
 OBJS	:=	$(SRC:.c=.o)
 BUILD	:=	.build

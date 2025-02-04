@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   miniRT.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/02/03 03:08:56 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/02/04 10:31:47 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "../include/miniRT.h"
 
 bool second_degree_solve(const t_ray ray, const t_sphere sphere, double * s)
 {

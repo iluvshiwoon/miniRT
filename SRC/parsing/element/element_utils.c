@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 09:38:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 11:18:58 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/02/04 11:14:48 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,33 @@ t_vec	*parse_color(t_rt *rt, char *line)
 	if (check_color(tab[2]))
 		return (free_tab_char(tab), NULL);
 	color->z = ft_atoi(tab[2]);
+	free_tab_char(tab);
+	if (color->x < 0 || color->y < 0 || color->z < 0 || color->x > 255
+		|| color->y > 255 || color->z > 255)
+		return (ft_putstr_fd("Error: Invalid color\n", 2), NULL);
+	return (color);
+}
+
+t_vec	*parse_color_albego(t_rt *rt, char *line)
+{
+	t_vec	*color;
+	char	**tab;
+
+	tab = ft_split(line, ',');
+	if (check_size_tab(tab) != 3)
+		return (NULL);
+	color = wrap_malloc(rt, sizeof(t_vec));
+	if (!color)
+		return (free_tab_char(tab), ft_putstr_fd("Error: Memory allocation failed\n", 2), NULL);
+	if (check_color(tab[0]))
+		return (free_tab_char(tab), NULL);
+	color->x = (double)ft_atoi(tab[0]) / 255;
+	if (check_color(tab[1]))
+		return (free_tab_char(tab), NULL);
+	color->y = (double)ft_atoi(tab[1]) / 255;
+	if (check_color(tab[2]))
+		return (free_tab_char(tab), NULL);
+	color->z = (double)ft_atoi(tab[2]) / 255;
 	free_tab_char(tab);
 	if (color->x < 0 || color->y < 0 || color->z < 0 || color->x > 255
 		|| color->y > 255 || color->z > 255)

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   vector.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 23:14:21 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/19 23:27:25 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/02/04 10:31:42 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "../include/miniRT.h"
 
 t_vec vec_plus(const t_vec a, const t_vec b)
 {

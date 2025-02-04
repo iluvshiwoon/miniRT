@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:33:07 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 11:18:58 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/02/04 11:15:28 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	parse_plane(t_rt *rt, char *line)
 		rt->scene.plane[i].normal = parse_vec(rt, tab[2]);
 		if (!rt->scene.plane[i].normal)
 			return (free_tab_char(tab), 1);
-		rt->scene.plane[i].albedo = parse_color(rt, tab[3]);
+		rt->scene.plane[i].albedo = parse_color_albego(rt, tab[3]);
 		if (!rt->scene.plane[i].albedo)
 			return (free_tab_char(tab), 1);
 		free_tab_char(tab);

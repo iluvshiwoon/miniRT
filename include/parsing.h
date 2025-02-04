@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:01:40 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 11:19:46 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/02/04 11:12:06 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ t_rt *alloc_rt(t_file **file);
 
 // element/element_utils.c
 t_vec *parse_color(t_rt *rt, char *line);
+t_vec *parse_color_albego(t_rt *rt, char *line);
 t_vec *parse_vec(t_rt *rt, char *line);
 void free_tab_char(char **tab);
 void print_scene(t_rt *rt);

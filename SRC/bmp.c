@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   bmp.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:15 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/20 00:48:06 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/02/04 10:31:50 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "../include/miniRT.h"
 
 int init_bmp(int fd, int W, int H)
 {
