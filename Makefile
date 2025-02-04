@@ -1,27 +1,23 @@
-SRC		:= 	main.c	\
+C_FILES = 	main.c	\
 			wrap_malloc.c \
-			parsing/parsing.c \
-			parsing/check_args.c \
-			parsing/open_file.c \
-			parsing/alloc_rt.c \
-			parsing/element/Ambient_light.c \
-			parsing/element/camera.c \
-			parsing/element/light.c \
-			parsing/element/plane.c \
-			parsing/element/sphere.c \
-			parsing/element/cylinder.c \
-			parsing/element/element_utils.c \
-			parsing/element/atoi_double.c 
-			bmp.c 
-			miniRT.c 
-			vector1.c 
-			vector.c 
-			wrap_malloc.c
-OBJS	:=	$(SRC:.c=.o)
-BUILD	:=	.build
-SRC_DIR := 	SRC
-C_FILES 	:=	$(addprefix $(SRC_DIR)/, $(SRC))
-O_FILES 	:=	$(patsubst $(SRC_DIR)/%.c, $(BUILD)/%.o, $(SRC))
+			SRC/parsing/parsing.c \
+			SRC/parsing/check_args.c \
+			SRC/parsing/open_file.c \
+			SRC/parsing/alloc_rt.c \
+			SRC/parsing/element/Ambient_light.c \
+			SRC/parsing/element/camera.c \
+			SRC/parsing/element/light.c \
+			SRC/parsing/element/plane.c \
+			SRC/parsing/element/sphere.c \
+			SRC/parsing/element/cylinder.c \
+			SRC/parsing/element/element_utils.c \
+			SRC/parsing/element/atoi_double.c 
+			SRC/bmp.c \
+			SRC/miniRT.c \
+			SRC/vector1.c \
+			SRC/vector.c \
+			SRC/wrap_malloc.c
+O_FILES = $(C_FILES:%.c=build/%.0)
 C_FLAGS = -Wall -Werror -Wextra
 NAME = miniRT
 
