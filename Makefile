@@ -1,5 +1,27 @@
-C_FILES = bmp.c miniRT.c vector1.c vector.c wrap_malloc.c
-O_FILES = $(C_FILES:%.c=build/%.o)
+SRC		:= 	main.c	\
+			wrap_malloc.c \
+			parsing/parsing.c \
+			parsing/check_args.c \
+			parsing/open_file.c \
+			parsing/alloc_rt.c \
+			parsing/element/Ambient_light.c \
+			parsing/element/camera.c \
+			parsing/element/light.c \
+			parsing/element/plane.c \
+			parsing/element/sphere.c \
+			parsing/element/cylinder.c \
+			parsing/element/element_utils.c \
+			parsing/element/atoi_double.c 
+			bmp.c 
+			miniRT.c 
+			vector1.c 
+			vector.c 
+			wrap_malloc.c
+OBJS	:=	$(SRC:.c=.o)
+BUILD	:=	.build
+SRC_DIR := 	SRC
+C_FILES 	:=	$(addprefix $(SRC_DIR)/, $(SRC))
+O_FILES 	:=	$(patsubst $(SRC_DIR)/%.c, $(BUILD)/%.o, $(SRC))
 C_FLAGS = -Wall -Werror -Wextra
 NAME = miniRT
 
