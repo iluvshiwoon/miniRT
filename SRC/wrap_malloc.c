@@ -6,11 +6,11 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 21:20:43 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/20 15:05:38 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/02/04 11:43:56 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "../include/miniRT.h"
 
 t_link_list *init_alloc(t_link_list **list)
 {
