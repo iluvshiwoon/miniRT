@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 20:37:42 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/28 12:09:20 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/17 15:46:39 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,8 @@ void free_heap(t_rt *rt);
 t_link_list *init_alloc(t_link_list **list);
 
 // miniRT.c
+bool intersections(const t_ray ray, t_scene scene, t_vec * P, t_vec * N, int *sphere_id, double * min_t);
+
 // bmp.c
 void save_img(t_rt * rt, const unsigned char * pixels, int W, int H); // rgb pixel
 #endif
