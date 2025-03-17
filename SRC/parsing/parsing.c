@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:23 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/17 15:16:45 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:50:43 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ t_rt	*parsing_minirt(char *namefile)
 	if (!rt)
 		return (NULL);
 	print_scene(rt);
-	free_heap(rt);
-	free(rt);
 	free_lst_file(file);
 	return (rt);
 }

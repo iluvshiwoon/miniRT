@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/17 15:51:35 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:45:00 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,9 @@ unsigned char * render_v2 (t_rt * rt)
     int i;
     int j;
 
-    // rt->scene.sphere_nb = 6;
-    // rt->scene.sphere = wrap_malloc(rt,sizeof(t_sphere) * rt->scene.sphere_nb);
-    // rt->scene.sphere[0] = (t_sphere){{0,0,-55},20, {1,0,0}}; // sphere
-    // rt->scene.sphere[1] = (t_sphere){{0,-2000-20,0},2000, {1,1,1}}; // sol
-    // rt->scene.sphere[2] = (t_sphere){{0,2000+100,0},2000, {1,1,1}}; // plafond;
-    // rt->scene.sphere[3] = (t_sphere){{-2000-50,0,0},2000, {0,1,0}}; // mur gaughe;
-    // rt->scene.sphere[4] = (t_sphere){{2000+50,0,0},2000, {0,0,1}}; // mur droit;
-    // rt->scene.sphere[5] = (t_sphere){{0,0,-2000 - 100},2000, {0,1,1}}; // mur fond;
-    // t_vec light = {15, 60, -40};
-    // double intensity = 100000000;
-    image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
+    image = wrap_malloc(rt, sizeof(unsigned char) * rt->W * rt->H * 3);
+    if (!image)
+        return(NULL);
     i = -1;
     while (++i < rt->H)
     {

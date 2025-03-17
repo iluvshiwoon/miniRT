@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 21:20:43 by kgriset           #+#    #+#             */
-/*   Updated: 2025/03/17 11:28:19 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:48:37 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,12 @@ void	*wrap_malloc(t_rt *rt, size_t size)
 		return (NULL);
 	new_node = malloc(sizeof(*new_node));
 	if (!new_node)
-		return (free_heap(rt), exit(EXIT_FAILURE),
-			NULL);
+	return (free_heap(rt), exit(EXIT_FAILURE), NULL);
 	*new_node = (t_list){};
 	new_node->content = malloc(size);
 	if (!new_node->content)
-		return (free(new_node), free_heap(rt),
-			exit(EXIT_FAILURE), NULL);
-    rt->current_heap->pf_lstadd_back(&rt->current_heap->first_node, new_node);
+		return (free(new_node), free_heap(rt), exit(EXIT_FAILURE), NULL);
+	printf("ok1\n");
+	rt->current_heap->pf_lstadd_back(&rt->current_heap->first_node, new_node);
 	return (new_node->content);
 }
