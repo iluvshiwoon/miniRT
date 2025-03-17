@@ -6,10 +6,11 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/02/04 10:31:47 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/17 11:27:21 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../include/miniRT.h"
 #include "../include/miniRT.h"
 
 bool second_degree_solve(const t_ray ray, const t_sphere sphere, double * s)
