@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:32:15 by gschwand          #+#    #+#             */
-/*   Updated: 2025/02/04 11:15:09 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:56:52 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int	parse_sphere(t_rt *rt, char *line)
 		return (1);
 	if (tab[1] && tab[2] && tab[3])
 	{
+		printf("\nSphere%d : \n", i + 1);
 		rt->scene.sphere[i].origin = parse_vec(rt, tab[1]);
 		if (!rt->scene.sphere[i].origin)
 			return (free_tab_char(tab), 1);
