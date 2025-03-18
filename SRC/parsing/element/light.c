@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:30:27 by gschwand          #+#    #+#             */
-/*   Updated: 2025/01/31 11:18:58 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/18 09:32:22 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	parse_light(t_rt *rt, char *line)
 		rt->scene.light->intensity = ft_atoi_double(tab[2]);
 		if (rt->scene.light->intensity < 0 || rt->scene.light->intensity > 1)
 			return (free_tab_char(tab), ft_putstr_fd("Error: Invalid ratio for light\n", 2), 1);
-		rt->scene.light->color = parse_color(rt, tab[3]);
+		rt->scene.light->color = parse_color_albego(rt, tab[3]);
 		if (!rt->scene.light->color)
 			return (free_tab_char(tab), 1);
 		free_tab_char(tab);

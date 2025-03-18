@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/17 16:45:00 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/18 09:38:11 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ unsigned char * render_v2 (t_rt * rt)
     image = wrap_malloc(rt, sizeof(unsigned char) * rt->W * rt->H * 3);
     if (!image)
         return(NULL);
+    rt->scene.light->intensity *= 5;
     i = -1;
     while (++i < rt->H)
     {
@@ -42,7 +43,7 @@ unsigned char * render_v2 (t_rt * rt)
                 t_vec N_light;
                 int sphere_id_light = 0;
                 double t_light;
-                bool inter = intersections(ray_light,rt->scene, &P_light, &N_light, &sphere_id_light, &t_light);
+                bool inter = intersections(ray_light, rt->scene, &P_light, &N_light, &sphere_id_light, &t_light);
                 double d_light2 = norm2(vec_minus(*rt->scene.light->origin,P));
                 if (inter && t_light*t_light < d_light2)
                     pixel_intensity = (t_vec){0,0,0};
