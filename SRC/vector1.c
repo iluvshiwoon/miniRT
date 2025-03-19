@@ -6,11 +6,10 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 23:27:57 by kgriset           #+#    #+#             */
-/*   Updated: 2025/03/17 11:28:09 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/02/04 10:31:35 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/miniRT.h"
 #include "../include/miniRT.h"
 
 double norm2(const t_vec v)
