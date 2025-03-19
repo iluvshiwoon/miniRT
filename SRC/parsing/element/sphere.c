@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:32:15 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/18 12:56:52 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/19 08:40:34 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	parse_sphere(t_rt *rt, char *line)
 		rt->scene.sphere[i].radius = ft_atoi_double(tab[2]);
 		if (rt->scene.sphere[i].radius < 0)
 			return (free_tab_char(tab), ft_putstr_fd("Error: Invalid radius for sphere\n", 2), 1);
-		rt->scene.sphere[i].albedo = parse_color_albego(rt, tab[3]);
+		rt->scene.sphere[i].albedo = parse_color(rt, tab[3]);
 		if (!rt->scene.sphere[i].albedo)
 			return (free_tab_char(tab), 1);
 		free_tab_char(tab);

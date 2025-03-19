@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/18 16:12:02 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/19 08:41:03 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ unsigned char * render_v2(t_rt * rt)
                 double d_light2 = norm2(vec_minus(*rt->scene.light->origin, P));
                 printf("d_light2 : %f\n", d_light2);
 
-                // bizarre car normalement si pas d'intersection, on devrait avoir une couleur noire
+                // si le retour d'intersections est nul alors l'image sort sans couleur POURQUOI???
                 if (!inter && t_light*t_light < d_light2)
                     pixel_intensity = (t_vec){0,0,0};
                 else
@@ -58,7 +58,7 @@ unsigned char * render_v2(t_rt * rt)
 
                     // pixel_intensity = vec_mult(rt->scene.light->intensity * fmax(0,vec_scal(normalize(vec_minus(*rt->scene.light->origin, P)),N)) / d_light2, *rt->scene.sphere[sphere_id].albedo);
 
-                    double light_factor = fmax(0, vec_scal(normalize(vec_minus(*rt->scene.light->origin, P)), N)) / (0.001 * d_light2);
+                    double light_factor = fmax(0, vec_scal(normalize(vec_minus(*rt->scene.light->origin, P)), N)) / (d_light2);
                     // if (light_factor > 0)
                     //     printf("\n-------------\nlight_factor : %f", light_factor);
                     
