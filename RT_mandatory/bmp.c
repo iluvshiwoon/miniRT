@@ -6,11 +6,11 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:15 by kgriset           #+#    #+#             */
-/*   Updated: 2025/01/20 00:48:06 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/03/25 13:42:31 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "../miniRT.h"
 
 int init_bmp(int fd, int W, int H)
 {
