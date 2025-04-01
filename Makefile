@@ -1,4 +1,6 @@
-C_FILES = RT_mandatory/bmp.c RT_mandatory/miniRT.c RT_mandatory/vector1.c RT_mandatory/vector.c RT_mandatory/wrap_malloc.c \
+C_FILES = RT/bmp.c RT/miniRT.c RT/vector1.c RT/vector.c RT/wrap_malloc.c \
+		  RT/exit_error.c RT/rt_ft_split.c RT/rt_ft_strtrim.c RT/rt_ft_substr.c \
+		  RT/rt_ft_strdup.c \
 			parsing/parsing.c \
 			parsing/check_args.c \
 			parsing/open_file.c \

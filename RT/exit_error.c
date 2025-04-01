@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   miniRT.h                                           :+:      :+:    :+:   */
+/*   exit_error.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kgriset <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/27 20:37:42 by kgriset           #+#    #+#             */
-/*   Updated: 2025/04/01 08:22:31 by kgriset          ###   ########.fr       */
+/*   Created: 2025/03/25 16:18:50 by kgriset           #+#    #+#             */
+/*   Updated: 2025/03/30 12:12:00 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef MINIRT_H
-# define MINIRT_H
-# include <stdio.h>
-# include <error.h>
-# include <string.h>
-# include <math.h>
-# include <unistd.h>
-# include <fcntl.h>
-# include <stdbool.h>
-# include "include/rt.h"
-# include "include/parsing.h"
-#endif
+
+#include "../miniRT.h"
+
+void exit_error(t_rt * rt, char * msg)
+{
+    ft_printf_fd(2,"%s\n",msg);
+    close(rt->fd_file);
+    free_heap(rt);
+    exit(12);
+}
