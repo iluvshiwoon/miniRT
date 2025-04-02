@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/19 08:41:03 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/03/21 10:28:51 by gschwand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,11 @@ unsigned char * render_v2(t_rt * rt)
             
             // printf("---------> fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))) : %f\n", fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))));
             image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pixel_intensity.x));
-            printf("pixel_intensity.x : %f\n", pixel_intensity.x);
+            // printf("pixel_intensity.x : %f\n", pixel_intensity.x);
             image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pixel_intensity.y));
-            printf("pixel_intensity.y : %f\n", pixel_intensity.y);
+            // printf("pixel_intensity.y : %f\n", pixel_intensity.y);
             image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pixel_intensity.z));
-            printf("pixel_intensity.z : %f\n", pixel_intensity.z);
+            // printf("pixel_intensity.z : %f\n", pixel_intensity.z);
         }
     }
     return image;
