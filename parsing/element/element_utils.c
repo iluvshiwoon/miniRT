@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 09:38:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/30 11:52:59 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/04/04 15:24:43 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ void	print_scene(t_rt *rt)
 	i = 0;
 	while (i < rt->scene.spheres_nb)
 	{
-		printf("sp ");
+		printf("ID: %d ; sp ",rt->scene.spheres[i].id);
 		printf("%f,%f,%f ", rt->scene.spheres[i].origin.x,
 			rt->scene.spheres[i].origin.y, rt->scene.spheres[i].origin.z);
 		printf("%f ", rt->scene.spheres[i].radius);

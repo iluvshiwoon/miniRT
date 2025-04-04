@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/04/01 08:17:08 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/04/04 17:48:40 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,14 @@ unsigned char * render (t_rt * rt)
 
     // rt->scene.spheres_nb = 6;
     // rt->scene.spheres = wrap_malloc(rt,sizeof(t_sphere) * rt->scene.spheres_nb);
-    rt->scene.spheres[0] = (t_sphere){0,{0,0,-55},20, {1,0,0}}; // sphere
-    rt->scene.spheres[1] = (t_sphere){1,{0,-2000-20,0},2000, {1,1,1}}; // sol
-    rt->scene.spheres[2] = (t_sphere){2,{0,2000+100,0},2000, {1,1,1}}; // plafond;
-    rt->scene.spheres[3] = (t_sphere){3,{-2000-50,0,0},2000, {0,1,0}}; // mur gaughe;
-    rt->scene.spheres[4] = (t_sphere){4,{2000+50,0,0},2000, {0,0,1}}; // mur droit;
-    rt->scene.spheres[5] = (t_sphere){5,{0,0,-2000 - 100},2000, {0,1,1}}; // mur fond;
+    // rt->scene.spheres[0] = (t_sphere){0,{0,0,-55},20, {1,0,0}}; // sphere
+    // rt->scene.spheres[1] = (t_sphere){1,{0,-2000-20,0},2000, {255,255,255}}; // sol
+    // rt->scene.spheres[2] = (t_sphere){2,{0,2000+100,0},2000, {1,1,1}}; // plafond;
+    // rt->scene.spheres[3] = (t_sphere){3,{-2000-50,0,0},2000, {0,1,0}}; // mur gaughe;
+    // rt->scene.spheres[4] = (t_sphere){4,{2000+50,0,0},2000, {0,0,1}}; // mur droit;
+    // rt->scene.spheres[5] = (t_sphere){5,{0,0,-2000 - 100},2000, {0,1,1}}; // mur fond;
     // t_vec light = {15, 60, -40};
-    double intensity = 100000000;
+    double intensity = 1000000;
     image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
     i = -1;
     while (++i < rt->H)
@@ -100,7 +100,7 @@ unsigned char * render (t_rt * rt)
         j = -1;
         while (++j < rt->W)
         {
-            t_vec direction = {j - rt->W / 2, i - rt->H /2, - rt->W / (2 * tan((rt->scene.camera.fov * M_PI / 180)/2))};
+            t_vec direction = {j - rt->W / 2, i - rt->H /2, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
             direction = normalize(direction);
             t_ray ray = {{0,0,0},direction};
             t_vec P;

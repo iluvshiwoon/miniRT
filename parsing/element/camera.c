@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 10:15:25 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/29 11:24:30 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/04/04 14:25:52 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	parse_camera(t_rt *rt, char *line)
 		// 	return (free_tab_char(tab), ft_putstr_fd("Error: Invalid fov for camera\n", 2), 1);
 		if (rt->scene.camera.fov < 0 || rt->scene.camera.fov > 180)
             exit_error(rt, "Error: Invalid fov for camera");
+        rt->scene.camera.fov *= M_PI / 180;
 		// free_tab_char(tab);
 		// return (0);
         return;
