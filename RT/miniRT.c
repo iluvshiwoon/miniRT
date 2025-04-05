@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/04/04 17:48:40 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/04/05 09:48:09 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,15 @@ unsigned char * render (t_rt * rt)
     // rt->scene.spheres[4] = (t_sphere){4,{2000+50,0,0},2000, {0,0,1}}; // mur droit;
     // rt->scene.spheres[5] = (t_sphere){5,{0,0,-2000 - 100},2000, {0,1,1}}; // mur fond;
     // t_vec light = {15, 60, -40};
+    // double log_radius;
+    // t_vec log_origin , log_albedo;
     double intensity = 1000000;
     image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
     i = -1;
     while (++i < rt->H)
     {
+        // log_radius = rt->scene.spheres[i].radius;
+        // log_origin = rt->scene.spheres[i].origin , log_albedo = rt->scene.spheres[i].albedo;
         j = -1;
         while (++j < rt->W)
         {
