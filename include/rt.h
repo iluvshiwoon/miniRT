@@ -6,15 +6,14 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/04/01 08:23:05 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/04/12 15:18:10 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef RT_H
 # define RT_H
 
+# include <stdint.h>
 # include "../42_MyLibC/mylibc.h"
-
-typedef struct s_vec t_vec;
 
 typedef struct s_vec {
     double x;
@@ -87,7 +86,15 @@ typedef struct s_scene {
 
 } t_scene; 
 
+typedef struct s_mt_state
+{
+    uint32_t state_array[624];         // the array for the state vector 
+    int state_index;                 // index into state vector array, 0 <= state_index <= n-1   always
+    double max_range;
+} t_mt_state;
+
 typedef struct s_rt {
+    t_mt_state state;
     int W;
     int H;
     int fd_file;
@@ -109,6 +116,7 @@ double vec_scal(const t_vec a, const t_vec b);
 double norm2(const t_vec v);
 t_vec normalize(const t_vec v);
 t_vec vec_m_vec(const t_vec a, const t_vec b);
+t_vec cross(const t_vec a, const t_vec b);
 
 // wrap_malloc.c
 void	*wrap_malloc(t_rt *rt, size_t size);
@@ -128,4 +136,12 @@ char	*rt_ft_strtrim(t_rt *rt, char const *s1, char const *set);
 char	*rt_ft_substr(t_rt *rt, char const *s, unsigned int start, size_t len);
 // rt_ft_split.c
 char	**rt_ft_split(t_rt *rt, char const *s, char c);
+
+// rt_random.c
+
+
+void initialize_state(t_mt_state* state, uint32_t seed);
+uint32_t random_uint32(t_mt_state* state);
+double uniform_uint32(t_mt_state* state);
+
 #endif
