@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/04/12 15:40:56 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/04/13 16:29:18 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,10 +101,13 @@ t_vec   get_color(t_ray ray, t_rt * rt, int nb_rebound) {
             pixel_intensity = vec_mult(intensity * fmax(0,vec_scal(normalize(vec_minus(rt->scene.light.origin, P)),N)) / d_light2,vec_mult(1/M_PI,rt->scene.spheres[sphere_id].albedo));
 
         // indirect lighting
-        double r1 = uniform_uint32(&rt->state);
-        double r2 = uniform_uint32(&rt->state);
+        // double r1 = uniform_uint32(&rt->state);
+        // double r2 = uniform_uint32(&rt->state);
+        double r1 = double_rng(&rt->rng);
+        double r2 = double_rng(&rt->rng);
         t_vec direction_random_local_basis = (t_vec){cos(2 * M_PI*r1)*sqrt(1-r2), sin(2*M_PI*r1)*sqrt(1-r2),sqrt(r2)};
-        t_vec random_vec = (t_vec){uniform_uint32(&rt->state)-0.5,uniform_uint32(&rt->state)-0.5,uniform_uint32(&rt->state)-0.5};
+        // t_vec random_vec = (t_vec){uniform_uint32(&rt->state)-0.5,uniform_uint32(&rt->state)-0.5,uniform_uint32(&rt->state)-0.5};
+        t_vec random_vec = (t_vec){double_rng(&rt->rng)-0.5,double_rng(&rt->rng)-0.5,double_rng(&rt->rng)-0.5};
         t_vec tangent1 = normalize(cross(N,random_vec));
         t_vec tangent2 = cross(tangent1, N);
         t_vec direction_random = vec_plus(vec_plus(vec_mult(direction_random_local_basis.x,tangent1),vec_mult(direction_random_local_basis.y,tangent2)\
@@ -155,7 +158,10 @@ int main (int ac,char ** av)
     rt = (t_rt){};
     rt.graphic_heap = init_alloc(&rt.graphic_heap); 
     rt.parsing_heap = init_alloc(&rt.parsing_heap);  
-    initialize_state(&rt.state,19650218UL);
+    uint64_t seeds[2];
+    entropy_getbytes((void*)seeds,sizeof(seeds));
+    pcg32_srandom_r(&rt.rng,seeds[0],seeds[1]);
+    // initialize_state(&rt.state,19650218UL);
     rt.current_heap = rt.parsing_heap;
     parsing_minirt(&rt,av[1]);
     rt.W = 1024;
@@ -165,11 +171,12 @@ int main (int ac,char ** av)
     // initialize_state(&state,19650218UL);
     // for (int i = 1000; i;i--)
     // {
-    //     double uni = uniform_uint32(&state);
+    //     double uni = double_rng(&rt.rng);
     //     if (uni > 1)
     //         printf("failed\n");
     //     printf("%lf\n",uni);
-    //
+    //     // uint32_t rn = pcg32_random_r(&rt.rng);
+    //     // printf("%u\n",rn);
     // }
     close(rt.fd_file);
     free_heap(&rt);

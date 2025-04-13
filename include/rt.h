@@ -6,13 +6,18 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/04/12 15:18:10 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/04/13 16:06:31 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef RT_H
 # define RT_H
+# define PCG_DEFAULT_MULTIPLIER_64  6364136223846793005ULL
+# define pcg32_random_r                  pcg_setseq_64_xsh_rr_32_random_r
+# define pcg32_srandom_r                 pcg_setseq_64_srandom_r
+# define pcg32_advance_r                 pcg_setseq_64_advance_r
 
 # include <stdint.h>
+# include <stdbool.h>
 # include "../42_MyLibC/mylibc.h"
 
 typedef struct s_vec {
@@ -93,8 +98,16 @@ typedef struct s_mt_state
     double max_range;
 } t_mt_state;
 
+typedef struct pcg_state_setseq_64      t_pcg32_random;
+
+struct pcg_state_setseq_64 {
+    uint64_t state;
+    uint64_t inc;
+};
+
 typedef struct s_rt {
     t_mt_state state;
+    t_pcg32_random rng;
     int W;
     int H;
     int fd_file;
@@ -104,6 +117,7 @@ typedef struct s_rt {
     t_link_list * current_heap;
     t_scene scene;
 } t_rt;
+
 
 // vector.c 
 t_vec vec_plus(const t_vec a, const t_vec b);
@@ -138,10 +152,15 @@ char	*rt_ft_substr(t_rt *rt, char const *s, unsigned int start, size_t len);
 char	**rt_ft_split(t_rt *rt, char const *s, char c);
 
 // rt_random.c
-
-
 void initialize_state(t_mt_state* state, uint32_t seed);
 uint32_t random_uint32(t_mt_state* state);
 double uniform_uint32(t_mt_state* state);
+
+// entropy.c
+bool entropy_getbytes(void* dest, size_t size);
+uint32_t pcg_setseq_64_xsh_rr_32_random_r(struct pcg_state_setseq_64* rng);
+void pcg_setseq_64_srandom_r(struct pcg_state_setseq_64* rng, uint64_t initstate, uint64_t initseq);
+void pcg_setseq_64_advance_r(struct pcg_state_setseq_64* rng, uint64_t delta);
+double double_rng(t_pcg32_random * rng);
 
 #endif
