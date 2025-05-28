@@ -54,14 +54,4 @@ dkms.conf
 *.bmp
 /miniRT
 .direnv
-.envrc
-.direnv
-.envrc
-.direnv
-.envrc
-.direnv
-.envrc
-.direnv
-.envrc
-.direnv
-.envrc
+.envrc*
