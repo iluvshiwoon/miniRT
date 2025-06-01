@@ -45,7 +45,7 @@
           shellHook = ''
             echo "X11 development environment loaded"
             echo "CFLAGS and LDFLAGS are set for X11"
-            echo "You can now compile with: gcc \$CFLAGS \$LDFLAGS your_program.c"
+            echo "You can now compile with: cc \$CFLAGS \$LDFLAGS your_program.c"
             
             # Export X11 path for minilibX configure script (includes extensions)
             export NIX_X11_INCLUDE="${pkgs.xorg.xorgproto}/include"
