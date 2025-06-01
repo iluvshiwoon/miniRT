@@ -39,6 +39,17 @@
  *     fallback_entropy_getbytes which always succeeds.
  */
 
+uint32_t pcg_setseq_64_xsh_rr_32_boundedrand_r(struct pcg_state_setseq_64* rng,
+                                      uint32_t bound)
+{
+    uint32_t threshold = -bound % bound;
+    for (;;) {
+        uint32_t r = pcg_setseq_64_xsh_rr_32_random_r(rng);
+        if (r >= threshold)
+            return r % bound;
+    }
+}
+
 double double_rng(t_pcg32_random * rng)
 {
     return(ldexp(pcg32_random_r(rng),-32));

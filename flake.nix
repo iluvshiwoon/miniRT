@@ -20,6 +20,7 @@
         {
           packages = with pkgs;
             [
+              valgrind
               gcc
               clang-tools
               libbsd

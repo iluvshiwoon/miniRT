@@ -15,10 +15,19 @@
 # define pcg32_random_r                  pcg_setseq_64_xsh_rr_32_random_r
 # define pcg32_srandom_r                 pcg_setseq_64_srandom_r
 # define pcg32_advance_r                 pcg_setseq_64_advance_r
-
+#define pcg32_boundedrand_r             pcg_setseq_64_xsh_rr_32_boundedrand_r
 # include <stdint.h>
 # include <stdbool.h>
 # include "../42_MyLibC/mylibc.h"
+
+typedef struct s_data
+{
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}			t_data;
 
 typedef struct s_vec {
     double x;
@@ -106,6 +115,8 @@ struct pcg_state_setseq_64 {
 };
 
 typedef struct s_rt {
+    void *mlx;
+    void *win;
     t_mt_state state;
     t_pcg32_random rng;
     int W;
@@ -157,6 +168,8 @@ uint32_t random_uint32(t_mt_state* state);
 double uniform_uint32(t_mt_state* state);
 
 // entropy.c
+uint32_t pcg_setseq_64_xsh_rr_32_boundedrand_r(struct pcg_state_setseq_64* rng,
+                                      uint32_t bound);
 bool entropy_getbytes(void* dest, size_t size);
 uint32_t pcg_setseq_64_xsh_rr_32_random_r(struct pcg_state_setseq_64* rng);
 void pcg_setseq_64_srandom_r(struct pcg_state_setseq_64* rng, uint64_t initstate, uint64_t initseq);

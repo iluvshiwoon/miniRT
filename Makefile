@@ -24,7 +24,7 @@ NAME = miniRT
 all: $(NAME)
 
 $(NAME): $(C_FILES) | build
-	$(CC) -g $^ -o $(NAME) -L ./42_MyLibC -lft -lm
+	$(CC) -g $^ -o $(NAME) -L ./42_MyLibC -L ./minilibx-linux -lmlx -lXext -lX11 -lft -lm
 
 %.o: %.c 
 	$(CC) -g -c $< -o $@
