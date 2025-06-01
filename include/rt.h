@@ -20,6 +20,12 @@
 # include <stdbool.h>
 # include "../42_MyLibC/mylibc.h"
 
+struct pass_config {
+    int bounces;
+    int skip;        // Render every Nth pixel
+    int update_freq; // Update display frequency
+};
+
 typedef struct s_data
 {
 	void	*img;

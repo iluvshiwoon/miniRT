@@ -152,68 +152,78 @@ unsigned char * render (t_rt * rt)
     unsigned char * image;
     t_data img;
     int i;
-    int nrays = 1;
+    int nrays;
     int j;
     int k;
-    // int shuffled_pixels[rt->W*rt->H];
+    int *shuffled_pixels;
+    shuffled_pixels = malloc(rt->W * rt->H * sizeof(*shuffled_pixels));
 
+    struct pass_config passes[] = {
+    {1,  16, rt->W/4},     // 1 bounce, every 16th pixel - instant outline
+    {1,   4, rt->W/2},     // 1 bounce, every 4th pixel - fill gaps
+    {4,   2, rt->W},       // 4 bounces, every 2nd pixel - basic GI
+    {10,  1, rt->W*2},     // 10 bounces, all pixels - medium quality
+    {25,  1, rt->W*4},     // 25 bounces, all pixels - high quality  
+    {80,  1, rt->W*8}      // 80 bounces, all pixels - final quality
+};
     // double intensity = 1000000;
     // image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
-    i = rt->H;
+    // i = rt->H;
+    int pass = -1;
     img.img = mlx_new_image(rt->mlx, rt->W, rt->H ) ;
     img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
                                  &img.endian);
-
-    // gen_shuffled_pixels(rt, shuffled_pixels);
-    // int total_pixels = rt->H * rt->W;
-    // int l = -1;
-    // int pixel_updated = 0;
-    // while (++l < total_pixels)
-    // {
-    //     int index = shuffled_pixels[l];
-    //     int x = index % rt->W;    
-    //     int y = rt->H - 1 -(index / rt->W);
-    //     k = -1;
-    //     t_vec direction = {x - rt->W / 2 - rt->scene.camera.origin.x, y - rt->H /2 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
-    //     direction = normalize(direction);
-    //     t_ray ray = {{0.,0.,0.},direction};
-    //     t_vec pixel_intensity = (t_vec){0.,0.,0.};
-    //     while (++k < nrays)
-    //         pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));
-    //     my_mlx_put_pixel(&img, x, rt->H - 1 - y, \
-    //                      create_trgb(255, fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))),\
-    //                                  fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
-    //                                  fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)))));
-    //     if (pixel_updated >= rt->W * 2 )
-    //     {
-    //         mlx_put_image_to_window(rt->mlx, rt->win, img.img, 0, 0);
-    //         pixel_updated = 0;
-    //     }
-    //     pixel_updated++;
-    // }
-    while (--i >= 0)
+    gen_shuffled_pixels(rt, shuffled_pixels);
+    while (++pass < 6)
     {
-        j = rt->W;
-        while (--j >= 0)
+        nrays = passes[pass].bounces;
+        int total_pixels = rt->H * rt->W;
+        int l = 0;
+        printf("Pass: %d, bounce: %d, skip: %d, update every %d pixels\n", pass, passes[pass].bounces, passes[pass].skip, passes[pass].update_freq);
+        while (l < total_pixels)
         {
+            int index = shuffled_pixels[l];
+            int x = index % rt->W;    
+            int y = rt->H - 1 -(index / rt->W);
             k = -1;
-            t_vec direction = {j - rt->W / 2 - rt->scene.camera.origin.x, i - rt->H /2 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
+            t_vec direction = {x - rt->W / 2 - rt->scene.camera.origin.x, y - rt->H /2 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
             direction = normalize(direction);
             t_ray ray = {{0.,0.,0.},direction};
             t_vec pixel_intensity = (t_vec){0.,0.,0.};
-
             while (++k < nrays)
                 pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));
-            my_mlx_put_pixel(&img, j, rt->H - i - 1, \
+            my_mlx_put_pixel(&img, x, rt->H - 1 - y, \
                              create_trgb(255, fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))),\
-                                              fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
-                                              fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)))));
-            // image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2)));
-            // image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2)));
-            // image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)));
+                                         fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
+                                         fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)))));
+            if (l %passes[pass].update_freq == 0)
+                mlx_put_image_to_window(rt->mlx, rt->win, img.img, 0, 0);
+            l += passes[pass].skip;
         }
-        mlx_put_image_to_window(rt->mlx, rt->win, img.img, 0, 0);
     }
+    // while (--i >= 0)
+    // {
+    //     j = rt->W;
+    //     while (--j >= 0)
+    //     {
+    //         k = -1;
+    //         t_vec direction = {j - rt->W / 2 - rt->scene.camera.origin.x, i - rt->H /2 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
+    //         direction = normalize(direction);
+    //         t_ray ray = {{0.,0.,0.},direction};
+    //         t_vec pixel_intensity = (t_vec){0.,0.,0.};
+    //
+    //         while (++k < nrays)
+    //             pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));
+    //         my_mlx_put_pixel(&img, j, rt->H - i - 1, \
+    //                          create_trgb(255, fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))),\
+    //                                           fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
+    //                                           fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)))));
+    //         // image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2)));
+    //         // image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2)));
+    //         // image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)));
+    //     }
+    //     mlx_put_image_to_window(rt->mlx, rt->win, img.img, 0, 0);
+    // }
     return image;
 }
 
