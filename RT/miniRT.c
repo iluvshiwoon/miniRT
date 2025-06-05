@@ -158,15 +158,14 @@ unsigned char * render (t_rt * rt)
     int *shuffled_pixels;
     shuffled_pixels = malloc(rt->W * rt->H * sizeof(*shuffled_pixels));
 
-    struct pass_config passes[] = {
-    {1,  16, rt->W/4},     // 1 bounce, every 16th pixel - instant outline
-    {1,   4, rt->W/2},     // 1 bounce, every 4th pixel - fill gaps
-    {4,   2, rt->W},       // 4 bounces, every 2nd pixel - basic GI
-    {10,  1, rt->W*2},     // 10 bounces, all pixels - medium quality
-    {25,  1, rt->W*4},     // 25 bounces, all pixels - high quality  
-    {80,  1, rt->W*8}      // 80 bounces, all pixels - final quality
-};
-    // double intensity = 1000000;
+     struct pass_config passes[] = {
+    {1,  16, rt->W*4},     // Fast pixels, less frequent updates
+    {1,   4, rt->W*2},     // Still fast, moderate updates  
+    {4,   2, rt->W},       // Medium speed, more frequent updates
+    {10,  1, rt->W/2},     // Slower pixels, frequent updates
+    {25,  1, rt->W/4},     // Much slower, very frequent updates
+    {80,  1, rt->W/8}      // Slowest pixels, most frequent updates
+    };
     // image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
     // i = rt->H;
     int pass = -1;
