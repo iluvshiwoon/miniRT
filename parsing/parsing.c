@@ -14,20 +14,9 @@
 
 void    parsing_minirt(t_rt *rt,char *namefile)
 {
-	// t_rt	*rt;
 	t_file	**file;
 
-    rt->scene = (t_scene){};
 	file = open_file(rt, namefile);
-	// if (!file)
-		// return (NULL);
-	// print_lst_file(file);
 	alloc_rt(rt, file);
-	// if (!rt)
-		// return (NULL);
 	print_scene(rt);
-	// free_heap(rt);
-	// free(rt);
-	// free_lst_file(file);
-	// return (rt);
 }

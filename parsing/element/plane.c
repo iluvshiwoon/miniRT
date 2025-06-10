@@ -28,33 +28,23 @@ static int	find_plane_id(t_plane *plane)
 	return (i);
 }
 
-// int	parse_plane(t_rt *rt, char *line)
-void	parse_plane(t_rt *rt, char *line)
+void	parse_plane(t_rt *rt, char *line, int * id)
 {
 	char	**tab;
-	int		i;
+    t_plane * plane;
 
-	i = find_plane_id(rt->scene.planes);
-	rt->scene.planes[i].id = i + 1;
-	// tab = ft_split(line, ' ');
-	// if (!tab)
-	// 	return (1);
+    plane = wrap_malloc(rt , sizeof(*plane));
     tab = rt_ft_split(rt, line, ' ');
 	if (tab[1] && tab[2] && tab[3])
 	{
-		rt->scene.planes[i].origin = parse_vec(rt, tab[1]);
-		// if (!rt->scene.planes[i].origin)
-		// 	return (free_tab_char(tab), 1);
-		rt->scene.planes[i].normal = parse_vec(rt, tab[2]);
-		// if (!rt->scene.planes[i].normal)
-		// 	return (free_tab_char(tab), 1);
-		rt->scene.planes[i].albedo = parse_color(rt, tab[3]);
-		// if (!rt->scene.planes[i].albedo)
-		// 	return (free_tab_char(tab), 1);
-		// free_tab_char(tab);
-		// return (0);
+		plane->origin = parse_vec(rt, tab[1]);
+		plane->normal = parse_vec(rt, tab[2]);
+        rt->scene.objects[*id].intersection = NULL;
+        rt->scene.objects[*id].debug_print = &print_plane;
+        rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
+        rt->scene.objects[*id].obj = plane;
+        (*id)++;
         return;
 	}
     exit_error(rt, "Error: Invalid number of arguments for planes");
-	// return (free_tab_char(tab), ft_putstr_fd("Error: Invalid number of arguments for planes\n", 2), 1);
 }

@@ -12,57 +12,29 @@
 
 #include "../../miniRT.h"
 
-static int	find_cylinder_id(t_cylinder *cylinder)
-{
-	int	i;
-
-	i = 0;
-	if (cylinder[0].id == 0)
-		return (i);
-	while (1)
-	{
-		if (cylinder[i].id == 0)
-			return (i);
-		i++;
-	}
-	return (i);
-}
-
-// int	parse_cylinder(t_rt *rt, char *line)
-void	parse_cylinder(t_rt *rt, char *line)
+void	parse_cylinder(t_rt *rt, char *line, int * id)
 {
 	char	**tab;
-	int		i;
+    t_cylinder * cylinder;
 
-	i = find_cylinder_id(rt->scene.cylinders);
-	rt->scene.cylinders[i].id = i + 1;
-	// tab = ft_split(line, ' ');
-	// if (!tab)
-	// 	return (1);
+    cylinder = wrap_malloc(rt, sizeof(*cylinder));
     tab = rt_ft_split(rt, line, ' ');
 	if (tab[1] && tab[2] && tab[3] && tab[4] && tab[5])
 	{
-		rt->scene.cylinders[i].origin = parse_vec(rt, tab[1]);
-		// if (!rt->scene.cylinders[i].origin)
-		// 	return (free_tab_char(tab), 1);
-		rt->scene.cylinders[i].direction = parse_vec(rt, tab[2]);
-		// if (!rt->scene.cylinders[i].direction)
-		// 	return (free_tab_char(tab), 1);
-		rt->scene.cylinders[i].radius = ft_atoi_double(tab[3]);
-		if (rt->scene.cylinders[i].radius < 0)
+		cylinder->origin = parse_vec(rt, tab[1]);
+		cylinder->direction = parse_vec(rt, tab[2]);
+		cylinder->radius = ft_atoi_double(tab[3]);
+		if (cylinder->radius < 0)
             exit_error(rt, "Error: Invalid radius for cylinders");
-			// return (free_tab_char(tab), ft_putstr_fd("Error: Invalid radius for cylinders\n", 2), 1);
-		rt->scene.cylinders[i].height = ft_atoi_double(tab[4]);
-		if (rt->scene.cylinders[i].height < 0)
-			// return (free_tab_char(tab), ft_putstr_fd("Error: Invalid height for cylinders\n", 2), 1);
+		cylinder->height = ft_atoi_double(tab[4]);
+		if (cylinder->height < 0)
             exit_error(rt, "Error: Invalid height for cylinders");
-		rt->scene.cylinders[i].albedo = parse_color(rt, tab[5]);
-		// if (!rt->scene.cylinders[i].albedo)
-		// 	return (free_tab_char(tab), 1);
-		// free_tab_char(tab);
-		// return (0);
+        rt->scene.objects[*id].intersection = NULL;
+        rt->scene.objects[*id].debug_print = &print_cylinder;
+        rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
+        rt->scene.objects[*id].obj = cylinder;
+        (*id)++;
         return;
 	}
-	// return (free_tab_char(tab), ft_putstr_fd("Error: Invalid number of arguments for cylinders\n", 2), 1);
     exit_error(rt, "Error: Invalid number of arguments for cylinders\n");
 }

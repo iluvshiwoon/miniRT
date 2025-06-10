@@ -28,36 +28,25 @@ static int	find_sphere_id(t_sphere *sphere)
 	return (i);
 }
 
-// int	parse_sphere(t_rt *rt, char *line)
-void	parse_sphere(t_rt *rt, char *line)
+void	parse_sphere(t_rt *rt, char *line, int * id)
 {
 	char	**tab;
-	int		i;
+    t_sphere * sphere;
 
-	i = find_sphere_id(rt->scene.spheres);
-	rt->scene.spheres[i].id = i + 1;
-	// tab = ft_split(line, ' ');
+    sphere = wrap_malloc(rt, sizeof(*sphere));
     tab = rt_ft_split(rt, line, ' ');
-	// if (!tab)
-	// 	return (1);
 	if (tab[1] && tab[2] && tab[3])
 	{
-		rt->scene.spheres[i].origin = parse_vec(rt, tab[1]);
-		// if (!rt->scene.spheres[i].origin)
-		// 	return (free_tab_char(tab), 1);
-		rt->scene.spheres[i].radius = ft_atoi_double(tab[2]);
-		if (rt->scene.spheres[i].radius < 0)
+		sphere->origin = parse_vec(rt, tab[1]);
+		sphere->radius = ft_atoi_double(tab[2]);
+		if (sphere->radius < 0)
 			exit_error(rt,"Error: Invalid radius for sphere");
-			// return (free_tab_char(tab), ft_putstr_fd("Error: Invalid radius for sphere\n", 2), 1);
-		rt->scene.spheres[i].albedo = vec_mult(1.0/255,parse_color(rt, tab[3]));
-		// rt->scene.spheres[i].albedo = parse_color(rt, tab[3]);
-		// if (!rt->scene.spheres[i].albedo)
-		// 	return (free_tab_char(tab), 1);
-		// free_tab_char(tab);
-		// return (0);
+        rt->scene.objects[*id].intersection = &sphere_second_degree_solve;
+        rt->scene.objects[*id].debug_print = &print_sphere;
+        rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
+        rt->scene.objects[*id].obj = sphere;
+        (*id)++;
         return;
 	}
     exit_error(rt, "Error: Invalid number of arguments for sphere");
-	// return (ft_putstr_fd("Error: Invalid number of arguments for sphere\n", 2),
-	// 	1);
 }

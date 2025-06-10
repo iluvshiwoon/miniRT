@@ -67,14 +67,12 @@ typedef struct s_sphere {
     int id;
     t_vec origin;
     double radius;
-    t_vec albedo;
 }t_sphere;
 
 typedef struct s_plane {
     int id;
     t_vec origin;
     t_vec normal;
-    t_vec albedo;
 } t_plane;
 
 typedef struct s_cylinder {
@@ -83,27 +81,33 @@ typedef struct s_cylinder {
     t_vec direction;
     double radius;
     double height;
-    t_vec albedo;
 } t_cylinder;
+
+typedef struct s_intersection {
+    t_vec point;
+    t_vec normal;
+    double t;
+} t_intersection;
+
+typedef struct s_rt t_rt;
+typedef struct s_object {
+    void * obj;
+    bool (*intersection)(const t_ray ray, const struct s_object, double * s);
+    void (*debug_print)(t_rt *rt , int id);
+    t_vec albedo; 
+} t_object;
 
 typedef struct s_scene {
     t_light light;    
     t_ambient_light ambient_light;
     t_camera camera;
 
-    int spheres_nb;
-    t_sphere * spheres;
-
-    int planes_nb;
-    t_plane * planes;
-
-    int cylinders_nb;
-    t_cylinder * cylinders;
+    int total_objects;
+    t_object * objects;
 
     // int light_nb;
     // t_vec * light;
     // double * light_intensity;
-
 } t_scene; 
 
 typedef struct s_mt_state
@@ -154,6 +158,9 @@ void	*wrap_malloc(t_rt *rt, size_t size);
 void free_heap(t_rt *rt);
 t_link_list *init_alloc(t_link_list **list);
 
+// intersection.c
+t_vec   get_color(t_ray ray, t_rt * rt, int nb_rebound);
+bool sphere_second_degree_solve(const t_ray ray, const t_object obj, double * s);
 // miniRT.c
 // bmp.c
 void save_img(t_rt * rt, const unsigned char * pixels, int W, int H); // rgb pixel

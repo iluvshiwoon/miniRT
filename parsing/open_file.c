@@ -24,30 +24,12 @@ void	print_lst_file(t_file **file)
 	}
 }
 
-// void	free_lst_file(t_file **file)
-// {
-// 	t_file	*tmp;
-// 	t_file	*tmp2;
-//
-// 	tmp = *file;
-// 	while (tmp)
-// 	{
-// 		tmp2 = tmp;
-// 		tmp = tmp->next;
-// 		free(tmp2->line);
-// 		free(tmp2);
-// 	}
-// 	free(file);
-// }
 
 t_file	*lstnew_file(t_rt * rt, char *line)
 {
 	t_file	*new;
 
-	// new = malloc(sizeof(t_file));
 	new = wrap_malloc(rt, sizeof(t_file));
-	// if (!new)
-	// 	return (NULL);
 	new->line = line;
 	new->next = NULL;
 	return (new);
@@ -68,7 +50,6 @@ void	lst_add_back_file(t_file **file, t_file *node)
 	tmp->next = node;
 }
 
-// int	alloc_file_lst(t_rt * rt, t_file **file, int fd)
 void	alloc_file_lst(t_rt * rt, t_file **file, int fd)
 {
 	t_file	*node;
@@ -89,13 +70,9 @@ void	alloc_file_lst(t_rt * rt, t_file **file, int fd)
 			if (line[ft_strlen(line) - 1] == '\n')
 				line[ft_strlen(line) - 1] = '\0';
 			node = lstnew_file(rt, line);
-			// if (!node)
-			// 	return (free_lst_file(file), ft_putstr_fd("Error memory\n", 2),
-			// 		1);
 			lst_add_back_file(file, node);
 		}
 	}
-	// return (0);
 }
 
 t_file	**open_file(t_rt * rt, char *namefile)
@@ -104,12 +81,9 @@ t_file	**open_file(t_rt * rt, char *namefile)
 	t_file	*node;
 	char	*line;
 
-	// file = malloc(sizeof(t_file *));
     file = wrap_malloc(rt, sizeof(t_file *));
-	// if (!file)
-	// 	return (ft_putstr_fd("Error memory\n", 2), NULL);
 	*file = NULL;
-	rt->fd_file = open(namefile, O_RDONLY);
+	rt->fd_file = open(namefile, O_RDONLY); // check_error
 	line = get_next_line(rt->fd_file);
     namefile = line;
     if (namefile)
@@ -117,14 +91,11 @@ t_file	**open_file(t_rt * rt, char *namefile)
     free(namefile);
 	if (!line)
 		return (exit_error(rt, "Error file can't be read\n"), NULL);
-		// return (ft_putstr_fd("Error file can't be read\n", 2), NULL);
 	if (line[0] != '\n')
 	{
 		line[ft_strlen(line) - 1] = '\0';
 		*file = lstnew_file(rt, line);
 	}
 	alloc_file_lst(rt, file, rt->fd_file);
-	// if (alloc_file_lst(rt, file, fd))
-	// 	return (NULL);
 	return (file);
 }
