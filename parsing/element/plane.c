@@ -39,7 +39,7 @@ void	parse_plane(t_rt *rt, char *line, int * id)
 	{
 		plane->origin = parse_vec(rt, tab[1]);
 		plane->normal = parse_vec(rt, tab[2]);
-        rt->scene.objects[*id].intersection = NULL;
+        rt->scene.objects[*id].is_intersection = NULL;
         rt->scene.objects[*id].debug_print = &print_plane;
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = plane;

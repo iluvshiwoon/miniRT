@@ -29,7 +29,7 @@ void	parse_cylinder(t_rt *rt, char *line, int * id)
 		cylinder->height = ft_atoi_double(tab[4]);
 		if (cylinder->height < 0)
             exit_error(rt, "Error: Invalid height for cylinders");
-        rt->scene.objects[*id].intersection = NULL;
+        rt->scene.objects[*id].is_intersection = NULL;
         rt->scene.objects[*id].debug_print = &print_cylinder;
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = cylinder;

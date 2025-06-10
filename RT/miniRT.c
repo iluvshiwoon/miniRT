@@ -53,6 +53,10 @@ unsigned char * render (t_rt * rt)
                                  &img.endian);
     gen_shuffled_pixels(rt, shuffled_pixels);
     int total_pixels = rt->H * rt->W;
+     // Define test square parameters
+    int square_size = 4;  // 50x50 pixel square
+    int square_x = rt->W / 4;  // Position at 1/4 of screen width
+    int square_y = rt->H / 4;  // Position at 1/4 of screen height
     while (++pass < 3)
     {
         nrays = passes[pass].bounces;
@@ -63,6 +67,8 @@ unsigned char * render (t_rt * rt)
             int index = shuffled_pixels[l];
             int x = index % rt->W;    
             int y = rt->H - 1 -(index / rt->W);
+            // Check if current pixel is within the test square
+
             k = -1;
             t_vec direction = {x - rt->W / 2.0 - rt->scene.camera.origin.x, y - rt->H /2.0 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
             direction = normalize(direction);
@@ -70,8 +76,14 @@ unsigned char * render (t_rt * rt)
             t_vec pixel_intensity = (t_vec){0.,0.,0.};
             while (++k < nrays)
                 pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));
-            // pixel_intensity = vec_plus(pixel_intensity,get_color(ray, rt, 5));
-            my_mlx_put_pixel(&img, x, rt->H - 1 - y, \
+
+            if (x >= square_x && x < square_x + square_size && 
+                y >= square_y && y < square_y + square_size)
+            {
+                my_mlx_put_pixel(&img, x, rt->H - 1 - y, create_trgb(255, 0, 0, 0));
+            }
+            else
+                my_mlx_put_pixel(&img, x, rt->H - 1 - y, \
                              create_trgb(255, fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))),\
                                          fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
                                          fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)))));

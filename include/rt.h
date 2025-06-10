@@ -92,8 +92,8 @@ typedef struct s_intersection {
 typedef struct s_rt t_rt;
 typedef struct s_object {
     void * obj;
-    bool (*intersection)(const t_ray ray, const struct s_object, double * s);
-    void (*debug_print)(t_rt *rt , int id);
+    bool (*is_intersection)(const t_ray, const struct s_object, t_intersection *);
+    void (*debug_print)(t_rt *, int );
     t_vec albedo; 
 } t_object;
 
@@ -163,7 +163,7 @@ t_link_list *init_alloc(t_link_list **list);
 
 // intersection.c
 t_vec   get_color(t_ray ray, t_rt * rt, int nb_rebound);
-bool sphere_second_degree_solve(const t_ray ray, const t_object obj, double * s);
+bool is_intersection_sphere(const t_ray ray, const t_object obj, t_intersection * intersection);
 // miniRT.c
 // bmp.c
 void save_img(t_rt * rt, const unsigned char * pixels, int W, int H); // rgb pixel

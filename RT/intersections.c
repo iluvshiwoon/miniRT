@@ -1,13 +1,11 @@
 #include "../miniRT.h"
 #define intensity 300000000.0
 
-bool sphere_second_degree_solve(const t_ray ray, const t_object obj, double * s)
+bool sphere_second_degree_solve(const t_ray ray, const t_sphere sphere, double * s)
 {
     double a[3];
     double t[2];
     double delta; 
-    t_sphere sphere;
-    sphere = *((t_sphere *){obj.obj});
 
     a[0] = 1;
     a[1] = 2 * vec_scal(ray.direction,vec_minus(ray.origin,sphere.origin));
@@ -26,11 +24,13 @@ bool sphere_second_degree_solve(const t_ray ray, const t_object obj, double * s)
     return true;
 }
 
-bool is_intersection(const t_ray ray, const t_object obj, t_intersection * intersection)
+bool is_intersection_sphere(const t_ray ray, const t_object obj, t_intersection * intersection)
 {
     bool has_sol;
+    t_sphere sphere;
     
-    has_sol = obj.intersection(ray, obj, &intersection->t);
+    sphere = *((t_sphere *){obj.obj});
+    has_sol = sphere_second_degree_solve(ray, sphere, &intersection->t);
     if (has_sol == true)
     {
         intersection->point = vec_plus(ray.origin, vec_mult(intersection->t,ray.direction)); 
@@ -42,13 +42,15 @@ bool is_intersection(const t_ray ray, const t_object obj, t_intersection * inter
 bool visible_intersection(const t_ray ray, t_scene scene,t_intersection * intersection, int * obj_id)
 {
     t_intersection local_intersection;
+    t_object obj;
     bool has_inter;
 
     intersection->t = 1e99;
     has_inter = false;
     while (scene.total_objects)
     {
-        if (is_intersection(ray, scene.objects[scene.total_objects - 1],&local_intersection))
+        obj = scene.objects[scene.total_objects - 1];
+        if (obj.is_intersection(ray, obj,&local_intersection))
         {
             has_inter = true;
             if (local_intersection.t < intersection->t)
