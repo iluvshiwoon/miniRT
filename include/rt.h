@@ -139,6 +139,9 @@ typedef struct s_rt {
     t_scene scene;
 } t_rt;
 
+// my_mlx_utils.c
+int	create_trgb(int t, int r, int g, int b);
+void	my_mlx_put_pixel(t_data *data, int x, int y, int color);
 
 // vector.c 
 t_vec vec_plus(const t_vec a, const t_vec b);

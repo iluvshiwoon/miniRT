@@ -13,20 +13,6 @@
 #include "../miniRT.h"
 #include <sys/resource.h>
 
-
-int	create_trgb(int t, int r, int g, int b)
-{
-    return (t << 24 | r << 16 | g << 8 | b);
-}
-
-void	my_mlx_put_pixel(t_data *data, int x, int y, int color)
-{
-	char	*dst;
-
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int *)dst = color;
-}
-
 void gen_shuffled_pixels(t_rt * rt, int * array)
 {
     int total_pixels = rt->H * rt->W;
@@ -63,17 +49,16 @@ unsigned char * render (t_rt * rt)
     {25,  1, rt->W/4},     // Much slower, very frequent updates
     {80,  1, rt->W/8}      // Slowest pixels, most frequent updates
     };
-    // image = wrap_malloc(rt, sizeof(unsigned char)*rt->W*rt->H*3);
-    // i = rt->H;
+
     int pass = -1;
     img.img = mlx_new_image(rt->mlx, rt->W, rt->H ) ;
     img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
                                  &img.endian);
     gen_shuffled_pixels(rt, shuffled_pixels);
+    int total_pixels = rt->H * rt->W;
     while (++pass < 6)
     {
         nrays = passes[pass].bounces;
-        int total_pixels = rt->H * rt->W;
         int l = 0;
         printf("Pass: %d, bounce: %d, skip: %d, update every %d pixels\n", pass, passes[pass].bounces, passes[pass].skip, passes[pass].update_freq);
         while (l < total_pixels)
@@ -82,7 +67,7 @@ unsigned char * render (t_rt * rt)
             int x = index % rt->W;    
             int y = rt->H - 1 -(index / rt->W);
             k = -1;
-            t_vec direction = {x - rt->W / 2 - rt->scene.camera.origin.x, y - rt->H /2 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
+            t_vec direction = {x - rt->W / 2.0 - rt->scene.camera.origin.x, y - rt->H /2.0 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
             direction = normalize(direction);
             t_ray ray = {{0.,0.,0.},direction};
             t_vec pixel_intensity = (t_vec){0.,0.,0.};
@@ -97,29 +82,6 @@ unsigned char * render (t_rt * rt)
             l += passes[pass].skip;
         }
     }
-    // while (--i >= 0)
-    // {
-    //     j = rt->W;
-    //     while (--j >= 0)
-    //     {
-    //         k = -1;
-    //         t_vec direction = {j - rt->W / 2 - rt->scene.camera.origin.x, i - rt->H /2 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
-    //         direction = normalize(direction);
-    //         t_ray ray = {{0.,0.,0.},direction};
-    //         t_vec pixel_intensity = (t_vec){0.,0.,0.};
-    //
-    //         while (++k < nrays)
-    //             pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));
-    //         my_mlx_put_pixel(&img, j, rt->H - i - 1, \
-    //                          create_trgb(255, fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))),\
-    //                                           fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
-    //                                           fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)))));
-    //         // image[((rt->H-i-1)*rt->W + j) * 3 + 0] = fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2)));
-    //         // image[((rt->H-i-1)*rt->W + j) * 3 + 1] = fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2)));
-    //         // image[((rt->H-i-1)*rt->W + j) * 3 + 2] = fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)));
-    //     }
-    //     mlx_put_image_to_window(rt->mlx, rt->win, img.img, 0, 0);
-    // }
     return image;
 }
 
@@ -134,7 +96,6 @@ int main (int ac,char ** av)
     uint64_t seeds[2];
     entropy_getbytes((void*)seeds,sizeof(seeds));
     pcg32_srandom_r(&rt.rng,seeds[0],seeds[1]);
-    // initialize_state(&rt.state,19650218UL);
     rt.current_heap = rt.parsing_heap;
     parsing_minirt(&rt,av[1]);
     rt.W = 1500;
@@ -145,17 +106,6 @@ int main (int ac,char ** av)
         printf("malloc error mlx_init\n");
     rt.win = mlx_new_window(rt.mlx, rt.W, rt.H, "miniRT");
     render(&rt);
-    // save_img(&rt, render(&rt), rt.W, rt.H);
-    // initialize_state(&state,19650218UL);
-    // for (int i = 1000; i;i--)
-    // {
-    //     double uni = double_rng(&rt.rng);
-    //     if (uni > 1)
-    //         printf("failed\n");
-    //     printf("%lf\n",uni);
-    //     // uint32_t rn = pcg32_random_r(&rt.rng);
-    //     // printf("%u\n",rn);
-    // }
     mlx_loop(rt.mlx);
     close(rt.fd_file);
     free_heap(&rt);
