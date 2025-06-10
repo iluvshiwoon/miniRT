@@ -42,11 +42,8 @@ unsigned char * render (t_rt * rt)
     shuffled_pixels = wrap_malloc(rt, rt->W * rt->H * sizeof(*shuffled_pixels));
 
      struct pass_config passes[] = {
-    {1,  16, rt->W*4},     // Fast pixels, less frequent updates
-    {1,   4, rt->W*2},     // Still fast, moderate updates  
     {4,   2, rt->W},       // Medium speed, more frequent updates
     {10,  1, rt->W/2},     // Slower pixels, frequent updates
-    {25,  1, rt->W/4},     // Much slower, very frequent updates
     {80,  1, rt->W/8}      // Slowest pixels, most frequent updates
     };
 
@@ -56,7 +53,7 @@ unsigned char * render (t_rt * rt)
                                  &img.endian);
     gen_shuffled_pixels(rt, shuffled_pixels);
     int total_pixels = rt->H * rt->W;
-    while (++pass < 6)
+    while (++pass < 3)
     {
         nrays = passes[pass].bounces;
         int l = 0;
@@ -73,6 +70,7 @@ unsigned char * render (t_rt * rt)
             t_vec pixel_intensity = (t_vec){0.,0.,0.};
             while (++k < nrays)
                 pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));
+            // pixel_intensity = vec_plus(pixel_intensity,get_color(ray, rt, 5));
             my_mlx_put_pixel(&img, x, rt->H - 1 - y, \
                              create_trgb(255, fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))),\
                                          fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
