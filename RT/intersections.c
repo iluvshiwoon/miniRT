@@ -1,27 +1,68 @@
 #include "../miniRT.h"
 #define intensity 300000000.0
+#define epsilon 1e-6
+
+bool plane_intersection_solve(const t_ray ray, const t_plane plane, double * t)
+{
+    double denominator;
+    double numerator;
+    
+    denominator = vec_scal(ray.direction, plane.normal);
+    
+    // If denominator is zero (or very close to zero), ray is parallel to plane
+    if (fabs(denominator) < epsilon)
+        return false;
+    numerator = vec_scal(vec_minus(plane.origin, ray.origin), plane.normal);
+    *t = numerator / denominator;
+    // Only return true if intersection is in front of ray origin (t > 0)
+    return (*t > epsilon);  // Use small epsilon to avoid self-intersection
+}
 
 bool sphere_second_degree_solve(const t_ray ray, const t_sphere sphere, double * s)
 {
-    double a[3];
+    double half_b, c;
     double t[2];
     double delta; 
 
-    a[0] = 1;
-    a[1] = 2 * vec_scal(ray.direction,vec_minus(ray.origin,sphere.origin));
-    a[2] = norm2(vec_minus(ray.origin,sphere.origin)) - sphere.radius * sphere.radius;
-    delta = a[1] * a[1] - 4 * a[0] * a[2];
+    // Quadratic equation: t² + bt + c = 0 (a = 1 since ray.direction is normalized)
+    half_b = vec_scal(ray.direction, vec_minus(ray.origin, sphere.origin));
+    c = norm2(vec_minus(ray.origin, sphere.origin)) - sphere.radius * sphere.radius;
+
+    delta = half_b * half_b - c;
+
     if (delta < 0)
         return false;
-    t[1] = (-a[1] + sqrt(delta)) / (2 * a[0]);
-    if (t[1] < 0)
+    
+    double sqrt_delta = sqrt(delta);
+    t[0] = -half_b - sqrt_delta; // near intesection
+    t[1] = -half_b + sqrt_delta; // far
+    
+    
+    if (t[0] > epsilon)
+        *s = t[0];  // Take the near intersection
+    else if (t[1] > epsilon)
+        *s = t[1];  // Take the far intersection (ray starts inside sphere)
+    else
         return false;
-    t[0] = (-a[1] - sqrt(delta)) / (2 * a[0]);
-    if (t[0] > 0)
-        *s = t[0];
-    else 
-        *s = t[1];
     return true;
+}
+
+bool is_intersection_plane(const t_ray ray, const t_object obj, t_intersection * intersection)
+{
+    bool has_sol;
+    t_plane plane;
+    
+
+    plane = *((t_plane *){obj.obj});
+    has_sol = plane_intersection_solve(ray, plane, &intersection->t);
+    if (has_sol == true)
+    {
+        intersection->point = vec_plus(ray.origin, vec_mult(intersection->t,ray.direction)); 
+        intersection->normal = plane.normal;
+        if (vec_scal(intersection->normal, vec_mult(-1, ray.direction)) < 0)
+            intersection->normal = vec_mult(-1, intersection->normal);
+    }
+    return (has_sol);
 }
 
 bool is_intersection_sphere(const t_ray ray, const t_object obj, t_intersection * intersection)
@@ -34,7 +75,11 @@ bool is_intersection_sphere(const t_ray ray, const t_object obj, t_intersection 
     if (has_sol == true)
     {
         intersection->point = vec_plus(ray.origin, vec_mult(intersection->t,ray.direction)); 
-        intersection->normal = normalize(vec_minus(intersection->point, (t_sphere *){obj.obj}->origin));
+        intersection->normal = normalize(vec_minus(intersection->point, sphere.origin));
+
+        t_vec to_ray_origin = normalize(vec_minus(ray.origin, intersection->point));
+            if (vec_scal(intersection->normal, to_ray_origin) < 0)
+                intersection->normal = vec_mult(-1, intersection->normal);
     }
     return (has_sol);
 }

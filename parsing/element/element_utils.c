@@ -114,7 +114,7 @@ void print_plane(t_rt *rt , int id)
 
     albedo = rt->scene.objects[id].albedo;
     plane = *((t_plane *){rt->scene.objects[id].obj});
-    printf("ID: %d ; sp %f,%f,%f %f,%f,%f %f,%f,%f\n",\
+    printf("ID: %d ; pl %f,%f,%f %f,%f,%f %f,%f,%f\n",\
            id,
            plane.origin.x, plane.origin.y, plane.origin.z,\
            plane.normal.x, plane.normal.y, plane.normal.z,\
@@ -128,7 +128,7 @@ void print_cylinder(t_rt *rt , int id)
 
     albedo = rt->scene.objects[id].albedo;
     cylinder = *((t_cylinder *){rt->scene.objects[id].obj});
-    printf("ID: %d ; sp %f,%f,%f %f,%f,%f %f %f %f,%f,%f\n",\
+    printf("ID: %d ; cy %f,%f,%f %f,%f,%f %f %f %f,%f,%f\n",\
            id,
            cylinder.origin.x, cylinder.origin.y, cylinder.origin.z,\
            cylinder.direction.x, cylinder.direction.y, cylinder.direction.z,\
