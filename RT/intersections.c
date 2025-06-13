@@ -28,15 +28,17 @@ bool cylinder_intersection_solve(const t_ray ray, const t_cylinder cylinder, dou
     double t1 = (-half_b - sqrt_discriminant) / a;
     double t2 = (-half_b + sqrt_discriminant) / a;
     
+    // Pre-calculate for height checks (assuming cylinder.direction is normalized)
+    double val_oc_axis = vec_scal(oc, cylinder.direction);
+    double val_rd_axis = vec_scal(ray.direction, cylinder.direction);
+
     // Check both intersection points for height constraints
     double candidate_t = -1;
     
     // Check first intersection point
     if (t1 > epsilon)
     {
-        t_vec hit_point = vec_plus(ray.origin, vec_mult(t1, ray.direction));
-        t_vec to_hit = vec_minus(hit_point, cylinder.origin);
-        double height_proj = vec_scal(to_hit, cylinder.direction);
+        double height_proj = val_oc_axis + t1 * val_rd_axis;
         
         if (height_proj >= 0 && height_proj <= cylinder.height)
             candidate_t = t1;
@@ -45,9 +47,7 @@ bool cylinder_intersection_solve(const t_ray ray, const t_cylinder cylinder, dou
     // Check second intersection point if first didn't work
     if (candidate_t < 0 && t2 > epsilon)
     {
-        t_vec hit_point = vec_plus(ray.origin, vec_mult(t2, ray.direction));
-        t_vec to_hit = vec_minus(hit_point, cylinder.origin);
-        double height_proj = vec_scal(to_hit, cylinder.direction);
+        double height_proj = val_oc_axis + t2 * val_rd_axis;
         
         if (height_proj >= 0 && height_proj <= cylinder.height)
             candidate_t = t2;
@@ -224,9 +224,46 @@ t_vec   get_color(t_ray ray, t_rt * rt, int nb_rebound) {
         double r1 = double_rng(&rt->rng);
         double r2 = double_rng(&rt->rng);
         t_vec direction_random_local_basis = (t_vec){cos(2 * M_PI*r1)*sqrt(1-r2), sin(2*M_PI*r1)*sqrt(1-r2),sqrt(r2)};
-        t_vec random_vec = (t_vec){double_rng(&rt->rng)-0.5,double_rng(&rt->rng)-0.5,double_rng(&rt->rng)-0.5};
-        t_vec tangent1 = normalize(cross(intersection.normal,random_vec));
-        t_vec tangent2 = cross(tangent1, intersection.normal);
+        t_vec tangent1, tangent2;
+        // Pick a vector 'v_up' that is not parallel to 'intersection.normal'.
+        // If normal is (0,1,0), use (1,0,0) as v_up. Otherwise use (0,1,0).
+        t_vec v_up = (t_vec){0.0, 1.0, 0.0};
+        if (fabs(intersection.normal.y) > 0.9999) { // If normal is primarily along Y
+            v_up = (t_vec){1.0, 0.0, 0.0};          // Use X-axis as up
+        }
+        tangent1 = normalize(cross(intersection.normal, v_up));
+    // If the above cross product results in a zero vector (e.g. normal IS {0,1,0} and we cross with {0,1,0}),
+    // it means the chosen 'up' was parallel. Pick another.
+    // A simple check for zero vector:
+    if (norm2(tangent1) < epsilon*epsilon) { // Using epsilon from the file
+        // This case happens if intersection.normal was parallel to the chosen 'v_up' vector.
+        // This should ideally not happen with the logic above but as a fallback:
+        // If normal was (1,0,0), v_up is (0,1,0), tangent1 is (0,0,1)
+        // If normal was (0,1,0), v_up is (1,0,0), tangent1 is (0,0,-1)
+        // If normal was (0,0,1), v_up is (0,1,0), tangent1 is (1,0,0)
+        // The only remaining problematic case is if normalize(cross(intersection.normal, v_up)) leads to a zero vector,
+        // which means intersection.normal and v_up are parallel.
+        // The current logic for v_up selection should prevent this for non-zero normals.
+        // However, if intersection.normal is (0,0,0) (though it should be normalized),
+        // cross product would be (0,0,0).
+        // As a very robust fallback, if tangent1 is zero, try a different axis for v_up.
+        // This situation implies intersection.normal was parallel to the initial v_up.
+        if (fabs(intersection.normal.x) > 0.9999) { // Normal is mostly along X-axis
+            v_up = (t_vec){0.0, 1.0, 0.0}; // use Y
+        } else { // Normal is not predominantly along X-axis
+            v_up = (t_vec){1.0, 0.0, 0.0}; // use X
+        }
+        tangent1 = normalize(cross(intersection.normal, v_up));
+        // If it's still zero, then normal must have been zero or v_up was still parallel.
+        // This would indicate an issue with normal itself or extremely specific alignment.
+        // For a final attempt if tangent1 is still zero (e.g. normal is (0,0,0) or normal is Y and v_up became Y):
+        if (norm2(tangent1) < epsilon*epsilon) {
+             v_up = (t_vec){0.0, 0.0, 1.0}; // Use Z-axis
+             tangent1 = normalize(cross(intersection.normal, v_up));
+        }
+    }
+        tangent2 = cross(intersection.normal, tangent1); // intersection.normal and tangent1 are now orthogonal and unit length.
+                                                     // So tangent2 will also be unit length.
         t_vec direction_random = vec_plus(vec_plus(vec_mult(direction_random_local_basis.x,tangent1),vec_mult(direction_random_local_basis.y,tangent2)\
                                                            ),vec_mult(direction_random_local_basis.z,intersection.normal));
         t_ray random_ray = (t_ray){vec_plus(intersection.point,vec_mult(0.001,intersection.normal)),direction_random};

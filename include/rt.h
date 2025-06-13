@@ -139,22 +139,11 @@ typedef struct s_rt {
     t_scene scene;
 } t_rt;
 
+#include "vector_math.h" // Include the static inline vector functions
+
 // my_mlx_utils.c
 int	create_trgb(int t, int r, int g, int b);
 void	my_mlx_put_pixel(t_data *data, int x, int y, int color);
-
-// vector.c 
-t_vec vec_plus(const t_vec a, const t_vec b);
-t_vec vec_minus(const t_vec a, const t_vec b);
-t_vec vec_mult(double k, const t_vec v);
-t_vec vec_div(const t_vec v, double k);
-double vec_scal(const t_vec a, const t_vec b);
-
-// vector1.c
-double norm2(const t_vec v);
-t_vec normalize(const t_vec v);
-t_vec vec_m_vec(const t_vec a, const t_vec b);
-t_vec cross(const t_vec a, const t_vec b);
 
 // wrap_malloc.c
 void	*wrap_malloc(t_rt *rt, size_t size);
