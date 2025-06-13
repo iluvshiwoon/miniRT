@@ -1,4 +1,7 @@
 #ifndef VECTOR_MATH_OPS_H
+ #ifndef MATH_H
+    #include <math.h> 
+#endif
 #define VECTOR_MATH_OPS_H
 
 // t_vec struct and math.h (for sqrt, fabs) are assumed to be included

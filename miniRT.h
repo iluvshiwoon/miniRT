@@ -20,4 +20,5 @@
 # include "minilibx-linux/mlx.h"
 # include "include/rt.h"
 # include "include/parsing.h"
+#include "include/vector_math.h"
 #endif
