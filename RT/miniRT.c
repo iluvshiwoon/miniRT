@@ -53,6 +53,17 @@ unsigned char * render (t_rt * rt)
                                  &img.endian);
     gen_shuffled_pixels(rt, shuffled_pixels);
     int total_pixels = rt->H * rt->W;
+
+	t_camera cam = rt->scene.camera;
+	cam.direction = normalize(cam.direction);
+	double focal_length = (rt->W / 2.0) / tan(cam.fov * M_PI / 180.0 / 2.0);
+	t_vec cam_z = vec_mult(-1, cam.direction);
+	t_vec temp_up = {0, 1, 0};
+	if (fabs(cam_z.y) > 0.999)
+		temp_up = (t_vec){1, 0, 0};
+	t_vec cam_x = normalize(cross(temp_up, cam_z));
+	t_vec cam_y = cross(cam_z, cam_x);
+
      // Define test square parameters
     // int square_size = 4;  // 50x50 pixel square
     // int square_x = rt->W / 4;  // Position at 1/4 of screen width
@@ -68,9 +79,11 @@ unsigned char * render (t_rt * rt)
             int x = index % rt->W;    
             int y = rt->H - 1 -(index / rt->W);
             k = -1;
-            t_vec direction = {x - rt->W / 2.0 - rt->scene.camera.origin.x, y - rt->H /2.0 -rt->scene.camera.origin.y, - rt->W / (2 * tan((rt->scene.camera.fov)/2))};
+			double u = -(x - rt->W / 2.0);
+			double v = y - rt->H / 2.0;
+			t_vec direction = vec_plus(vec_plus(vec_mult(u, cam_x), vec_mult(v, cam_y)), vec_mult(focal_length, cam_z));
             direction = normalize(direction);
-            t_ray ray = {{0.,0.,0.},direction};
+            t_ray ray = {cam.origin,direction};
             t_vec pixel_intensity = (t_vec){0.,0.,0.};
             while (++k < nrays)
                 pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));

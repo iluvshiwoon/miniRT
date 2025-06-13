@@ -25,7 +25,6 @@ void	parse_camera(t_rt *rt, char *line, int * id)
 		rt->scene.camera.fov = ft_atoi_double(tab[3]);
 		if (rt->scene.camera.fov < 0 || rt->scene.camera.fov > 180)
             exit_error(rt, "Error: Invalid fov for camera");
-        rt->scene.camera.fov *= M_PI / 180;
         return;
 	}
     exit_error(rt, "Error: Invalid number of arguments for camera");

@@ -62,29 +62,85 @@ bool cylinder_intersection_solve(const t_ray ray, const t_cylinder cylinder, dou
     return false;
 }
 
+static bool cylinder_cap_intersection(const t_ray ray, const t_cylinder cylinder, double *t, t_vec *normal)
+{
+    t_plane cap_planes[2];
+    cap_planes[0].origin = cylinder.origin;
+    cap_planes[0].normal = vec_mult(-1, cylinder.direction);
+    cap_planes[1].origin = vec_plus(cylinder.origin, vec_mult(cylinder.height, cylinder.direction));
+    cap_planes[1].normal = cylinder.direction;
+
+    double min_t = -1.0;
+
+    for (int i = 0; i < 2; i++)
+    {
+        double current_t;
+        if (plane_intersection_solve(ray, cap_planes[i], &current_t) && current_t > epsilon)
+        {
+            t_vec p = vec_plus(ray.origin, vec_mult(current_t, ray.direction));
+            if (norm2(vec_minus(p, cap_planes[i].origin)) <= cylinder.radius * cylinder.radius)
+            {
+                if (min_t < 0 || current_t < min_t)
+                {
+                    min_t = current_t;
+                    *normal = cap_planes[i].normal;
+                }
+            }
+        }
+    }
+
+    if (min_t > 0)
+    {
+        *t = min_t;
+        return true;
+    }
+    return false;
+}
+
 bool is_intersection_cylinder(const t_ray ray, const t_object obj, t_intersection * intersection)
 {
-    bool has_sol;
-    t_cylinder cylinder;
-    
-    cylinder = *((t_cylinder *){obj.obj});
-    has_sol = cylinder_intersection_solve(ray, cylinder, &intersection->t);
-    
-    if (has_sol == true)
-    {
-        intersection->point = vec_plus(ray.origin, vec_mult(intersection->t, ray.direction));
-        
-        // Calculate normal: point on cylinder surface perpendicular to axis
-        t_vec to_point = vec_minus(intersection->point, cylinder.origin);
-        t_vec axis_projection = vec_mult(vec_scal(to_point, cylinder.direction), cylinder.direction);
-        intersection->normal = normalize(vec_minus(to_point, axis_projection));
-        
-        // Ensure normal points toward ray origin
-        t_vec to_ray_origin = normalize(vec_minus(ray.origin, intersection->point));
-        if (vec_scal(intersection->normal, to_ray_origin) < 0)
-            intersection->normal = vec_mult(-1, intersection->normal);
+    t_cylinder cylinder = *((t_cylinder *){obj.obj});
+    double body_t;
+    bool body_has_sol = cylinder_intersection_solve(ray, cylinder, &body_t);
+    double cap_t;
+    t_vec cap_normal;
+    bool cap_has_sol = cylinder_cap_intersection(ray, cylinder, &cap_t, &cap_normal);
+    bool has_sol = false;
+    double final_t = -1;
+    bool hit_cap = false;
+
+    if (body_has_sol && cap_has_sol) {
+        has_sol = true;
+        if (body_t < cap_t) {
+            final_t = body_t;
+        } else {
+            final_t = cap_t;
+            hit_cap = true;
+        }
+    } else if (body_has_sol) {
+        has_sol = true;
+        final_t = body_t;
+    } else if (cap_has_sol) {
+        has_sol = true;
+        final_t = cap_t;
+        hit_cap = true;
     }
-    
+
+    if (has_sol) {
+        intersection->t = final_t;
+        intersection->point = vec_plus(ray.origin, vec_mult(intersection->t, ray.direction));
+        if (hit_cap) {
+            intersection->normal = cap_normal;
+        } else {
+            t_vec to_point = vec_minus(intersection->point, cylinder.origin);
+            t_vec axis_projection = vec_mult(vec_scal(to_point, cylinder.direction), cylinder.direction);
+            intersection->normal = normalize(vec_minus(to_point, axis_projection));
+        }
+        t_vec to_ray_origin = normalize(vec_minus(ray.origin, intersection->point));
+        if (vec_scal(intersection->normal, to_ray_origin) < 0) {
+            intersection->normal = vec_mult(-1, intersection->normal);
+        }
+    }
     return has_sol;
 }
 

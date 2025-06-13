@@ -162,6 +162,7 @@ void free_heap(t_rt *rt);
 t_link_list *init_alloc(t_link_list **list);
 
 // intersection.c
+bool plane_intersection_solve(const t_ray ray, const t_plane plane, double * t);
 t_vec   get_color(t_ray ray, t_rt * rt, int nb_rebound);
 bool is_intersection_sphere(const t_ray ray, const t_object obj, t_intersection * intersection);
 bool is_intersection_plane(const t_ray ray, const t_object obj, t_intersection * intersection);
