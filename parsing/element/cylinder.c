@@ -22,7 +22,7 @@ void	parse_cylinder(t_rt *rt, char *line, int * id)
 	if (tab[1] && tab[2] && tab[3] && tab[4] && tab[5])
 	{
 		cylinder->origin = parse_vec(rt, tab[1]);
-		cylinder->direction = parse_vec(rt, tab[2]);
+		cylinder->direction = normalize(parse_vec(rt, tab[2]));
 		cylinder->radius = ft_atoi_double(tab[3]);
 		if (cylinder->radius < 0)
             exit_error(rt, "Error: Invalid radius for cylinders");

@@ -1,6 +1,6 @@
 C_FILES = RT/bmp.c RT/miniRT.c RT/vector1.c RT/vector.c RT/wrap_malloc.c \
 		  RT/exit_error.c RT/rt_ft_split.c RT/rt_ft_strtrim.c RT/rt_ft_substr.c \
-		  RT/rt_ft_strdup.c RT/rt_random.c RT/pcg32.c RT/intersections.c RT/my_mlx_utils.c\
+		  RT/rt_ft_strdup.c RT/pcg32.c RT/intersections.c RT/my_mlx_utils.c RT/utils.c\
 			parsing/parsing.c \
 			parsing/check_args.c \
 			parsing/open_file.c \

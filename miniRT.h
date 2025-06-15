@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 #ifndef MINIRT_H
 # define MINIRT_H
+# include <X11/X.h>
 # include <stdio.h>
 # include <error.h>
 # include <string.h>

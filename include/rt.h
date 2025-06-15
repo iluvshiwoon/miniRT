@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 #ifndef RT_H
 # define RT_H
+# define KEY_ESC 65307
 # define PCG_DEFAULT_MULTIPLIER_64  6364136223846793005ULL
 # define pcg32_random_r                  pcg_setseq_64_xsh_rr_32_random_r
 # define pcg32_srandom_r                 pcg_setseq_64_srandom_r
@@ -20,11 +21,18 @@
 # include <stdbool.h>
 # include "../42_MyLibC/mylibc.h"
 
-struct pass_config {
+typedef struct s_pass_config {
     int bounces;
     int skip;        // Render every Nth pixel
     int update_freq; // Update display frequency
-};
+}t_pass_config;
+
+typedef struct s_render_state {
+    bool re_render_scene;
+    int pass;         
+    int pixel_index;
+    int * shuffled_pixels;
+} t_render_state;
 
 typedef struct s_data
 {
@@ -127,18 +135,23 @@ struct pcg_state_setseq_64 {
 typedef struct s_rt {
     void *mlx;
     void *win;
-    t_mt_state state;
+    t_data image;
+    t_render_state state;
     t_pcg32_random rng;
     int W;
     int H;
+    int total_pixels;
     int fd_file;
     double fov;
     t_link_list * graphic_heap;
     t_link_list * parsing_heap;
     t_link_list * current_heap;
     t_scene scene;
+
 } t_rt;
 
+// utils.c
+int close_win(t_rt * rt);
 // my_mlx_utils.c
 int	create_trgb(int t, int r, int g, int b);
 void	my_mlx_put_pixel(t_data *data, int x, int y, int color);
