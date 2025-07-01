@@ -28,19 +28,10 @@ void gen_shuffled_pixels(t_rt * rt, int * array)
         array[j] = temp;
     }
 }
-// typedef struct s_render_state {
-//     bool re_render_scene;
-//     int pass;         
-//     int pixel_index;
-//     int * shuffled_pixels;
-//     t_pass_config pass_config;
-// } t_render_state;
 
 void init_render(t_rt * rt)
 {
     rt->state.re_render_scene = false;
-    rt->state.shuffled_pixels = wrap_malloc(rt, rt->W * rt->H * sizeof(*(rt->state.shuffled_pixels)));
-    gen_shuffled_pixels(rt, rt->state.shuffled_pixels);
     if (rt->image.img)
         mlx_destroy_image(rt->mlx,rt->image.img);
     rt->image.img = mlx_new_image(rt->mlx, rt->W, rt->H ) ;
@@ -48,12 +39,16 @@ void init_render(t_rt * rt)
         close_win(rt);
     rt->image.addr = mlx_get_data_addr(rt->image.img, &rt->image.bits_per_pixel, &rt->image.line_length,
                                        &rt->image.endian);
+    rt->state.pass = 0;
+    rt->state.pixel_index = 0;
 }
 
-void render (t_rt * rt)
+int render (t_rt * rt)
 {
     if (rt->state.re_render_scene)
         init_render(rt);
+    else if (rt->state.pass == 3)
+            return 1;
 
     int nrays;
     int k;
@@ -66,8 +61,6 @@ void render (t_rt * rt)
 		temp_up = (t_vec){1, 0, 0};
 	t_vec cam_x = normalize(cross(temp_up, cam_z));
 	t_vec cam_y = cross(cam_z, cam_x);
-    int pass = rt->state.pass;
-    // t_pass_config * passes = rt->pass_config;
     t_pass_config passes[] = {
     {4,   2, rt->W},       // Medium speed, more frequent updates
     {10,  1, rt->W/2},     // Slower pixels, frequent updates
@@ -75,36 +68,40 @@ void render (t_rt * rt)
     };
 ;
     int * shuffled_pixels = rt->state.shuffled_pixels;
-    while (pass < 3)
+    nrays = passes[rt->state.pass].bounces;
+    while (rt->state.pixel_index < rt->total_pixels)
     {
-        nrays = passes[pass].bounces;
-        int l = 0;
-        printf("Pass: %d, bounce: %d, skip: %d, update every %d pixels\n", pass, passes[pass].bounces, passes[pass].skip, passes[pass].update_freq);
-        while (l < rt->total_pixels)
+        int index = shuffled_pixels[rt->state.pixel_index];
+        int x = index % rt->W;    
+        int y = rt->H - 1 -(index / rt->W);
+        k = -1;
+        double u = -(x - rt->W / 2.0);
+        double v = y - rt->H / 2.0;
+        t_vec direction = vec_plus(vec_plus(vec_mult(u, cam_x), vec_mult(v, cam_y)), vec_mult(focal_length, cam_z));
+        direction = normalize(direction);
+        t_ray ray = {cam.origin,direction};
+        t_vec pixel_intensity = (t_vec){0.,0.,0.};
+        while (++k < nrays)
+            pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));
+        my_mlx_put_pixel(&rt->image, x, rt->H - 1 - y, \
+                         create_trgb(255, fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))),\
+                                     fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
+                                     fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)))));
+        if (rt->state.pixel_index %passes[rt->state.pass].update_freq == 0)
         {
-            int index = shuffled_pixels[l];
-            int x = index % rt->W;    
-            int y = rt->H - 1 -(index / rt->W);
-            k = -1;
-			double u = -(x - rt->W / 2.0);
-			double v = y - rt->H / 2.0;
-			t_vec direction = vec_plus(vec_plus(vec_mult(u, cam_x), vec_mult(v, cam_y)), vec_mult(focal_length, cam_z));
-            direction = normalize(direction);
-            t_ray ray = {cam.origin,direction};
-            t_vec pixel_intensity = (t_vec){0.,0.,0.};
-            while (++k < nrays)
-                pixel_intensity = vec_plus(pixel_intensity,vec_mult(1.0/nrays,get_color(ray, rt, 5)));
-            my_mlx_put_pixel(&rt->image, x, rt->H - 1 - y, \
-                             create_trgb(255, fmin(255, fmax(0, pow(pixel_intensity.x,1/2.2))),\
-                                         fmin(255, fmax(0, pow(pixel_intensity.y,1/2.2))),\
-                                         fmin(255, fmax(0, pow(pixel_intensity.z,1/2.2)))));
-            if (l %passes[pass].update_freq == 0)
-                mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
-            l += passes[pass].skip;
+            mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
+            rt->state.pixel_index += passes[rt->state.pass].skip;
+            break;
         }
-        mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
-        pass++;
+        rt->state.pixel_index += passes[rt->state.pass].skip;
     }
+    if (rt->state.pixel_index >= rt->total_pixels)
+    {
+        printf("Pass: %d, bounce: %d, skip: %d, update every %d pixels\n", rt->state.pass, passes[rt->state.pass].bounces, passes[rt->state.pass].skip, passes[rt->state.pass].update_freq);
+        rt->state.pass++;
+        rt->state.pixel_index = 0;
+    }
+    return 0;
 }
 
 int key_events(int keycode, t_rt *rt)
@@ -143,11 +140,13 @@ int main (int ac,char ** av)
     rt.win = mlx_new_window(rt.mlx, rt.W, rt.H, "miniRT");
     if (!rt.win)
         printf("malloc error mlx_init\n");
-    render(&rt);
 
-    printf("DONE\n");
+    rt.state.shuffled_pixels = wrap_malloc(&rt, rt.W * rt.H * sizeof(*(rt.state.shuffled_pixels)));
+    gen_shuffled_pixels(&rt, rt.state.shuffled_pixels);
+
     mlx_hook(rt.win, KeyPress, KeyPressMask, &key_events, &rt);
     mlx_hook(rt.win, DestroyNotify, 0, &close_win, &rt);
+    mlx_loop_hook(rt.mlx, render, &rt);
     mlx_loop(rt.mlx);
     return 0;
 }

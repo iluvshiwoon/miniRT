@@ -99,9 +99,11 @@ typedef struct s_intersection {
 
 typedef struct s_rt t_rt;
 typedef struct s_object {
+    int id;
     void * obj;
     bool (*is_intersection)(const t_ray, const struct s_object, t_intersection *);
     void (*debug_print)(t_rt *, int );
+    char *(*display_string)(t_rt *, const struct s_object);
     t_vec albedo; 
 } t_object;
 
@@ -193,6 +195,10 @@ char	*rt_ft_strtrim(t_rt *rt, char const *s1, char const *set);
 char	*rt_ft_substr(t_rt *rt, char const *s, unsigned int start, size_t len);
 // rt_ft_split.c
 char	**rt_ft_split(t_rt *rt, char const *s, char c);
+// rt_ft_strjoin.c
+char	*rt_ft_strjoin(t_rt *rt, char const *s1, char const *s2);
+// rt_ft_itoa.c
+char	*rt_ft_itoa(t_rt *rt, int n);
 
 // rt_random.c
 void initialize_state(t_mt_state* state, uint32_t seed);

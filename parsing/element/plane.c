@@ -12,24 +12,7 @@
 
 #include "../../miniRT.h"
 
-static int	find_plane_id(t_plane *plane)
-{
-	int	i;
-
-	i = 0;
-	if (plane[0].id == 0)
-		return (i);
-	while (1)
-	{
-		if (plane[i].id == 0)
-			return (i);
-		i++;
-	}
-	return (i);
-}
-
-void	parse_plane(t_rt *rt, char *line, int * id)
-{
+void	parse_plane(t_rt *rt, char *line, int * id) {
 	char	**tab;
     t_plane * plane;
 
@@ -43,6 +26,7 @@ void	parse_plane(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].debug_print = &print_plane;
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = plane;
+        rt->scene.objects[*id].id = *id;
         (*id)++;
         return;
 	}

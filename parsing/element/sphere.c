@@ -12,20 +12,15 @@
 
 #include "../../miniRT.h"
 
-static int	find_sphere_id(t_sphere *sphere)
+char * string_sphere(t_rt * rt, const struct s_object object)
 {
-	int	i;
+    t_sphere *sphere;
 
-	i = 0;
-	if (sphere[0].id == 0)
-		return (i);
-	while (1)
-	{
-		if (sphere[i].id == 0)
-			return (i);
-		i++;
-	}
-	return (i);
+    sphere = object.obj;
+    char * r_string;
+    char * coordinates;
+    r_string = rt_ft_strjoin(rt, "sp: ", rt_ft_itoa(rt, object.id));
+    // coordinates = rt_ft_strjoin(rt, " ", rt_ft_itoa(rt, object.))
 }
 
 void	parse_sphere(t_rt *rt, char *line, int * id)
@@ -45,6 +40,7 @@ void	parse_sphere(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].debug_print = &print_sphere;
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = sphere;
+        rt->scene.objects[*id].id = *id;
         (*id)++;
         return;
 	}
