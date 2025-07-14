@@ -24,7 +24,7 @@ void	parse_light(t_rt *rt, char *line, int * id)
 		rt->scene.light.intensity = ft_atoi_double(tab[2]);
 		if (rt->scene.light.intensity < 0 || rt->scene.light.intensity > 1)
             exit_error(rt, "Error: Invalid ratio for light");
-		rt->scene.light.color = parse_color(rt, tab[3]);
+		rt->scene.light.color =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         return;
 	}
     exit_error(rt, "Error: Invalid number of arguments for light");

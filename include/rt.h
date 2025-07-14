@@ -27,11 +27,13 @@ typedef struct s_pass_config {
     int update_freq; // Update display frequency
 }t_pass_config;
 
+typedef struct s_ray t_ray;
 typedef struct s_render_state {
     bool re_render_scene;
     int pass;         
     int pixel_index;
     int * shuffled_pixels;
+    t_ray * rays;
 } t_render_state;
 
 typedef struct s_data

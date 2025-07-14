@@ -24,7 +24,7 @@ void	parse_amb_light(t_rt *rt, char *line, int * id)
         if (rt->scene.ambient_light.intensity < 0
 			|| rt->scene.ambient_light.intensity > 1)
             exit_error(rt, "Error: Invalid ratio for ambient light");
-		rt->scene.ambient_light.color = parse_color(rt, tab[2]);
+		rt->scene.ambient_light.color = vec_mult(1.0/255,parse_color(rt, tab[2])); 
         return;
 	}
     exit_error(rt, "Error: Invalid number of arguments for ambient light");

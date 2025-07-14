@@ -1,5 +1,6 @@
 #include "../miniRT.h"
-#define intensity 300000000.0
+#define EXPOSURE 300000000.0
+#define GLOBAL_EXPOSURE 1000000.0
 #define epsilon 1e-6
 
 bool cylinder_intersection_solve(const t_ray ray, const t_cylinder cylinder, double * t)
@@ -274,7 +275,15 @@ t_vec   get_color(t_ray ray, t_rt * rt, int nb_rebound) {
         if (inter && intersection_light.t*intersection_light.t < d_light2)
             pixel = (t_vec){0,0,0};
         else
-            pixel = vec_mult(intensity * fmax(0,vec_scal(normalize(vec_minus(rt->scene.light.origin, intersection.point)),intersection.normal)) / d_light2,vec_mult(1/M_PI,rt->scene.objects[obj_id].albedo));
+	{
+		double cos_theta = fmax(0,vec_scal(normalize(vec_minus(rt->scene.light.origin,intersection.point)),intersection.normal));
+		t_vec light_contribution = vec_mult(rt->scene.light.intensity * EXPOSURE * cos_theta / d_light2, rt->scene.light.color);
+		pixel = vec_mult(1/M_PI, vec_m_vec(light_contribution, rt->scene.objects[obj_id].albedo));
+            // pixel = vec_mult(EXPOSURE * fmax(0,vec_scal(normalize(vec_minus(rt->scene.light.origin, intersection.point)),intersection.normal)) / d_light2,vec_mult(1/M_PI,rt->scene.objects[obj_id].albedo));
+	}
+	t_vec ambient_contribution = vec_mult(GLOBAL_EXPOSURE * rt->scene.ambient_light.intensity  , rt->scene.ambient_light.color);
+        t_vec ambient_light = vec_mult(1/M_PI, vec_m_vec(ambient_contribution, rt->scene.objects[obj_id].albedo));
+        pixel = vec_plus(pixel, ambient_light);
 
         // indirect lighting
         double r1 = double_rng(&rt->rng);
