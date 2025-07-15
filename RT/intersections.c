@@ -259,7 +259,7 @@ bool visible_intersection(const t_ray ray, t_scene scene,t_intersection * inters
 // t directioin coefficient in vector O + t*u with 0 the origin of the vector and u the unit direction vector
 t_vec   get_color(t_ray ray, t_rt * rt, int nb_rebound) {
     t_intersection intersection;
-    t_vec pixel;
+    t_vec pixel = (t_vec){};
     int obj_id = 0;
 
     if (nb_rebound == 0)
