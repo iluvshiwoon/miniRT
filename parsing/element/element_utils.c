@@ -72,7 +72,7 @@ t_vec	parse_color(t_rt *rt, char *line)
 	color.z = ft_atoi(tab[2]);
     if (color.x < 0 || color.y < 0 || color.z < 0 || color.x > 255
 		|| color.y > 255 || color.z > 255)
-        exit_error(rt, "Error: Invalid color");
+exit_error(rt, "Error: Invalid color");
 	return (color);
 }
 

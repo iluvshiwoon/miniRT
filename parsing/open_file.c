@@ -78,7 +78,6 @@ void	alloc_file_lst(t_rt * rt, t_file **file, int fd)
 t_file	**open_file(t_rt * rt, char *namefile)
 {
 	t_file	**file;
-	t_file	*node;
 	char	*line;
 
     file = wrap_malloc(rt, sizeof(t_file *));
