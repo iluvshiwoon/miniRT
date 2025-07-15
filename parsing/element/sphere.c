@@ -51,6 +51,7 @@ void	parse_sphere(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].obj = sphere;
         rt->scene.objects[*id].id = *id;
 	rt->scene.objects[*id].display_string = &string_sphere;
+        rt->scene.objects[*id].string = string_sphere(rt, rt->scene.objects[*id]);
         (*id)++;
         return;
 	}

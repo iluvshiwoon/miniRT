@@ -24,10 +24,10 @@ NAME = miniRT
 all: $(NAME)
 
 $(NAME): $(C_FILES) | build
-	$(CC) -g $^ -o $(NAME) -L ./42_MyLibC -L ./minilibx-linux -lmlx -lXext -lX11 -lft -lm
+	clang-12 -g $^ -o $(NAME) -L ./42_MyLibC -L ./minilibx-linux -lmlx -lXext -lX11 -lft -lm
 
 %.o: %.c 
-	$(CC) -g -c $< -o $@
+	clang-12 -g -c $< -o $@
 
 build:
 	mkdir -p build

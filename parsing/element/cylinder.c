@@ -61,6 +61,7 @@ void	parse_cylinder(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].obj = cylinder;
         rt->scene.objects[*id].id = *id;
         rt->scene.objects[*id].display_string = &string_cylinder;
+        rt->scene.objects[*id].string = string_cylinder(rt, rt->scene.objects[*id]);
         (*id)++;
         return;
 	}

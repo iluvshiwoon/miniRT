@@ -45,6 +45,7 @@ void	parse_plane(t_rt *rt, char *line, int * id) {
         rt->scene.objects[*id].obj = plane;
         rt->scene.objects[*id].id = *id;
         rt->scene.objects[*id].display_string = &string_plane;
+        rt->scene.objects[*id].string = string_plane(rt, rt->scene.objects[*id]);
         (*id)++;
         return;
 	}

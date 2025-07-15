@@ -22,7 +22,8 @@
             [
               valgrind
               gcc
-              clang-tools
+              # clang-tools
+	      llvmPackages_12.clang-tools
               libbsd
               # X11 libraries and development headers
               xorg.libX11

@@ -111,6 +111,9 @@ typedef struct s_object {
     void (*debug_print)(t_rt *, int );
     char *(*display_string)(t_rt *, const struct s_object);
     t_vec albedo; 
+    char * string;
+    char ** (*create_properties)(t_rt *,const struct s_object);
+    char ** properties;
 } t_object;
 
 typedef struct s_scene {

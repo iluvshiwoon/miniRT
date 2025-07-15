@@ -74,12 +74,10 @@ void init_render(t_rt * rt)
 
 void display_string(t_rt * rt, int id)
 {
-	char * string;
 	bool black;
 
 	black = (rt->state.color_black != 1);
-	string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
-	mlx_string_put(rt->mlx, rt->win, 7, 15, create_trgb(255, 255*black, 255*black, 255*black), string);
+	mlx_string_put(rt->mlx, rt->win, 7, 15, create_trgb(255, 255*black, 255*black, 255*black), rt->scene.objects[id].string);
 }
 
 
