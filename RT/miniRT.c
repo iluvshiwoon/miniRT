@@ -89,10 +89,9 @@ int render (t_rt * rt)
         init_render(rt);
     else if (rt->state.pass == 3)
     {
+        mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
 	    if (rt->state.display_string == true)
 		    display_string(rt, rt->state.display_id);
-	    else
-            	mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
             return 1;
     }
 
