@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../miniRT.h"
+#include "fpconv.h"
 #include <sys/resource.h>
 
 void gen_shuffled_pixels(t_rt * rt, int * array)
@@ -156,10 +157,8 @@ int main (int ac,char ** av)
     rt.win = mlx_new_window(rt.mlx, rt.W, rt.H, "miniRT");
     if (!rt.win)
         printf("malloc error mlx_init\n");
-
     rt.state.shuffled_pixels = wrap_malloc(&rt, rt.W * rt.H * sizeof(*(rt.state.shuffled_pixels)));
     gen_shuffled_pixels(&rt, rt.state.shuffled_pixels);
-
     mlx_hook(rt.win, KeyPress, KeyPressMask, &key_events, &rt);
     mlx_hook(rt.win, DestroyNotify, 0, &close_win, &rt);
     mlx_loop_hook(rt.mlx, render, &rt);

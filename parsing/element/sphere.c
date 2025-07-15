@@ -14,13 +14,22 @@
 
 char * string_sphere(t_rt * rt, const struct s_object object)
 {
+	char * r_value;
+	char * dest;
     t_sphere *sphere;
 
+    dest = (char[24 + 1]){};
     sphere = object.obj;
-    char * r_string;
-    char * coordinates;
-    r_string = rt_ft_strjoin(rt, "sp: ", rt_ft_itoa(rt, object.id));
-    // coordinates = rt_ft_strjoin(rt, " ", rt_ft_itoa(rt, object.))
+    r_value = rt_ft_strjoin(rt, "sp id:", rt_ft_itoa(rt, object.id));
+    r_value = rt_ft_strjoin(rt, r_value, "  ");
+    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, sphere->origin));
+    r_value = rt_ft_strjoin(rt, r_value, " ");
+    fpconv_dtoa(sphere->radius, dest);
+    r_value = rt_ft_strjoin(rt, r_value, dest);
+    r_value = rt_ft_strjoin(rt, r_value, " ");
+    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, vec_mult(255, object.albedo)));
+
+    return r_value;
 }
 
 void	parse_sphere(t_rt *rt, char *line, int * id)
@@ -41,6 +50,7 @@ void	parse_sphere(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = sphere;
         rt->scene.objects[*id].id = *id;
+	rt->scene.objects[*id].display_string = &string_sphere;
         (*id)++;
         return;
 	}

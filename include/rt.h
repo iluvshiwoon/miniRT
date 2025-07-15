@@ -74,19 +74,16 @@ typedef struct s_camera {
 } t_camera;
 
 typedef struct s_sphere {
-    int id;
     t_vec origin;
     double radius;
 }t_sphere;
 
 typedef struct s_plane {
-    int id;
     t_vec origin;
     t_vec normal;
 } t_plane;
 
 typedef struct s_cylinder {
-    int id;
     t_vec origin;
     t_vec direction;
     double radius;
@@ -215,5 +212,8 @@ uint32_t pcg_setseq_64_xsh_rr_32_random_r(struct pcg_state_setseq_64* rng);
 void pcg_setseq_64_srandom_r(struct pcg_state_setseq_64* rng, uint64_t initstate, uint64_t initseq);
 void pcg_setseq_64_advance_r(struct pcg_state_setseq_64* rng, uint64_t delta);
 double double_rng(t_pcg32_random * rng);
-
+// grisu.c
+int fpconv_dtoa(double fp, char dest[24]);
+// print_object.c
+char * vec_toa(t_rt* rt, t_vec vec);
 #endif
