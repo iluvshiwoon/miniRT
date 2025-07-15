@@ -52,12 +52,13 @@ void	alloc_scene(t_rt *rt, t_file **file)
 	node = *file;
 	while (node)
 	{
-		if (!ft_strncmp(node->line, "sp ", 3))
-            rt->scene.total_objects++;
-		else if (!ft_strncmp(node->line, "pl ", 3))
-            rt->scene.total_objects++;
-		else if (!ft_strncmp(node->line, "cy ", 3))
-            rt->scene.total_objects++;
+		// if (!ft_strncmp(node->line, "sp ", 3))
+		//           rt->scene.total_objects++;
+		// else if (!ft_strncmp(node->line, "pl ", 3))
+		//           rt->scene.total_objects++;
+		// else if (!ft_strncmp(node->line, "cy ", 3))
+		//           rt->scene.total_objects++;
+		rt->scene.total_objects++;	
 		node = node->next;
 	}
     rt->scene.objects = wrap_malloc(rt, sizeof(*rt->scene.objects) * rt->scene.total_objects);

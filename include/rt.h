@@ -117,16 +117,8 @@ typedef struct s_object {
 } t_object;
 
 typedef struct s_scene {
-    t_light light;    
-    t_ambient_light ambient_light;
-    t_camera camera;
-
     int total_objects;
     t_object * objects;
-
-    // int light_nb;
-    // t_vec * light;
-    // double * light_intensity;
 } t_scene; 
 
 typedef struct s_mt_state
