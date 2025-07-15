@@ -12,6 +12,32 @@
 
 #include "../../miniRT.h"
 
+char * string_cylinder(t_rt * rt, const struct s_object object)
+{
+	char * r_value;
+	char * dest;
+    t_cylinder *cylinder;
+
+    dest = (char[24 + 1]){};
+    cylinder = object.obj;
+    r_value = rt_ft_strjoin(rt, "sp cy:", rt_ft_itoa(rt, object.id));
+    r_value = rt_ft_strjoin(rt, r_value, "  ");
+    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, cylinder->origin));
+    r_value = rt_ft_strjoin(rt, r_value, "  ");
+    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, cylinder->direction));
+    r_value = rt_ft_strjoin(rt, r_value, " ");
+    fpconv_dtoa(cylinder->radius, dest);
+    r_value = rt_ft_strjoin(rt, r_value, dest);
+    dest = (char[24 + 1]){};
+r_value = rt_ft_strjoin(rt, r_value, " ");
+    fpconv_dtoa(cylinder->height, dest);
+    r_value = rt_ft_strjoin(rt, r_value, dest);
+    r_value = rt_ft_strjoin(rt, r_value, "  ");
+    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, vec_mult(255, object.albedo)));
+
+    return r_value;
+}
+
 void	parse_cylinder(t_rt *rt, char *line, int * id)
 {
 	char	**tab;
@@ -34,6 +60,7 @@ void	parse_cylinder(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[5])); 
         rt->scene.objects[*id].obj = cylinder;
         rt->scene.objects[*id].id = *id;
+        rt->scene.objects[*id].display_string = &string_cylinder;
         (*id)++;
         return;
 	}

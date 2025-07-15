@@ -12,6 +12,7 @@
 
 #include "../miniRT.h"
 #include "fpconv.h"
+#include <stdio.h>
 #include <sys/resource.h>
 
 void gen_shuffled_pixels(t_rt * rt, int * array)
@@ -71,6 +72,15 @@ void init_render(t_rt * rt)
     gen_rays(rt);
 }
 
+void display_string(t_rt * rt, int id)
+{
+	char * string;
+	bool black;
+
+	black = (rt->state.color_black != 1);
+	string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+	mlx_string_put(rt->mlx, rt->win, 7, 15, create_trgb(255, 255*black, 255*black, 255*black), string);
+}
 
 
 int render (t_rt * rt)
@@ -78,7 +88,13 @@ int render (t_rt * rt)
     if (rt->state.re_render_scene)
         init_render(rt);
     else if (rt->state.pass == 3)
+    {
+	    if (rt->state.display_string == true)
+		    display_string(rt, rt->state.display_id);
+	    else
+            	mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
             return 1;
+    }
 
     int nrays;
     int k;
@@ -108,8 +124,12 @@ int render (t_rt * rt)
         {
             mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
             rt->state.pixel_index += passes[rt->state.pass].skip;
+        	if (rt->state.display_string == true)
+	    		display_string(rt, rt->state.display_id);
+
             break;
         }
+
         rt->state.pixel_index += passes[rt->state.pass].skip;
     }
     if (rt->state.pixel_index >= rt->total_pixels)
@@ -121,10 +141,31 @@ int render (t_rt * rt)
     return 0;
 }
 
+
+
 int key_events(int keycode, t_rt *rt)
 {
     if (keycode == KEY_ESC)
         close_win(rt);
+    else if (keycode == KEY_C && rt->state.color_black == false)
+	rt->state.color_black = true;
+    else if (keycode == KEY_C && rt->state.color_black == true)
+	rt->state.color_black = false;
+    else if (keycode == KEY_S && rt->state.display_string == false)
+	    rt->state.display_string = true;
+    else if (keycode == KEY_S && rt->state.display_string == true)
+	    rt->state.display_string = false;
+    else if (keycode == KEY_N)
+	    rt->state.display_id++;
+    else if (keycode == KEY_P)
+	    rt->state.display_id--;
+    else
+	    printf("%d\n",keycode);
+	if (rt->state.display_id >= rt->scene.total_objects)
+		rt->state.display_id = 0;
+	else if (rt->state.display_id < 0)
+		rt->state.display_id = rt->scene.total_objects - 1;
+
     return (0);
 }
 
@@ -142,7 +183,6 @@ int main (int ac,char ** av)
     rt.parsing_heap = init_alloc(&rt.parsing_heap);  
     entropy_getbytes((void*)seeds,sizeof(seeds));
     pcg32_srandom_r(&rt.rng,seeds[0],seeds[1]);
-
 
     rt.current_heap = rt.parsing_heap;
     parsing_minirt(&rt,av[1]);

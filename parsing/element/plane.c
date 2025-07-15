@@ -12,6 +12,23 @@
 
 #include "../../miniRT.h"
 
+char * string_plane(t_rt * rt, const struct s_object object)
+{
+	char * r_value;
+    t_plane *plane;
+
+    plane = object.obj;
+    r_value = rt_ft_strjoin(rt, "pl id:", rt_ft_itoa(rt, object.id));
+    r_value = rt_ft_strjoin(rt, r_value, "  ");
+    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, plane->origin));
+    r_value = rt_ft_strjoin(rt, r_value, " ");
+    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, plane->normal));
+    r_value = rt_ft_strjoin(rt, r_value, " ");
+    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, vec_mult(255, object.albedo)));
+
+    return r_value;
+}
+
 void	parse_plane(t_rt *rt, char *line, int * id) {
 	char	**tab;
     t_plane * plane;
@@ -27,6 +44,7 @@ void	parse_plane(t_rt *rt, char *line, int * id) {
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = plane;
         rt->scene.objects[*id].id = *id;
+        rt->scene.objects[*id].display_string = &string_plane;
         (*id)++;
         return;
 	}

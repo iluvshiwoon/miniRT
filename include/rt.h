@@ -12,6 +12,10 @@
 #ifndef RT_H
 # define RT_H
 # define KEY_ESC 65307
+# define KEY_C 99
+# define KEY_N 110
+# define KEY_P 112
+# define KEY_S 115
 # define PCG_DEFAULT_MULTIPLIER_64  6364136223846793005ULL
 # define pcg32_random_r                  pcg_setseq_64_xsh_rr_32_random_r
 # define pcg32_srandom_r                 pcg_setseq_64_srandom_r
@@ -34,6 +38,9 @@ typedef struct s_render_state {
     int pixel_index;
     int * shuffled_pixels;
     t_ray * rays;
+    bool display_string;
+    bool color_black;
+    int display_id;
 } t_render_state;
 
 typedef struct s_data
@@ -148,7 +155,7 @@ typedef struct s_rt {
     t_link_list * parsing_heap;
     t_link_list * current_heap;
     t_scene scene;
-
+	t_object selected;
 } t_rt;
 
 // utils.c
