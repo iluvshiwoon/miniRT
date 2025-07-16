@@ -42,9 +42,6 @@ void alloc_rt(t_rt * rt, t_file **file);
 // element/element_utils.c
 t_vec	parse_color(t_rt *rt, char *line);
 t_vec parse_vec(t_rt *rt, char *line);
-void print_sphere(t_rt *rt , int id);
-void print_plane(t_rt *rt , int id);
-void print_cylinder(t_rt *rt , int id);
 void print_scene(t_rt *rt);
 
 // element/Ambient_light.c

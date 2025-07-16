@@ -108,7 +108,6 @@ typedef struct s_object {
     int id;
     void * obj;
     bool (*is_intersection)(const t_ray, const struct s_object, t_intersection *);
-    void (*debug_print)(t_rt *, int );
     char *(*display_string)(t_rt *, const struct s_object);
     t_vec albedo; 
     char * string;
@@ -119,6 +118,9 @@ typedef struct s_object {
 typedef struct s_scene {
     int total_objects;
     t_object * objects;
+    t_camera camera;
+    t_light light;
+    t_ambient_light ambient_light;
 } t_scene; 
 
 typedef struct s_mt_state

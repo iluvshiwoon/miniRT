@@ -238,7 +238,7 @@ bool visible_intersection(const t_ray ray, t_scene scene,t_intersection * inters
     while (scene.total_objects)
     {
         obj = &scene.objects[scene.total_objects - 1];
-        if (obj->is_intersection(ray, *obj,&local_intersection))
+        if (obj->is_intersection != NULL && obj->is_intersection(ray, *obj,&local_intersection))
         {
             has_inter = true;
             if (local_intersection.t < intersection->t)

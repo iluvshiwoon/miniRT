@@ -90,7 +90,6 @@ int render (t_rt * rt)
         mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
 	    if (rt->state.display_string == true)
 		    display_string(rt, rt->state.display_id);
-	    close_win(rt);
             return 1;
     }
 

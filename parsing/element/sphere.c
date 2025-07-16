@@ -46,7 +46,6 @@ void	parse_sphere(t_rt *rt, char *line, int * id)
 		if (sphere->radius < 0)
 			exit_error(rt,"Error: Invalid radius for sphere");
         rt->scene.objects[*id].is_intersection = &is_intersection_sphere;
-        rt->scene.objects[*id].debug_print = &print_sphere;
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = sphere;
         rt->scene.objects[*id].id = *id;

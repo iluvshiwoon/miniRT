@@ -93,90 +93,11 @@ t_vec	parse_vec(t_rt *rt, char *line)
 	return (vec);
 }
 
-void print_sphere(t_rt *rt , int id)
-{
-    t_sphere sphere;
-    t_vec albedo;
-
-    albedo = rt->scene.objects[id].albedo;
-    sphere = *((t_sphere *){rt->scene.objects[id].obj});
-    printf("ID: %d ; sp %f,%f,%f %f %f,%f,%f\n",\
-           id,
-           sphere.origin.x, sphere.origin.y, sphere.origin.z,\
-           sphere.radius,\
-           albedo.x, albedo.y, albedo.z);
-}
-
-void print_plane(t_rt *rt , int id)
-{
-    t_plane plane;
-    t_vec albedo;
-
-    albedo = rt->scene.objects[id].albedo;
-    plane = *((t_plane *){rt->scene.objects[id].obj});
-    printf("ID: %d ; pl %f,%f,%f %f,%f,%f %f,%f,%f\n",\
-           id,
-           plane.origin.x, plane.origin.y, plane.origin.z,\
-           plane.normal.x, plane.normal.y, plane.normal.z,\
-           albedo.x, albedo.y, albedo.z);
-}
-
-void print_cylinder(t_rt *rt , int id)
-{
-    t_cylinder cylinder;
-    t_vec albedo;
-
-    albedo = rt->scene.objects[id].albedo;
-    cylinder = *((t_cylinder *){rt->scene.objects[id].obj});
-    printf("ID: %d ; cy %f,%f,%f %f,%f,%f %f %f %f,%f,%f\n",\
-           id,
-           cylinder.origin.x, cylinder.origin.y, cylinder.origin.z,\
-           cylinder.direction.x, cylinder.direction.y, cylinder.direction.z,\
-           cylinder.radius,\
-           cylinder.height,\
-           albedo.x, albedo.y, albedo.z);
-}
-
-void print_light(t_rt * rt)
-{
-    t_light light;
-
-    light = rt->scene.light;
-    printf("L %f,%f,%f %f %f,%f,%f\n",\
-           light.origin.x, light.origin.y, light.origin.z,\
-           light.intensity,\
-           light.color.x, light.color.y, light.color.z);
-}
-
-void print_ambiant_light(t_rt * rt)
-{
-    t_ambient_light ambient_light;
-
-    ambient_light = rt->scene.ambient_light;
-    printf("A %f,%f,%f %f\n",\
-           ambient_light.color.x, ambient_light.color.y, ambient_light.color.z,\
-           ambient_light.intensity);
-}
-
-void print_camera(t_rt *rt)
-{
-    t_camera camera;
-
-    camera = rt->scene.camera;
-    printf("C %f,%f,%f %f,%f,%f %f\n",\
-           camera.origin.x, camera.origin.y, camera.origin.z,\
-           camera.direction.x, camera.direction.y, camera.direction.z,\
-           camera.fov);
-}
-
 void	print_scene(t_rt *rt)
 {
 	int	i;
 
 	i = -1;
-    print_ambiant_light(rt);
-    print_camera(rt);
-    print_light(rt);
     while (++i < rt->scene.total_objects)
-        rt->scene.objects[i].debug_print(rt, i);
+	printf("%s\n", rt->scene.objects[i].string);
 }
