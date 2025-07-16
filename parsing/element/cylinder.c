@@ -11,7 +11,15 @@
 /* ************************************************************************** */
 
 #include "../../miniRT.h"
+void translate_cylinder(t_rt * rt, int id, t_vec vec)
+{
+	t_cylinder * cylinder;
 
+	cylinder = rt->scene.objects[id].obj;
+	cylinder->origin = vec_plus(cylinder->origin, vec);
+	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+	rt->state.re_render_scene = true;
+}
 char * string_cylinder(t_rt * rt, const struct s_object object)
 {
 	char * r_value;
@@ -59,7 +67,9 @@ void	parse_cylinder(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[5])); 
         rt->scene.objects[*id].obj = cylinder;
         rt->scene.objects[*id].id = *id;
+        rt->scene.objects[*id].type = cy;
         rt->scene.objects[*id].display_string = &string_cylinder;
+        rt->scene.objects[*id].translate = &translate_cylinder;
         rt->scene.objects[*id].string = string_cylinder(rt, rt->scene.objects[*id]);
         (*id)++;
         return;

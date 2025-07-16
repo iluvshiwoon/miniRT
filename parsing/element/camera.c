@@ -12,6 +12,17 @@
 
 #include "../../miniRT.h"
 
+void translate_camera(t_rt * rt, int id, t_vec vec)
+{
+	t_camera * camera;
+
+	camera = rt->scene.objects[id].obj;
+	camera->origin = vec_plus(camera->origin, vec);
+	rt->scene.camera = *camera;
+	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+	rt->state.re_render_scene = true;
+}
+
 char * string_camera(t_rt * rt, const struct s_object object)
 {
 	char * r_value;
@@ -26,7 +37,7 @@ char * string_camera(t_rt * rt, const struct s_object object)
     r_value = rt_ft_strjoin(rt, r_value, " ");
     r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, camera->direction));
     r_value = rt_ft_strjoin(rt, r_value, " ");
-    fpconv_dtoa(camera->fov, dest);
+    fpconv_dtoa(camera->fov*180/M_PI, dest);
     r_value = rt_ft_strjoin(rt, r_value, dest);
 
     return r_value;
@@ -51,7 +62,9 @@ void	parse_camera(t_rt *rt, char *line, int * id)
 		rt->scene.objects[*id].albedo = (t_vec){}; 
 		rt->scene.objects[*id].obj = camera;
 		rt->scene.objects[*id].id = *id;
+		rt->scene.objects[*id].type = C;
 		rt->scene.objects[*id].display_string = &string_camera;
+		rt->scene.objects[*id].translate = &translate_camera;
 		rt->scene.objects[*id].string = string_camera(rt, rt->scene.objects[*id]);
 		(*id)++;
 

@@ -16,6 +16,12 @@
 # define KEY_N 110
 # define KEY_P 112
 # define KEY_S 115
+# define KEY_W 119
+# define KEY_A 97
+# define KEY_D 100
+# define KEY_Z 122
+# define KEY_SHIFT 65505
+# define KEY_CTRL 65507
 # define PCG_DEFAULT_MULTIPLIER_64  6364136223846793005ULL
 # define pcg32_random_r                  pcg_setseq_64_xsh_rr_32_random_r
 # define pcg32_srandom_r                 pcg_setseq_64_srandom_r
@@ -104,15 +110,27 @@ typedef struct s_intersection {
 } t_intersection;
 
 typedef struct s_rt t_rt;
+
+enum e_type {
+	A = 42,
+	L,
+	C,
+	sp,
+	pl,
+	cy
+};
+
 typedef struct s_object {
     int id;
+    enum e_type type;
     void * obj;
     bool (*is_intersection)(const t_ray, const struct s_object, t_intersection *);
     char *(*display_string)(t_rt *, const struct s_object);
+    void (*translate)(t_rt * rt, int id, t_vec vec);
     t_vec albedo; 
     char * string;
-    char ** (*create_properties)(t_rt *,const struct s_object);
-    char ** properties;
+    // char ** (*create_properties)(t_rt *,const struct s_object);
+    // char ** properties;
 } t_object;
 
 typedef struct s_scene {

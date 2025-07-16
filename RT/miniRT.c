@@ -142,15 +142,32 @@ int render (t_rt * rt)
 
 int key_events(int keycode, t_rt *rt)
 {
+	int id;
+	id = rt->state.display_id;
+	enum e_type type;
+	type = rt->scene.objects[id].type;
     if (keycode == KEY_ESC)
         close_win(rt);
+    else if (keycode == KEY_D && type != A )
+	rt->scene.objects[id].translate(rt, id, (t_vec){2,0,0});
+    else if (keycode == KEY_A && type != A )
+	rt->scene.objects[id].translate(rt, id, (t_vec){-2,0,0});
+    else if (keycode == KEY_W && type != A )
+	rt->scene.objects[id].translate(rt, id, (t_vec){0,0,-2});
+    else if (keycode == KEY_S && type != A )
+	rt->scene.objects[id].translate(rt, id, (t_vec){0,0,2});
+    else if (keycode == KEY_SHIFT && type != A)
+	rt->scene.objects[id].translate(rt, id, (t_vec){0,2,0});
+    else if (keycode == KEY_CTRL && type != A)
+	rt->scene.objects[id].translate(rt, id, (t_vec){0,-2,0});
+
     else if (keycode == KEY_C && rt->state.color_black == false)
 	rt->state.color_black = true;
     else if (keycode == KEY_C && rt->state.color_black == true)
 	rt->state.color_black = false;
-    else if (keycode == KEY_S && rt->state.display_string == false)
+    else if (keycode == KEY_Z && rt->state.display_string == false)
 	    rt->state.display_string = true;
-    else if (keycode == KEY_S && rt->state.display_string == true)
+    else if (keycode == KEY_Z && rt->state.display_string == true)
 	    rt->state.display_string = false;
     else if (keycode == KEY_N)
 	    rt->state.display_id++;

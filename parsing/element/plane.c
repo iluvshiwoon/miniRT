@@ -12,6 +12,16 @@
 
 #include "../../miniRT.h"
 
+void translate_plane(t_rt * rt, int id, t_vec vec)
+{
+	t_plane * plane;
+
+	plane = rt->scene.objects[id].obj;
+	plane->origin = vec_plus(plane->origin, vec);
+	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+	rt->state.re_render_scene = true;
+}
+
 char * string_plane(t_rt * rt, const struct s_object object)
 {
 	char * r_value;
@@ -43,7 +53,9 @@ void	parse_plane(t_rt *rt, char *line, int * id) {
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = plane;
         rt->scene.objects[*id].id = *id;
+        rt->scene.objects[*id].type = pl;
         rt->scene.objects[*id].display_string = &string_plane;
+        rt->scene.objects[*id].translate = &translate_plane;
         rt->scene.objects[*id].string = string_plane(rt, rt->scene.objects[*id]);
         (*id)++;
         return;

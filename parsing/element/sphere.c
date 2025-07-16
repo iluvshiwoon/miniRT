@@ -11,6 +11,15 @@
 /* ************************************************************************** */
 
 #include "../../miniRT.h"
+void translate_sphere(t_rt * rt, int id, t_vec vec)
+{
+	t_sphere * sphere;
+
+	sphere = rt->scene.objects[id].obj;
+	sphere->origin = vec_plus(sphere->origin, vec);
+	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+	rt->state.re_render_scene = true;
+}
 
 char * string_sphere(t_rt * rt, const struct s_object object)
 {
@@ -49,7 +58,9 @@ void	parse_sphere(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
         rt->scene.objects[*id].obj = sphere;
         rt->scene.objects[*id].id = *id;
+        rt->scene.objects[*id].type = sp;
 	rt->scene.objects[*id].display_string = &string_sphere;
+	rt->scene.objects[*id].translate = &translate_sphere;
         rt->scene.objects[*id].string = string_sphere(rt, rt->scene.objects[*id]);
         (*id)++;
         return;

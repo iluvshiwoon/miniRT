@@ -48,6 +48,7 @@ void	parse_amb_light(t_rt *rt, char *line, int * id)
 		rt->scene.objects[*id].albedo = ambient_light->color;
 		rt->scene.objects[*id].obj = ambient_light;
 		rt->scene.objects[*id].id = *id;
+		rt->scene.objects[*id].type = A;
 		rt->scene.objects[*id].display_string = &string_ambient;
 		rt->scene.objects[*id].string = string_ambient(rt, rt->scene.objects[*id]);
 		(*id)++;
