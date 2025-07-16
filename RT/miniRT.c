@@ -138,47 +138,100 @@ int render (t_rt * rt)
     return 0;
 }
 
+// Transform camera-relative movement to world coordinates
+t_vec camera_to_world_movement(t_camera cam, t_vec local_movement) {
+    t_vec right = get_camera_right(cam);
+    t_vec up = get_camera_up(cam);
+    t_vec forward = normalize(cam.direction);
+    
+    // Transform local movement to world coordinates
+    t_vec world_movement = vec_plus(
+        vec_plus(
+            vec_mult(local_movement.x, right),      // Right component
+            vec_mult(local_movement.y, up)          // Up component
+        ),
+        vec_mult(local_movement.z, forward)         // Forward component
+    );
+    
+    return world_movement;
+}
 
-
+// Modified key_events function with camera-relative movement
 int key_events(int keycode, t_rt *rt)
 {
-	int id;
-	id = rt->state.display_id;
-	enum e_type type;
-	type = rt->scene.objects[id].type;
+    int id;
+    id = rt->state.display_id;
+    enum e_type type;
+    type = rt->scene.objects[id].type;
+    
     if (keycode == KEY_ESC)
         close_win(rt);
-    else if (keycode == KEY_D && type != A )
-	rt->scene.objects[id].translate(rt, id, (t_vec){2,0,0});
-    else if (keycode == KEY_A && type != A )
-	rt->scene.objects[id].translate(rt, id, (t_vec){-2,0,0});
-    else if (keycode == KEY_W && type != A )
-	rt->scene.objects[id].translate(rt, id, (t_vec){0,0,-2});
-    else if (keycode == KEY_S && type != A )
-	rt->scene.objects[id].translate(rt, id, (t_vec){0,0,2});
-    else if (keycode == KEY_SHIFT && type != A)
-	rt->scene.objects[id].translate(rt, id, (t_vec){0,2,0});
-    else if (keycode == KEY_CTRL && type != A)
-	rt->scene.objects[id].translate(rt, id, (t_vec){0,-2,0});
-
+    
+    // Camera-relative movement for non-ambient objects
+    else if (type != A) {
+        t_vec local_movement = {0, 0, 0};  // x=right, y=up, z=forward
+        
+        if (keycode == KEY_D)
+            local_movement.x = -2.0;        // Move right
+        else if (keycode == KEY_A)
+            local_movement.x = 2.0;       // Move left
+        else if (keycode == KEY_W)
+            local_movement.z = -2.0;        // Move forward
+        else if (keycode == KEY_S)
+            local_movement.z = 2.0;       // Move backward
+        else if (keycode == KEY_SHIFT)
+            local_movement.y = 2.0;        // Move up
+        else if (keycode == KEY_CTRL)
+            local_movement.y = -2.0;       // Move down
+        
+	// Apply movement
+        if (local_movement.x != 0 || local_movement.y != 0 || local_movement.z != 0) {
+            if (type == C) {
+                // Camera: use camera-relative movement
+                t_vec world_movement = camera_to_world_movement(rt->scene.camera, local_movement);
+                rt->scene.objects[id].translate(rt, id, world_movement);
+            } else {
+                // Other objects: use world-relative movement
+                t_vec world_movement = (t_vec){-local_movement.x, local_movement.y, local_movement.z};
+                rt->scene.objects[id].translate(rt, id, world_movement);
+            }
+        }
+    }
+    
+    // Rotation controls (unchanged)
+    if (keycode == KEY_PITCH_UP && (type == C || type == cy || type == pl))
+        rt->scene.objects[id].rotate(rt, id, -0.07, 0, 0);
+    else if (keycode == KEY_PITCH_DOWN && (type == C || type == cy || type == pl))
+        rt->scene.objects[id].rotate(rt, id, 0.07, 0, 0);
+    else if (keycode == KEY_YAW_LEFT && (type == C || type == cy || type == pl))
+        rt->scene.objects[id].rotate(rt, id, 0, 0.07, 0);
+    else if (keycode == KEY_YAW_RIGHT && (type == C || type == cy || type == pl))
+        rt->scene.objects[id].rotate(rt, id, 0, -0.07, 0);
+    else if (keycode == KEY_ROLL_LEFT && (type == C || type == cy || type == pl))
+        rt->scene.objects[id].rotate(rt, id, 0, 0, 0.07);
+    else if (keycode == KEY_ROLL_RIGHT && (type == C || type == cy || type == pl))
+        rt->scene.objects[id].rotate(rt, id, 0, 0, -0.07);
+    
+    // Other controls (unchanged)
     else if (keycode == KEY_C && rt->state.color_black == false)
-	rt->state.color_black = true;
+        rt->state.color_black = true;
     else if (keycode == KEY_C && rt->state.color_black == true)
-	rt->state.color_black = false;
+        rt->state.color_black = false;
     else if (keycode == KEY_Z && rt->state.display_string == false)
-	    rt->state.display_string = true;
+        rt->state.display_string = true;
     else if (keycode == KEY_Z && rt->state.display_string == true)
-	    rt->state.display_string = false;
+        rt->state.display_string = false;
     else if (keycode == KEY_N)
-	    rt->state.display_id++;
+        rt->state.display_id++;
     else if (keycode == KEY_P)
-	    rt->state.display_id--;
+        rt->state.display_id--;
     else
-	    printf("%d\n",keycode);
-	if (rt->state.display_id >= rt->scene.total_objects)
-		rt->state.display_id = 0;
-	else if (rt->state.display_id < 0)
-		rt->state.display_id = rt->scene.total_objects - 1;
+        printf("%d\n", keycode);
+    
+    if (rt->state.display_id >= rt->scene.total_objects)
+        rt->state.display_id = 0;
+    else if (rt->state.display_id < 0)
+        rt->state.display_id = rt->scene.total_objects - 1;
 
     return (0);
 }

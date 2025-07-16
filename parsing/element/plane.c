@@ -12,6 +12,33 @@
 
 #include "../../miniRT.h"
 
+void rotate_plane_local(t_rt* rt,int id, double pitch, double yaw, double roll) {
+	t_plane * plane = rt->scene.objects[id].obj;
+	
+    t_vec normal = normalize(plane->normal);
+    t_vec temp = {0, 1, 0};
+    if (fabs(normal.y) > 0.99) temp = (t_vec){1, 0, 0};
+    
+    t_vec right = normalize(cross(temp, normal));
+    t_vec forward = cross(normal, right);
+    
+    if (fabs(pitch) > 1e-6) {
+        t_mat3 pitch_rot = create_rotation_axis(right, pitch);
+        plane->normal = normalize(mat3_multiply_vec(pitch_rot, plane->normal));
+    }
+    
+    if (fabs(yaw) > 1e-6) {
+        t_mat3 yaw_rot = create_rotation_axis(forward, yaw);
+        plane->normal = normalize(mat3_multiply_vec(yaw_rot, plane->normal));
+    }
+    
+    if (fabs(roll) > 1e-6) {
+        t_mat3 roll_rot = create_rotation_axis(normal, roll);
+        plane->normal = normalize(mat3_multiply_vec(roll_rot, plane->normal));
+    }
+    rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+    rt->state.re_render_scene = true;
+}
 void translate_plane(t_rt * rt, int id, t_vec vec)
 {
 	t_plane * plane;
@@ -55,6 +82,7 @@ void	parse_plane(t_rt *rt, char *line, int * id) {
         rt->scene.objects[*id].id = *id;
         rt->scene.objects[*id].type = pl;
         rt->scene.objects[*id].display_string = &string_plane;
+        rt->scene.objects[*id].rotate = &rotate_plane_local;
         rt->scene.objects[*id].translate = &translate_plane;
         rt->scene.objects[*id].string = string_plane(rt, rt->scene.objects[*id]);
         (*id)++;

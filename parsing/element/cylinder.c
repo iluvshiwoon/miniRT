@@ -11,6 +11,35 @@
 /* ************************************************************************** */
 
 #include "../../miniRT.h"
+void rotate_cylinder_local(t_rt* rt,int id, double pitch, double yaw, double roll) {
+	t_cylinder * cyl = rt->scene.objects[id].obj;
+    // Current cylinder axes
+    t_vec axis = normalize(cyl->direction);  // cylinder's "up"
+    t_vec temp = {0, 1, 0};
+    if (fabs(axis.y) > 0.99) temp = (t_vec){1, 0, 0};
+    
+    t_vec right = normalize(cross(temp, axis));
+    t_vec forward = cross(axis, right);
+    
+    // Rotate the cylinder's direction vector
+    if (fabs(pitch) > 1e-6) {
+        t_mat3 pitch_rot = create_rotation_axis(right, pitch);
+        cyl->direction = normalize(mat3_multiply_vec(pitch_rot, cyl->direction));
+    }
+    
+    if (fabs(yaw) > 1e-6) {
+        t_mat3 yaw_rot = create_rotation_axis(forward, yaw);
+        cyl->direction = normalize(mat3_multiply_vec(yaw_rot, cyl->direction));
+    }
+    
+    // Roll rotates around the cylinder's own axis
+    if (fabs(roll) > 1e-6) {
+        t_mat3 roll_rot = create_rotation_axis(axis, roll);
+        cyl->direction = normalize(mat3_multiply_vec(roll_rot, cyl->direction));
+    }
+    rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+    rt->state.re_render_scene = true;
+}
 void translate_cylinder(t_rt * rt, int id, t_vec vec)
 {
 	t_cylinder * cylinder;
@@ -69,6 +98,7 @@ void	parse_cylinder(t_rt *rt, char *line, int * id)
         rt->scene.objects[*id].id = *id;
         rt->scene.objects[*id].type = cy;
         rt->scene.objects[*id].display_string = &string_cylinder;
+        rt->scene.objects[*id].rotate = &rotate_cylinder_local;
         rt->scene.objects[*id].translate = &translate_cylinder;
         rt->scene.objects[*id].string = string_cylinder(rt, rt->scene.objects[*id]);
         (*id)++;

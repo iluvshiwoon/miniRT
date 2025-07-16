@@ -12,6 +12,40 @@
 
 #include "../../miniRT.h"
 
+void rotate_camera_local(t_rt * rt, int id, double pitch, double yaw, double roll) {
+	t_camera * cam = rt->scene.objects[id].obj;
+    // Get current camera basis vectors
+    t_vec forward = normalize(cam->direction);
+    t_vec world_up = {0, 1, 0};
+    
+    // Handle edge case when looking straight up/down
+    if (fabs(forward.y) > 0.99) {
+        world_up = (t_vec){0, 0, 1};
+    }
+    
+    t_vec right = normalize(cross(forward, world_up));
+    t_vec up = cross(right, forward);
+    
+    // Apply rotations in order
+    if (fabs(pitch) > 1e-6) {
+        t_mat3 pitch_rot = create_rotation_axis(right, pitch);
+        cam->direction = normalize(mat3_multiply_vec(pitch_rot, cam->direction));
+    }
+    
+    if (fabs(yaw) > 1e-6) {
+        t_mat3 yaw_rot = create_rotation_axis(up, yaw);
+        cam->direction = normalize(mat3_multiply_vec(yaw_rot, cam->direction));
+    }
+    
+    if (fabs(roll) > 1e-6) {
+        t_mat3 roll_rot = create_rotation_axis(forward, roll);
+        cam->direction = normalize(mat3_multiply_vec(roll_rot, cam->direction));
+    }
+    rt->scene.camera = *cam;
+    rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+    rt->state.re_render_scene = true;
+}
+
 void translate_camera(t_rt * rt, int id, t_vec vec)
 {
 	t_camera * camera;
@@ -64,6 +98,7 @@ void	parse_camera(t_rt *rt, char *line, int * id)
 		rt->scene.objects[*id].id = *id;
 		rt->scene.objects[*id].type = C;
 		rt->scene.objects[*id].display_string = &string_camera;
+		rt->scene.objects[*id].rotate = &rotate_camera_local;
 		rt->scene.objects[*id].translate = &translate_camera;
 		rt->scene.objects[*id].string = string_camera(rt, rt->scene.objects[*id]);
 		(*id)++;

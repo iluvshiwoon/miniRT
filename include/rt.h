@@ -22,6 +22,12 @@
 # define KEY_Z 122
 # define KEY_SHIFT 65505
 # define KEY_CTRL 65507
+#define KEY_PITCH_UP    65362  // Up arrow
+#define KEY_PITCH_DOWN  65364  // Down arrow
+#define KEY_YAW_LEFT    65361  // Left arrow
+#define KEY_YAW_RIGHT   65363  // Right arrow
+#define KEY_ROLL_LEFT   113    // Q
+#define KEY_ROLL_RIGHT  101    // E
 # define PCG_DEFAULT_MULTIPLIER_64  6364136223846793005ULL
 # define pcg32_random_r                  pcg_setseq_64_xsh_rr_32_random_r
 # define pcg32_srandom_r                 pcg_setseq_64_srandom_r
@@ -30,6 +36,10 @@
 # include <stdint.h>
 # include <stdbool.h>
 # include "../42_MyLibC/mylibc.h"
+
+typedef struct s_mat3{
+	double m[3][3];
+}t_mat3;
 
 typedef struct s_pass_config {
     int bounces;
@@ -127,6 +137,7 @@ typedef struct s_object {
     bool (*is_intersection)(const t_ray, const struct s_object, t_intersection *);
     char *(*display_string)(t_rt *, const struct s_object);
     void (*translate)(t_rt * rt, int id, t_vec vec);
+    void (*rotate)(t_rt * rt, int id, double pitch, double yaw, double roll);
     t_vec albedo; 
     char * string;
     // char ** (*create_properties)(t_rt *,const struct s_object);
@@ -238,4 +249,9 @@ double double_rng(t_pcg32_random * rng);
 int fpconv_dtoa(double fp, char dest[24]);
 // print_object.c
 char * vec_toa(t_rt* rt, t_vec vec);
+// rotation.c
+t_mat3 create_rotation_axis(t_vec axis, double angle);
+t_vec mat3_multiply_vec(t_mat3 m, t_vec v);
+t_vec get_camera_right(t_camera cam);
+t_vec get_camera_up(t_camera cam);
 #endif
