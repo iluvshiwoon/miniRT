@@ -83,6 +83,8 @@ t_file	**open_file(t_rt * rt, char *namefile)
     file = wrap_malloc(rt, sizeof(t_file *));
 	*file = NULL;
 	rt->fd_file = open(namefile, O_RDONLY); // check_error
+	if (rt->fd_file == -1)
+		exit_error(rt, "open failed\n");
 	line = get_next_line(rt->fd_file);
     namefile = line;
     if (namefile)

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../miniRT.h"
+#include "fcntl.h"
 #include "fpconv.h"
 #include <stdio.h>
 #include <sys/resource.h>
@@ -167,6 +168,22 @@ t_vec camera_to_world_movement(t_camera cam, t_vec local_movement) {
     return world_movement;
 }
 
+void write_to_file(t_rt * rt)
+{
+	int key = double_rng(&rt->rng);	
+	char * name = rt_ft_strjoin(rt, "scene", rt_ft_itoa(rt, key));
+	int fd = open(name, O_CREAT, S_IRWXU);
+	if (fd == -1)
+		close_win(rt);
+	int i = 0;
+	while (i < rt->scene.total_objects)
+	{
+		ft_printf_fd(fd, "%s\n",rt->scene.objects[i].string);
+		i++;
+	}
+	close(fd);
+}
+
 // Modified key_events function with camera-relative movement
 int key_events(int keycode, t_rt *rt)
 {
@@ -236,6 +253,8 @@ int key_events(int keycode, t_rt *rt)
         rt->state.display_id++;
     else if (keycode == KEY_P)
         rt->state.display_id--;
+    else if (keycode == KEY_ENTER)
+     write_to_file(rt);
     else
         printf("%d\n", keycode);
     

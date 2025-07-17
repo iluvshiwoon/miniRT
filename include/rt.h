@@ -20,6 +20,7 @@
 # define KEY_A 97
 # define KEY_D 100
 # define KEY_Z 122
+# define KEY_ENTER 65293
 # define KEY_SHIFT 65505
 # define KEY_CTRL 65507
 #define KEY_PITCH_UP    65362  // Up arrow
