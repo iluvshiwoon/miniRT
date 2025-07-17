@@ -93,6 +93,7 @@ typedef struct s_light {
 typedef struct s_camera {
     t_vec origin;
     t_vec direction;
+    t_vec up;
     double fov;
 } t_camera;
 

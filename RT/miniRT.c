@@ -31,31 +31,35 @@ void gen_shuffled_pixels(t_rt * rt, int * array)
     }
 }
 
+
 void gen_rays(t_rt * rt)
 {
-	t_camera cam = rt->scene.camera;
-	double focal_length = (rt->W / 2.0) / tan(cam.fov / 2.0);
-	t_vec cam_z = vec_mult(-1, cam.direction);
-	t_vec temp_up = {0, 1, 0};
-	if (fabs(cam_z.y) > 0.999)
-		temp_up = (t_vec){1, 0, 0};
-	t_vec cam_x = normalize(cross(temp_up, cam_z));
-	t_vec cam_y = cross(cam_z, cam_x);
+    t_camera cam = rt->scene.camera;
+    double focal_length = (rt->W / 2.0) / tan(cam.fov / 2.0);
+    
+    // Use the camera's stored up vector instead of calculating from world coordinates
+    t_vec cam_z = vec_mult(-1, cam.direction);
+    t_vec cam_y = normalize(cam.up);
+    t_vec cam_x = normalize(cross(cam_y, cam_z));
+    
+    // Ensure orthogonality (in case of numerical errors)
+    cam_y = normalize(cross(cam_z, cam_x));
 
-	rt->state.rays = wrap_malloc(rt, sizeof(*(rt->state.rays))*rt->total_pixels);
-	int pixel_index = 0;
-    	while (pixel_index < rt->total_pixels)
-	{
-		int x = pixel_index % rt->W;    
-		int y = rt->H - 1 -(pixel_index / rt->W);
-		double u = -(x - rt->W / 2.0);
-		double v = y - rt->H / 2.0;
-		t_vec direction = vec_plus(vec_plus(vec_mult(u, cam_x), vec_mult(v, cam_y)), vec_mult(focal_length, cam_z));
-		direction = normalize(direction);
-		rt->state.rays[pixel_index] = (t_ray){cam.origin,direction};
-		pixel_index++;
-	}
+    rt->state.rays = wrap_malloc(rt, sizeof(*(rt->state.rays))*rt->total_pixels);
+    int pixel_index = 0;
+    while (pixel_index < rt->total_pixels)
+    {
+        int x = pixel_index % rt->W;    
+        int y = rt->H - 1 -(pixel_index / rt->W);
+        double u = -(x - rt->W / 2.0);
+        double v = y - rt->H / 2.0;
+        t_vec direction = vec_plus(vec_plus(vec_mult(u, cam_x), vec_mult(v, cam_y)), vec_mult(focal_length, cam_z));
+        direction = normalize(direction);
+        rt->state.rays[pixel_index] = (t_ray){cam.origin,direction};
+        pixel_index++;
+    }
 }
+
 
 void init_render(t_rt * rt)
 {

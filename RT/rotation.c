@@ -1,19 +1,10 @@
 #include "../miniRT.h"
 
 t_vec get_camera_right(t_camera cam) {
-    t_vec world_up = {0, 1, 0};
-    
-    // Handle edge case when looking straight up/down
-    if (fabs(cam.direction.y) > 0.99) {
-        world_up = (t_vec){0, 0, 1};
-    }
-    
-    return normalize(cross(cam.direction, world_up));
+    return normalize(cross(cam.direction, cam.up));
 }
-
 t_vec get_camera_up(t_camera cam) {
-    t_vec right = get_camera_right(cam);
-    return normalize(cross(right, cam.direction));
+    return normalize(cam.up);
 }
 
 // Create rotation matrix around arbitrary axis
