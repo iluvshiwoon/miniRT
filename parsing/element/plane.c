@@ -32,10 +32,10 @@ void rotate_plane_local(t_rt* rt,int id, double pitch, double yaw, double roll) 
         plane->normal = normalize(mat3_multiply_vec(yaw_rot, plane->normal));
     }
     
-    if (fabs(roll) > 1e-6) {
-        t_mat3 roll_rot = create_rotation_axis(normal, roll);
-        plane->normal = normalize(mat3_multiply_vec(roll_rot, plane->normal));
-    }
+    // if (fabs(roll) > 1e-6) {
+    //     t_mat3 roll_rot = create_rotation_axis(normal, roll);
+    //     plane->normal = normalize(mat3_multiply_vec(roll_rot, plane->normal));
+    // }
     rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
     rt->state.re_render_scene = true;
 }

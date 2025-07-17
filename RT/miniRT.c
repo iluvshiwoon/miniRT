@@ -44,8 +44,15 @@ void gen_rays(t_rt * rt)
     
     // Ensure orthogonality (in case of numerical errors)
     cam_y = normalize(cross(cam_z, cam_x));
+	// if (rt->pixels_heap)
+	// 	rt->pixels_heap->pf_lstclear(&rt->pixels_heap->first_node,free);
+	//
+	//    rt->current_heap = rt->pixels_heap;
 
-    rt->state.rays = wrap_malloc(rt, sizeof(*(rt->state.rays))*rt->total_pixels);
+    if (rt->state.rays == NULL)
+    	rt->state.rays = wrap_malloc(rt, sizeof(*(rt->state.rays))*rt->total_pixels);
+    // rt->current_heap = rt->graphic_heap;
+
     int pixel_index = 0;
     while (pixel_index < rt->total_pixels)
     {
@@ -258,8 +265,8 @@ int main (int ac,char ** av)
     rt.current_heap = rt.parsing_heap;
     parsing_minirt(&rt,av[1]);
 
-    rt.W = 700;
-    rt.H = 700;
+    rt.W = 800;
+    rt.H = 800;
     rt.total_pixels = rt.W * rt.H;
     rt.current_heap = rt.graphic_heap;
     rt.mlx = mlx_init();

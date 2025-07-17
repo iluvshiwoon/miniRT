@@ -33,10 +33,10 @@ void rotate_cylinder_local(t_rt* rt,int id, double pitch, double yaw, double rol
     }
     
     // Roll rotates around the cylinder's own axis
-    if (fabs(roll) > 1e-6) {
-        t_mat3 roll_rot = create_rotation_axis(axis, roll);
-        cyl->direction = normalize(mat3_multiply_vec(roll_rot, cyl->direction));
-    }
+    // if (fabs(roll) > 1e-6) {
+    //     t_mat3 roll_rot = create_rotation_axis(axis, roll);
+    //     cyl->direction = normalize(mat3_multiply_vec(roll_rot, cyl->direction));
+    // }
     rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
     rt->state.re_render_scene = true;
 }
@@ -57,7 +57,7 @@ char * string_cylinder(t_rt * rt, const struct s_object object)
 
     dest = (char[24 + 1]){};
     cylinder = object.obj;
-    r_value = rt_ft_strjoin(rt, "sp cy:", rt_ft_itoa(rt, object.id));
+    r_value = rt_ft_strjoin(rt, "cy id:", rt_ft_itoa(rt, object.id));
     r_value = rt_ft_strjoin(rt, r_value, "  ");
     r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, cylinder->origin));
     r_value = rt_ft_strjoin(rt, r_value, "  ");
