@@ -6,9 +6,10 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/04/13 16:06:31 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:18:42 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef RT_H
 # define RT_H
 # define KEY_ESC 65307
@@ -96,6 +97,9 @@ typedef struct s_camera {
     t_vec direction;
     t_vec up;
     double fov;
+    double yaw;
+    double pitch;
+    double roll;
 } t_camera;
 
 typedef struct s_sphere {
@@ -168,6 +172,30 @@ struct pcg_state_setseq_64 {
     uint64_t inc;
 };
 
+typedef struct s_gen_rays {
+	t_camera cam;
+	t_vec cam_x;
+	t_vec cam_y;
+	t_vec cam_z;
+	int pixel_index;
+	int x;
+	int y;
+	double u;
+	double v;
+	double focal_length;
+	t_vec direction;
+} t_gen_rays;
+
+typedef	struct s_render {
+	int		nrays;
+	int		k;
+	int		index;
+	int		x;
+	int		y;
+	t_ray	ray;
+	t_vec	pixel_intensity;
+}t_render;
+
 typedef struct s_rt {
     void *mlx;
     void *win;
@@ -184,6 +212,7 @@ typedef struct s_rt {
     t_link_list * current_heap;
     t_scene scene;
 	t_object selected;
+	t_pass_config * config;
 } t_rt;
 
 // utils.c
@@ -256,4 +285,12 @@ t_mat3 create_rotation_axis(t_vec axis, double angle);
 t_vec mat3_multiply_vec(t_mat3 m, t_vec v);
 t_vec get_camera_right(t_camera cam);
 t_vec get_camera_up(t_camera cam);
+// render_utils.c
+void gen_shuffled_pixels(t_rt * rt, int * array);
+void	gen_rays(t_rt *rt);
+void	init_render(t_rt *rt);
+void	display_string(t_rt *rt, int id);
+// render.c
+int	render(t_rt *rt);
+bool render_pixels(t_rt * rt, t_render * r);
 #endif

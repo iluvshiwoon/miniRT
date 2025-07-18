@@ -6,12 +6,11 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 10:15:25 by gschwand          #+#    #+#             */
-/*   Updated: 2025/04/04 14:25:52 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 16:56:36 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../miniRT.h"
-
 void rotate_camera_local(t_rt * rt, int id, double pitch, double yaw, double roll) {
     t_camera * cam = rt->scene.objects[id].obj;
     
@@ -20,34 +19,42 @@ void rotate_camera_local(t_rt * rt, int id, double pitch, double yaw, double rol
     t_vec up = normalize(cam->up);
     t_vec right = normalize(cross(forward, up));
     
-    // Apply rotations in order: pitch, yaw, roll
+    // Apply pitch rotation (around current right axis)
     if (fabs(pitch) > 1e-6) {
         t_mat3 pitch_rot = create_rotation_axis(right, pitch);
-        cam->direction = normalize(mat3_multiply_vec(pitch_rot, cam->direction));
-        cam->up = normalize(mat3_multiply_vec(pitch_rot, cam->up));
+        forward = normalize(mat3_multiply_vec(pitch_rot, forward));
+        up = normalize(mat3_multiply_vec(pitch_rot, up));
     }
     
+    // Apply yaw rotation (around current up axis - TRUE FPS behavior)
     if (fabs(yaw) > 1e-6) {
-        // Recalculate up after pitch rotation
-        up = normalize(cam->up);
         t_mat3 yaw_rot = create_rotation_axis(up, yaw);
-        cam->direction = normalize(mat3_multiply_vec(yaw_rot, cam->direction));
-        // Up vector doesn't change during yaw rotation
+        forward = normalize(mat3_multiply_vec(yaw_rot, forward));
+        right = normalize(mat3_multiply_vec(yaw_rot, right));
+        // Note: up vector doesn't change during yaw rotation around itself
     }
     
+    // Apply roll rotation (around current forward axis)
     if (fabs(roll) > 1e-6) {
-        // Recalculate forward after pitch and yaw rotations
-        forward = normalize(cam->direction);
         t_mat3 roll_rot = create_rotation_axis(forward, roll);
-        cam->up = normalize(mat3_multiply_vec(roll_rot, cam->up));
-        // Direction doesn't change during roll rotation
+        up = normalize(mat3_multiply_vec(roll_rot, up));
+        right = normalize(mat3_multiply_vec(roll_rot, right));
+        // Note: forward vector doesn't change during roll rotation around itself
     }
+    
+    // Ensure orthogonality (Gram-Schmidt process to prevent drift)
+    // Keep forward as-is, orthogonalize right and up
+    right = normalize(cross(forward, up));
+    up = normalize(cross(right, forward));
+    
+    // Update camera vectors
+    cam->direction = forward;
+    cam->up = up;
     
     rt->scene.camera = *cam;
     rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
     rt->state.re_render_scene = true;
 }
-
 void translate_camera(t_rt * rt, int id, t_vec vec)
 {
 	t_camera * camera;
