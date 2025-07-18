@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 18:24:48 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 19:25:09 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,32 @@ struct pcg_state_setseq_64 {
     uint64_t inc;
 };
 
-typedef struct s_cylinder_inter{
+typedef struct s_get_color
+{
+    t_intersection intersection;
+    t_vec pixel ;
+    int obj_id ;
+    t_ray ray_light ;
+        t_intersection intersection_light;
+        int obj_id_light ;
+        bool inter ;
+        double d_light2 ;
+		double cos_theta ;
+		t_vec light_contribution ;
+	t_vec ambient_contribution ;
+        t_vec ambient_light ;
+
+        double r1 ;
+        double r2 ;
+        t_vec direction_random_local_basis ;
+        t_vec random_vec ;
+        t_vec tangent1 ;
+        t_vec tangent2 ;
+        t_vec direction_random ;
+        t_ray random_ray ;
+} t_get_color;
+
+typedef struct s_cylinder_inter_solve{
 	t_vec oc;
 	t_vec ray_dir_proj;
 	t_vec oc_proj;
@@ -187,7 +212,15 @@ typedef struct s_cylinder_inter{
 	t_vec hit_point;
 	t_vec to_hit;
 	double height_proj;
-}t_cylinder_inter ;
+}t_cylinder_inter_solve;
+
+typedef struct s_cylinder_cap{
+	t_plane	cap_planes[2];
+	double	min_t;
+	double	current_t;
+	t_vec	p;
+	int i;
+}t_cylinder_cap;
 
 typedef struct s_gen_rays {
 	t_camera cam;
