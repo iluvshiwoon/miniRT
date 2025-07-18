@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:35:47 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/29 10:32:50 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:44:43 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,7 @@ char * string_cylinder(t_rt * rt, const struct s_object object)
 
     dest = (char[24 + 1]){};
     cylinder = object.obj;
-    r_value = rt_ft_strjoin(rt, "cy id:", rt_ft_itoa(rt, object.id));
-    r_value = rt_ft_strjoin(rt, r_value, "  ");
-    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, cylinder->origin));
+    r_value = rt_ft_strjoin(rt, "cy  ", vec_toa(rt, cylinder->origin));
     r_value = rt_ft_strjoin(rt, r_value, "  ");
     r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, cylinder->direction));
     r_value = rt_ft_strjoin(rt, r_value, " ");

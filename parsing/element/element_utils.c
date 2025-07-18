@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 09:38:28 by gschwand          #+#    #+#             */
-/*   Updated: 2025/04/04 15:24:43 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:40:38 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,10 @@ void	check_size_tab(t_rt *rt, char **tab)
 
 	i = 0;
 	if (!tab)
-        exit_error(rt, "Error: Invalid number of arguments");
-	while (tab[i])
-		i++;
+        	exit_error(rt, "Error: Invalid number of arguments");
+	while (tab[i]) i++;
 	if (i != 3)
-        exit_error(rt, "Error: Invalid number of arguments");
+        	exit_error(rt, "Error: Invalid number of arguments");
 }
 
 void	check_color(t_rt * rt,char *line)

@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:32:15 by gschwand          #+#    #+#             */
-/*   Updated: 2025/04/12 15:22:15 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:44:10 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,7 @@ char * string_sphere(t_rt * rt, const struct s_object object)
 
     dest = (char[24 + 1]){};
     sphere = object.obj;
-    r_value = rt_ft_strjoin(rt, "sp id:", rt_ft_itoa(rt, object.id));
-    r_value = rt_ft_strjoin(rt, r_value, "  ");
-    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, sphere->origin));
+    r_value = rt_ft_strjoin(rt, "sp  ", vec_toa(rt, sphere->origin));
     r_value = rt_ft_strjoin(rt, r_value, " ");
     fpconv_dtoa(sphere->radius, dest);
     r_value = rt_ft_strjoin(rt, r_value, dest);

@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 17:18:42 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:27:11 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,4 +293,7 @@ void	display_string(t_rt *rt, int id);
 // render.c
 int	render(t_rt *rt);
 bool render_pixels(t_rt * rt, t_render * r);
+
+// parisng/element/camera.c
+t_vec	camera_to_world_movement(t_camera cam, t_vec local_movement);
 #endif

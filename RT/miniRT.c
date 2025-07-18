@@ -6,33 +6,12 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 17:18:46 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:38:39 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
-
-// Transform camera-relative movement to world coordinates
-t_vec	camera_to_world_movement(t_camera cam, t_vec local_movement)
-{
-	t_vec	right;
-	t_vec	up;
-	t_vec	forward;
-
-	right = get_camera_right(cam);
-	up = get_camera_up(cam);
-	forward = normalize(cam.direction);
-	// Transform local movement to world coordinates
-	t_vec world_movement = vec_plus(vec_plus(vec_mult(local_movement.x, right),
-				// Right component
-												vec_mult(local_movement.y,
-													up)     // Up component
-												),
-									vec_mult(local_movement.z, forward)
-										// Forward component
-	);
-	return (world_movement);
-}
+#include "unistd.h"
 
 void	write_to_file(t_rt *rt)
 {
@@ -41,9 +20,12 @@ void	write_to_file(t_rt *rt)
 	int		fd;
 	int		i;
 
-	key = double_rng(&rt->rng);
+	key = pcg32_random_r(&rt->rng);
 	name = rt_ft_strjoin(rt, "scene", rt_ft_itoa(rt, key));
+	name = rt_ft_strjoin(rt, name, ".rt");
 	fd = open(name, O_CREAT, S_IRWXU);
+	close(fd);
+	fd = open(name, O_WRONLY);
 	if (fd == -1)
 		close_win(rt);
 	i = 0;

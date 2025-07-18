@@ -6,11 +6,24 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 10:15:25 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/18 16:56:36 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:43:54 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../miniRT.h"
+t_vec	camera_to_world_movement(t_camera cam, t_vec local_movement)
+{
+	t_vec	right;
+	t_vec	up;
+	t_vec	forward;
+
+	right = get_camera_right(cam);
+	up = get_camera_up(cam);
+	forward = normalize(cam.direction);
+	t_vec world_movement = vec_plus(vec_plus(vec_mult(local_movement.x, right), vec_mult(local_movement.y, up)), vec_mult(local_movement.z, forward));
+	return (world_movement);
+}
+
 void rotate_camera_local(t_rt * rt, int id, double pitch, double yaw, double roll) {
     t_camera * cam = rt->scene.objects[id].obj;
     
@@ -74,9 +87,7 @@ char * string_camera(t_rt * rt, const struct s_object object)
 
     dest = (char[24 + 1]){};
     camera = object.obj;
-    r_value = rt_ft_strjoin(rt, "C id:", rt_ft_itoa(rt, object.id));
-    r_value = rt_ft_strjoin(rt, r_value, "  ");
-    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, camera->origin));
+    r_value = rt_ft_strjoin(rt, "C  ", vec_toa(rt, camera->origin));
     r_value = rt_ft_strjoin(rt, r_value, " ");
     r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, camera->direction));
     r_value = rt_ft_strjoin(rt, r_value, " ");

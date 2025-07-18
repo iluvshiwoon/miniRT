@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 11:04:52 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/29 11:06:39 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:42:52 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,8 @@ char * string_ambient(t_rt * rt, const struct s_object object)
 
     dest = (char[24 + 1]){};
     ambient_light = object.obj;
-    r_value = rt_ft_strjoin(rt, "A id:", rt_ft_itoa(rt, object.id));
-    r_value = rt_ft_strjoin(rt, r_value, "  ");
     fpconv_dtoa(ambient_light->intensity, dest);
-    r_value = rt_ft_strjoin(rt, r_value, dest);
+    r_value = rt_ft_strjoin(rt, "A  ", dest);
     r_value = rt_ft_strjoin(rt, r_value, " ");
     r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, vec_mult(255, object.albedo)));
 

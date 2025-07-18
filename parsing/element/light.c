@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   light->c                                            :+:      :+:    :+:   */
+/*   light.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:30:27 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/29 11:33:00 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:43:36 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,7 @@ char * string_light(t_rt * rt, const struct s_object object)
 
     dest = (char[24 + 1]){};
     light = object.obj;
-    r_value = rt_ft_strjoin(rt, "L id:", rt_ft_itoa(rt, object.id));
-    r_value = rt_ft_strjoin(rt, r_value, "  ");
-    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, light->origin));
+    r_value = rt_ft_strjoin(rt, "L  ", vec_toa(rt, light->origin));
     r_value = rt_ft_strjoin(rt, r_value, " ");
     fpconv_dtoa(light->intensity, dest);
     r_value = rt_ft_strjoin(rt, r_value, dest);

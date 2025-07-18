@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:33:07 by gschwand          #+#    #+#             */
-/*   Updated: 2025/03/29 10:28:20 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:44:25 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,7 @@ char * string_plane(t_rt * rt, const struct s_object object)
     t_plane *plane;
 
     plane = object.obj;
-    r_value = rt_ft_strjoin(rt, "pl id:", rt_ft_itoa(rt, object.id));
-    r_value = rt_ft_strjoin(rt, r_value, "  ");
-    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, plane->origin));
+    r_value = rt_ft_strjoin(rt, "pl  ", vec_toa(rt, plane->origin));
     r_value = rt_ft_strjoin(rt, r_value, " ");
     r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, plane->normal));
     r_value = rt_ft_strjoin(rt, r_value, " ");
