@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 17:27:11 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/18 18:24:48 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,23 @@ struct pcg_state_setseq_64 {
     uint64_t inc;
 };
 
+typedef struct s_cylinder_inter{
+	t_vec oc;
+	t_vec ray_dir_proj;
+	t_vec oc_proj;
+	double a;
+	double half_b;
+	double c;
+	double discriminant;
+	double sqrt_discriminant;
+	double t1;
+	double t2;
+	double candidate_t;
+	t_vec hit_point;
+	t_vec to_hit;
+	double height_proj;
+}t_cylinder_inter ;
+
 typedef struct s_gen_rays {
 	t_camera cam;
 	t_vec cam_x;
@@ -268,14 +285,23 @@ void initialize_state(t_mt_state* state, uint32_t seed);
 uint32_t random_uint32(t_mt_state* state);
 double uniform_uint32(t_mt_state* state);
 
-// entropy.c
+// pcg.c
+uint32_t pcg_rotr_32(uint32_t value, unsigned int rot);
+uint32_t pcg_output_xsh_rr_64_32(uint64_t state);
+uint32_t pcg_setseq_64_xsh_rr_32_random_r(struct pcg_state_setseq_64* rng);
+uint64_t pcg_advance_lcg_64(uint64_t state, uint64_t delta, uint64_t cur_mult,
+                            uint64_t cur_plus);
+void pcg_setseq_64_advance_r(struct pcg_state_setseq_64* rng, uint64_t delta);
+
+// pcg1.c
 uint32_t pcg_setseq_64_xsh_rr_32_boundedrand_r(struct pcg_state_setseq_64* rng,
                                       uint32_t bound);
-bool entropy_getbytes(void* dest, size_t size);
-uint32_t pcg_setseq_64_xsh_rr_32_random_r(struct pcg_state_setseq_64* rng);
-void pcg_setseq_64_srandom_r(struct pcg_state_setseq_64* rng, uint64_t initstate, uint64_t initseq);
-void pcg_setseq_64_advance_r(struct pcg_state_setseq_64* rng, uint64_t delta);
 double double_rng(t_pcg32_random * rng);
+bool entropy_getbytes(void* dest, size_t size);
+void pcg_setseq_64_step_r(struct pcg_state_setseq_64* rng);
+void pcg_setseq_64_srandom_r(struct pcg_state_setseq_64* rng, uint64_t initstate, uint64_t initseq);
+
+
 // grisu.c
 int fpconv_dtoa(double fp, char dest[24]);
 // print_object.c

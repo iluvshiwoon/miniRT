@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   intersections.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/18 18:13:15 by kgriset           #+#    #+#             */
+/*   Updated: 2025/07/18 18:31:20 by kgriset          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../miniRT.h"
 #define EXPOSURE 300000000.0
 #define GLOBAL_EXPOSURE 1000000.0
@@ -5,62 +17,47 @@
 
 bool cylinder_intersection_solve(const t_ray ray, const t_cylinder cylinder, double * t)
 {
-    // Vector from ray origin to cylinder origin
-    t_vec oc = vec_minus(ray.origin, cylinder.origin);
-    
-    // Project ray direction and oc onto the plane perpendicular to cylinder axis
-    t_vec ray_dir_proj = vec_minus(ray.direction, vec_mult(vec_scal(ray.direction, cylinder.direction), cylinder.direction));
-    t_vec oc_proj = vec_minus(oc, vec_mult(vec_scal(oc, cylinder.direction), cylinder.direction));
-    
-    // Quadratic equation coefficients for infinite cylinder
-    double a = vec_scal(ray_dir_proj, ray_dir_proj);
-    double half_b = vec_scal(ray_dir_proj, oc_proj);
-    double c = vec_scal(oc_proj, oc_proj) - cylinder.radius * cylinder.radius;
-    
-    // Check if ray is parallel to cylinder (a ≈ 0)
-    if (fabs(a) < epsilon)
-        return false;
-    
-    double discriminant = half_b * half_b - a * c;
-    if (discriminant < 0)
-        return false;
-    
-    double sqrt_discriminant = sqrt(discriminant);
-    double t1 = (-half_b - sqrt_discriminant) / a;
-    double t2 = (-half_b + sqrt_discriminant) / a;
-    
-    // Check both intersection points for height constraints
-    double candidate_t = -1;
-    
-    // Check first intersection point
-    if (t1 > epsilon)
-    {
-        t_vec hit_point = vec_plus(ray.origin, vec_mult(t1, ray.direction));
-        t_vec to_hit = vec_minus(hit_point, cylinder.origin);
-        double height_proj = vec_scal(to_hit, cylinder.direction);
-        
-        if (height_proj >= 0 && height_proj <= cylinder.height)
-            candidate_t = t1;
-    }
-    
-    // Check second intersection point if first didn't work
-    if (candidate_t < 0 && t2 > epsilon)
-    {
-        t_vec hit_point = vec_plus(ray.origin, vec_mult(t2, ray.direction));
-        t_vec to_hit = vec_minus(hit_point, cylinder.origin);
-        double height_proj = vec_scal(to_hit, cylinder.direction);
-        
-        if (height_proj >= 0 && height_proj <= cylinder.height)
-            candidate_t = t2;
-    }
-    
-    if (candidate_t > 0)
-    {
-        *t = candidate_t;
-        return true;
-    }
-    
-    return false;
+	t_cylinder_inter cy;
+
+	cy.oc = vec_minus(ray.origin, cylinder.origin);
+	cy.ray_dir_proj = vec_minus(ray.direction, vec_mult(vec_scal(ray.direction, cylinder.direction), cylinder.direction));
+	cy.oc_proj = vec_minus(cy.oc, vec_mult(vec_scal(cy.oc, cylinder.direction), cylinder.direction));
+	cy.a = vec_scal(cy.ray_dir_proj, cy.ray_dir_proj);
+	cy.half_b = vec_scal(cy.ray_dir_proj, cy.oc_proj);
+	cy.c = vec_scal(cy.oc_proj, cy.oc_proj) - cylinder.radius * cylinder.radius;
+	if (fabs(cy.a) < epsilon)
+		return false;
+	cy.discriminant = cy.half_b * cy.half_b - cy.a * cy.c;
+	if (cy.discriminant < 0)
+		return false;
+	cy.sqrt_discriminant = sqrt(cy.discriminant);
+	cy.t1 = (-cy.half_b - cy.sqrt_discriminant) / cy.a;
+	cy.t2 = (-cy.half_b + cy.sqrt_discriminant) / cy.a;
+	cy.candidate_t = -1;
+	if (cy.t1 > epsilon)
+	{
+		cy.hit_point = vec_plus(ray.origin, vec_mult(cy.t1, ray.direction));
+		cy.to_hit = vec_minus(cy.hit_point, cylinder.origin);
+		cy.height_proj = vec_scal(cy.to_hit, cylinder.direction);
+
+		if (cy.height_proj >= 0 && cy.height_proj <= cylinder.height)
+		    cy.candidate_t = cy.t1;
+	}
+	if (cy.candidate_t < 0 && cy.t2 > epsilon)
+	{
+		t_vec hit_point = vec_plus(ray.origin, vec_mult(cy.t2, ray.direction));
+		t_vec to_hit = vec_minus(hit_point, cylinder.origin);
+		double height_proj = vec_scal(to_hit, cylinder.direction);
+
+		if (height_proj >= 0 && height_proj <= cylinder.height)
+		    cy.candidate_t = cy.t2;
+	}
+	if (cy.candidate_t > 0)
+	{
+		*t = cy.candidate_t;
+		return true;
+	}
+	return false;
 }
 
 static bool cylinder_cap_intersection(const t_ray ray, const t_cylinder cylinder, double *t, t_vec *normal)
