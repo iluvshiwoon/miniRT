@@ -37,7 +37,7 @@ char	*rt_ft_substr(t_rt *rt, char const *s, unsigned int start, size_t len)
 	l_s = ft_strlen(s);
 	if (start > l_s)
 	{
-		sub = wrap_malloc(rt,  sizeof(*sub));
+		sub = wrap_malloc(rt, sizeof(*sub));
 		if (!sub)
 			return (NULL);
 		*sub = '\0';
@@ -45,7 +45,7 @@ char	*rt_ft_substr(t_rt *rt, char const *s, unsigned int start, size_t len)
 	}
 	while (s[start + i] && i != len)
 		i++;
-	sub = wrap_malloc(rt,  i * sizeof(*sub) + sizeof(*sub));
+	sub = wrap_malloc(rt, i * sizeof(*sub) + sizeof(*sub));
 	if (!sub)
 		return (NULL);
 	else

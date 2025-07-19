@@ -60,8 +60,7 @@ char	*rt_ft_strtrim(t_rt *rt, char const *s1, char const *set)
 	size_t	l_trim_beg;
 
 	l_trimmed = rt_find_l_trimmed(s1, set, &l_trim_beg);
-	trimmed = wrap_malloc(rt,  sizeof(*trimmed)
-			* l_trimmed + sizeof(*trimmed));
+	trimmed = wrap_malloc(rt, sizeof(*trimmed) * l_trimmed + sizeof(*trimmed));
 	if (!trimmed)
 		return (NULL);
 	ft_strlcpy(trimmed, s1 + l_trim_beg, l_trimmed + 1);

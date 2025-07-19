@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 19:25:09 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/19 17:24:22 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,10 @@
 # define pcg32_srandom_r                 pcg_setseq_64_srandom_r
 # define pcg32_advance_r                 pcg_setseq_64_advance_r
 #define pcg32_boundedrand_r             pcg_setseq_64_xsh_rr_32_boundedrand_r
+#define EXPOSURE 300000000.0
+#define GLOBAL_EXPOSURE 1000000.0
+#define EPSILON 1e-6
+
 # include <stdint.h>
 # include <stdbool.h>
 # include "../42_MyLibC/mylibc.h"
@@ -171,6 +175,23 @@ struct pcg_state_setseq_64 {
     uint64_t state;
     uint64_t inc;
 };
+
+typedef struct cylinder_inter
+{
+	t_cylinder	cylinder;
+	double		body_t;
+	bool		body_has_sol;
+	double		cap_t;
+	t_vec		cap_normal;
+	bool		cap_has_sol;
+	bool		has_sol;
+	double		final_t;
+	bool		hit_cap;
+	t_vec		to_point;
+	t_vec		axis_projection;
+	t_vec		to_ray_origin;
+
+}				t_cylinder_inter;
 
 typedef struct s_get_color
 {
@@ -355,4 +376,35 @@ bool render_pixels(t_rt * rt, t_render * r);
 
 // parisng/element/camera.c
 t_vec	camera_to_world_movement(t_camera cam, t_vec local_movement);
+// get_color_utils.c
+t_vec	calculate_direct_lighting(t_rt *rt, t_get_color *gc);
+t_vec	calculate_ambient_lighting(t_rt *rt, t_get_color *gc);
+t_vec	generate_random_hemisphere_direction(t_rt *rt, t_vec normal);
+t_vec	calculate_recursive_reflection(t_rt *rt, t_get_color *gc,
+		int nb_rebound);
+// get_color
+t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound);
+bool	visible_intersection(const t_ray ray, t_scene scene,
+		t_intersection *intersection, int *obj_id);
+// cylinder_intersection.c
+
+void	determine_closest_intersection(t_cylinder_inter *cy);
+t_vec	calculate_body_normal(const t_cylinder_inter *cy,
+		const t_vec intersection_point);
+t_vec	calculate_intersection_normal(const t_cylinder_inter *cy,
+		const t_vec intersection_point, const t_ray ray);
+void	fill_intersection_data(t_intersection *intersection,
+		const t_cylinder_inter *cy, const t_ray ray);
+bool	is_intersection_cylinder(const t_ray ray, const t_object obj,
+		t_intersection *intersection);
+// cylinder_intersection_utils.c
+bool	cylinder_intersection_solve1(t_cylinder_inter_solve *cy,
+		const t_ray ray, const t_cylinder cylinder);
+bool	cylinder_intersection_solve(const t_ray ray, const t_cylinder cylinder,
+		double *t);
+void	cylinder_cap_calc(t_cylinder_cap *cy, const t_ray ray,
+		const t_cylinder cylinder, t_vec *normal);
+bool	cylinder_cap_intersection(const t_ray ray,
+		const t_cylinder cylinder, double *t, t_vec *normal);
+void	init_cylinder_intersection(t_cylinder_inter *cy, const t_object obj);
 #endif

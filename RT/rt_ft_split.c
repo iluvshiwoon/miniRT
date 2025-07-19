@@ -51,8 +51,7 @@ static char	*rt_count_split(t_rt *rt, const char *s, char c,
 	return (s_trimmed);
 }
 
-static char	**rt_make_split(t_rt *rt, char **split, char *s_trimmed,
-		char c)
+static char	**rt_make_split(t_rt *rt, char **split, char *s_trimmed, char c)
 {
 	size_t	i;
 	size_t	j;
@@ -87,8 +86,7 @@ char	**rt_ft_split(t_rt *rt, char const *s, char c)
 	char	*s_trimmed;
 
 	s_trimmed = rt_count_split(rt, s, c, &sub_str_count);
-	split = wrap_malloc(rt,  sizeof(*split)
-			* (sub_str_count + 1));
+	split = wrap_malloc(rt, sizeof(*split) * (sub_str_count + 1));
 	if (!split)
 	{
 		free(s_trimmed);
