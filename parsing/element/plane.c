@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:33:07 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/18 17:44:25 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/19 17:58:40 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ void rotate_plane_local(t_rt* rt,int id, double pitch, double yaw, double roll) 
     //     plane->normal = normalize(mat3_multiply_vec(roll_rot, plane->normal));
     // }
     rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
-    rt->state.re_render_scene = true;
+    if (roll == 0)
+    	rt->state.re_render_scene = true;
 }
 void translate_plane(t_rt * rt, int id, t_vec vec)
 {

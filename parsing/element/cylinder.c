@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:35:47 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/18 17:44:43 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/19 17:57:34 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void rotate_cylinder_local(t_rt* rt,int id, double pitch, double yaw, double rol
     //     cyl->direction = normalize(mat3_multiply_vec(roll_rot, cyl->direction));
     // }
     rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
-    rt->state.re_render_scene = true;
+    if (roll == 0)
+    	rt->state.re_render_scene = true;
 }
 void translate_cylinder(t_rt * rt, int id, t_vec vec)
 {

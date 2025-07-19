@@ -1,5 +1,15 @@
-#include <stdbool.h>
-#include "../42_MyLibC/mylibc.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   grisu.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/19 17:53:36 by kgriset           #+#    #+#             */
+/*   Updated: 2025/07/19 17:55:58 by kgriset          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+#include "../miniRT.h"
 #include "fpconv.h"
 #include "powers.h"
 
@@ -10,7 +20,13 @@
 #define expbias   (1023 + 52)
 
 #define absv(n) ((n) < 0 ? -(n) : (n))
-#define minv(a, b) ((a) < (b) ? (a) : (b))
+
+int min(int a, int b)
+{
+	if (a < b)
+		return a;
+	return b;
+}
 
 static uint64_t tens[] = {
     10000000000000000000U, 1000000000000000000U, 100000000000000000U,
@@ -22,12 +38,14 @@ static uint64_t tens[] = {
     10U, 1U
 };
 
+union u_dbl_bits {
+	double dbl;
+	uint64_t i;
+};
 static inline uint64_t get_dbits(double d)
 {
-    union {
-        double   dbl;
-        uint64_t i;
-    } dbl_bits = { d };
+    union u_dbl_bits dbl_bits;
+    dbl_bits = (union u_dbl_bits){d};
 
     return dbl_bits.i;
 }
@@ -51,7 +69,7 @@ static Fp build_fp(double d)
     return fp;
 }
 
-static void normalize(Fp* fp)
+static void _normalize(Fp* fp)
 {
     while ((fp->frac & hiddenbit) == 0) {
         fp->frac <<= 1;
@@ -79,7 +97,11 @@ static void get_normalized_boundaries(Fp* fp, Fp* lower, Fp* upper)
     upper->exp = upper->exp - u_shift;
 
 
-    int l_shift = fp->frac == hiddenbit ? 2 : 1;
+    int l_shift;
+    if (fp->frac == hiddenbit)
+	    l_shift = 2;
+    else	
+	    l_shift = 1;
 
     lower->frac = (fp->frac << l_shift) - 1;
     lower->exp = fp->exp - l_shift;
@@ -99,7 +121,6 @@ static Fp multiply(Fp* a, Fp* b)
     uint64_t ah_bh = (a->frac >> 32)    * (b->frac >> 32);
 
     uint64_t tmp = (ah_bl & lomask) + (al_bh & lomask) + (al_bl >> 32);
-    /* round up */
     tmp += 1U << 31;
 
     Fp fp = {
@@ -134,7 +155,6 @@ static int generate_digits(Fp* fp, Fp* upper, Fp* lower, char* digits, int* K)
 
     int idx = 0, kappa = 10;
     uint64_t* divp;
-    /* 1000000000 */
     for(divp = tens + 10; kappa > 0; divp++) {
 
         uint64_t div = *divp;
@@ -156,7 +176,6 @@ static int generate_digits(Fp* fp, Fp* upper, Fp* lower, char* digits, int* K)
         }
     }
 
-    /* 10 */
     uint64_t* unit = tens + 18;
 
     while(true) {
@@ -188,7 +207,7 @@ static int grisu2(double d, char* digits, int* K)
     Fp lower, upper;
     get_normalized_boundaries(&w, &lower, &upper);
 
-    normalize(&w);
+    _normalize(&w);
 
     int k;
     Fp cp = find_cachedpow10(upper.exp, &k);
@@ -215,7 +234,6 @@ static int emit_digits(char* digits, int ndigits, char* dest, int K, bool neg)
         max_trailing_zeros -= 1;
     }
 
-    /* write plain integer */
     if(K >= 0 && (exp < (ndigits + max_trailing_zeros))) {
 
         ft_memcpy(dest, digits, ndigits);
@@ -224,10 +242,8 @@ static int emit_digits(char* digits, int ndigits, char* dest, int K, bool neg)
         return ndigits + K;
     }
 
-    /* write decimal w/o scientific notation */
     if(K < 0 && (K > -7 || exp < 4)) {
         int offset = ndigits - absv(K);
-        /* fp < 1.0 -> write leading zero */
         if(offset <= 0) {
             offset = -offset;
             dest[0] = '0';
@@ -237,7 +253,6 @@ static int emit_digits(char* digits, int ndigits, char* dest, int K, bool neg)
 
             return ndigits + 2 + offset;
 
-        /* fp > 1.0 */
         } else {
             ft_memcpy(dest, digits, offset);
             dest[offset] = '.';
@@ -247,9 +262,7 @@ static int emit_digits(char* digits, int ndigits, char* dest, int K, bool neg)
         }
     }
 
-    /* write decimal w/ scientific notation */
-    ndigits = minv(ndigits, 18 - neg);
-
+    ndigits = min(ndigits, 18 - neg);
     int idx = 0;
     dest[idx++] = digits[0];
 
@@ -261,7 +274,11 @@ static int emit_digits(char* digits, int ndigits, char* dest, int K, bool neg)
 
     dest[idx++] = 'e';
 
-    char sign = K + ndigits - 1 < 0 ? '-' : '+';
+    char sign ;
+    if (K + ndigits -1 < 0)
+	    sign = '-';
+    else
+	    sign = '+';
     dest[idx++] = sign;
 
     int cent = 0;
