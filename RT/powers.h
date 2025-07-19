@@ -1,5 +1,11 @@
 #include <stdint.h>
 
+#define FRACMASK 0x000FFFFFFFFFFFFFU
+#define EXPMASK 0x7FF0000000000000U
+#define HIDDENBIT 0x0010000000000000U
+#define SIGNMASK 0x8000000000000000U
+#define EXPBIAS (1023 + 52)
+
 #define npowers     87
 #define steppowers  8
 #define firstpower -348 /* 10 ^ -348 */
@@ -12,6 +18,12 @@ typedef struct Fp {
     uint64_t frac;
     int exp;
 } Fp;
+
+union					u_dbl_bits
+{
+	double				dbl;
+	uint64_t			i;
+};
 
 static Fp powers_ten[] = {
     { 18054884314459144840U, -1220 }, { 13451937075301367670U, -1193 },
