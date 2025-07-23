@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/19 17:24:22 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/23 19:10:25 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,4 +407,6 @@ void	cylinder_cap_calc(t_cylinder_cap *cy, const t_ray ray,
 bool	cylinder_cap_intersection(const t_ray ray,
 		const t_cylinder cylinder, double *t, t_vec *normal);
 void	init_cylinder_intersection(t_cylinder_inter *cy, const t_object obj);
+// grisu.c
+int fpconv_dtoa(double fp, char dest[24]);
 #endif
