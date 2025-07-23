@@ -6,11 +6,10 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 17:53:36 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/23 19:07:55 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/23 19:11:45 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../miniRT.h"
-#include "fpconv.h"
 #include "powers.h"
 #include <stdint.h>
 
