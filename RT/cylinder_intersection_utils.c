@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 17:17:30 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/19 17:24:15 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/24 16:18:35 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,6 @@ bool	cylinder_cap_intersection(const t_ray ray,
 	}
 	return (false);
 }
-
 
 void	init_cylinder_intersection(t_cylinder_inter *cy, const t_object obj)
 {

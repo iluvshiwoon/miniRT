@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/24 15:09:04 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/24 17:08:30 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -364,7 +364,7 @@ typedef struct s_rt {
     t_link_list * current_heap;
     t_scene scene;
 	t_object selected;
-	t_pass_config * config;
+	t_pass_config *config;
 } t_rt;
 
 // utils.c
@@ -498,4 +498,29 @@ int	min(int a, int b);
  uint64_t	get_dbits(double d);
  Fp	build_fp(double d);
  void	_normalize(Fp *fp);
+ // grisu_utils2.c
+void	get_normalized_boundaries(Fp *fp, Fp *lower, Fp *upper);
+Fp	multiply(Fp *a, Fp *b);
+void	round_digit(char *digits, t_digits d);
+void	init_digits_struct(uint64_t *g_tens, t_digits *d, t_grisu2 *g);
+int	process_integer_part(t_digits *d, char *digits, int *K);
+// grisu_utils3.c
+int	emit_integer_format(t_fpconv f, char *dest);
+int	emit_decimal_leading_zeros(t_fpconv f, char *dest, int offset);
+int	emit_decimal_with_point(t_fpconv f, char *dest, int offset);
+int	emit_scientific_mantissa(t_fpconv f, char *dest, int *idx);
+int	emit_exponent_digits(int exp, char *dest, int idx);
+// grisu_utils5.c
+int	process_fractional_part(uint64_t *g_tens, t_digits *d, \
+		char *digits, int *K);
+int	generate_digits(uint64_t *g_tens, t_grisu2 *g, char *digits, int *K);
+int	grisu2(double d, char *digits, int *K);
+int	emit_scientific_exponent(t_fpconv f, char *dest, int idx);
+int	emit_scientific_format(t_fpconv f, char *dest);
+// keys.c
+t_vec handle_movement_keys(int keycode);
+void apply_movement(t_rt *rt, int id, enum e_type type, t_vec local_movement);
+void handle_rotation_keys(t_rt *rt, int id, enum e_type type, int keycode);
+void handle_toggle_keys(t_rt *rt, int keycode);
+void handle_navigation_keys(t_rt *rt, int keycode);
 #endif

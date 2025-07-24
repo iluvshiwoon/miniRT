@@ -1,8 +1,8 @@
 C_FILES = RT/miniRT.c RT/vector1.c RT/vector.c RT/wrap_malloc.c \
 		  RT/exit_error.c RT/rt_ft_strjoin.c RT/rt_ft_itoa.c RT/rt_ft_split.c RT/rt_ft_strtrim.c RT/rt_ft_substr.c \
-		  RT/rt_ft_strdup.c RT/pcg32.c RT/pcg32_1.c RT/intersections.c RT/my_mlx_utils.c RT/utils.c RT/grisu.c RT/grisu_utils.c\
+		  RT/rt_ft_strdup.c RT/pcg32.c RT/pcg32_1.c RT/intersections.c RT/my_mlx_utils.c RT/utils.c RT/grisu.c RT/grisu_utils.c RT/grisu_utils2.c RT/grisu_utils3.c RT/grisu_utils4.c \
 		  RT/print_object.c RT/rotation.c RT/render_utils.c RT/render.c RT/get_color.c RT/get_color_utils.c\
-		  RT/cylinder_intersection.c RT/cylinder_intersection_utils.c\
+		  RT/cylinder_intersection.c RT/cylinder_intersection_utils.c RT/keys.c\
 			parsing/parsing.c \
 			parsing/check_args.c \
 			parsing/open_file.c \
