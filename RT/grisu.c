@@ -6,70 +6,59 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 17:53:36 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/23 19:11:45 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/24 15:09:13 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../miniRT.h"
-#include "powers.h"
-#include <stdint.h>
 
-int	absv(int n)
-{
-	if (n < 0)
-		return (-1 * n);
-	return (n);
-}
+ Fp powers_ten[] = {
+    { 18054884314459144840U, -1220 }, { 13451937075301367670U, -1193 },
+    { 10022474136428063862U, -1166 }, { 14934650266808366570U, -1140 },
+    { 11127181549972568877U, -1113 }, { 16580792590934885855U, -1087 },
+    { 12353653155963782858U, -1060 }, { 18408377700990114895U, -1034 },
+    { 13715310171984221708U, -1007 }, { 10218702384817765436U, -980 },
+    { 15227053142812498563U, -954 },  { 11345038669416679861U, -927 },
+    { 16905424996341287883U, -901 },  { 12595523146049147757U, -874 },
+    { 9384396036005875287U,  -847 },  { 13983839803942852151U, -821 },
+    { 10418772551374772303U, -794 },  { 15525180923007089351U, -768 },
+    { 11567161174868858868U, -741 },  { 17236413322193710309U, -715 },
+    { 12842128665889583758U, -688 },  { 9568131466127621947U,  -661 },
+    { 14257626930069360058U, -635 },  { 10622759856335341974U, -608 },
+    { 15829145694278690180U, -582 },  { 11793632577567316726U, -555 },
+    { 17573882009934360870U, -529 },  { 13093562431584567480U, -502 },
+    { 9755464219737475723U,  -475 },  { 14536774485912137811U, -449 },
+    { 10830740992659433045U, -422 },  { 16139061738043178685U, -396 },
+    { 12024538023802026127U, -369 },  { 17917957937422433684U, -343 },
+    { 13349918974505688015U, -316 },  { 9946464728195732843U,  -289 },
+    { 14821387422376473014U, -263 },  { 11042794154864902060U, -236 },
+    { 16455045573212060422U, -210 },  { 12259964326927110867U, -183 },
+    { 18268770466636286478U, -157 },  { 13611294676837538539U, -130 },
+    { 10141204801825835212U, -103 },  { 15111572745182864684U, -77 },
+    { 11258999068426240000U, -50 },   { 16777216000000000000U, -24 },
+    { 12500000000000000000U,   3 },   { 9313225746154785156U,   30 },
+    { 13877787807814456755U,  56 },   { 10339757656912845936U,  83 },
+    { 15407439555097886824U, 109 },   { 11479437019748901445U, 136 },
+    { 17105694144590052135U, 162 },   { 12744735289059618216U, 189 },
+    { 9495567745759798747U,  216 },   { 14149498560666738074U, 242 },
+    { 10542197943230523224U, 269 },   { 15709099088952724970U, 295 },
+    { 11704190886730495818U, 322 },   { 17440603504673385349U, 348 },
+    { 12994262207056124023U, 375 },   { 9681479787123295682U,  402 },
+    { 14426529090290212157U, 428 },   { 10748601772107342003U, 455 },
+    { 16016664761464807395U, 481 },   { 11933345169920330789U, 508 },
+    { 17782069995880619868U, 534 },   { 13248674568444952270U, 561 },
+    { 9871031767461413346U,  588 },   { 14708983551653345445U, 614 },
+    { 10959046745042015199U, 641 },   { 16330252207878254650U, 667 },
+    { 12166986024289022870U, 694 },   { 18130221999122236476U, 720 },
+    { 13508068024458167312U, 747 },   { 10064294952495520794U, 774 },
+    { 14996968138956309548U, 800 },   { 11173611982879273257U, 827 },
+    { 16649979327439178909U, 853 },   { 12405201291620119593U, 880 },
+    { 9242595204427927429U,  907 },   { 13772540099066387757U, 933 },
+    { 10261342003245940623U, 960 },   { 15290591125556738113U, 986 },
+    { 11392378155556871081U, 1013 },  { 16975966327722178521U, 1039 },
+    { 12648080533535911531U, 1066 }
+};
 
-int	min(int a, int b)
-{
-	if (a < b)
-		return (a);
-	return (b);
-}
-
-static inline uint64_t	get_dbits(double d)
-{
-	union u_dbl_bits	dbl_bits;
-
-	dbl_bits = (union u_dbl_bits){d};
-	return (dbl_bits.i);
-}
-
-static Fp	build_fp(double d)
-{
-	uint64_t	bits;
-	Fp			fp;
-
-	bits = get_dbits(d);
-	fp.frac = bits & FRACMASK;
-	fp.exp = (bits & EXPMASK) >> 52;
-	if (fp.exp)
-	{
-		fp.frac += HIDDENBIT;
-		fp.exp -= EXPBIAS;
-	}
-	else
-	{
-		fp.exp = -EXPBIAS + 1;
-	}
-	return (fp);
-}
-
-static void	_normalize(Fp *fp)
-{
-	int	shift;
-
-	while ((fp->frac & HIDDENBIT) == 0)
-	{
-		fp->frac <<= 1;
-		fp->exp--;
-	}
-	shift = 64 - 52 - 1;
-	fp->frac <<= shift;
-	fp->exp -= shift;
-}
-
-static void	get_normalized_boundaries(Fp *fp, Fp *lower, Fp *upper)
+void	get_normalized_boundaries(Fp *fp, Fp *lower, Fp *upper)
 {
 	int	u_shift;
 	int	l_shift;
@@ -94,34 +83,7 @@ static void	get_normalized_boundaries(Fp *fp, Fp *lower, Fp *upper)
 	lower->exp = upper->exp;
 }
 
-typedef struct s_Fp
-{
-	uint64_t			lomask;
-	uint64_t			ah_bl;
-	uint64_t			al_bh;
-	uint64_t			al_bl;
-	uint64_t			ah_bh;
-	uint64_t			tmp;
-	Fp					fp;
-}						t_Fp;
-
-typedef struct s_digits
-{
-	uint64_t			wfrac;
-	uint64_t			delta;
-	Fp					one;
-	uint64_t			part1;
-	uint64_t			part2;
-	int					idx;
-	int					kappa;
-	uint64_t			*divp;
-	uint64_t			div;
-	unsigned int		digit;
-	uint64_t			tmp;
-	uint64_t			*unit;
-}						t_digits;
-
-static Fp	multiply(Fp *a, Fp *b)
+Fp	multiply(Fp *a, Fp *b)
 {
 	t_Fp	fp;
 
@@ -137,7 +99,7 @@ static Fp	multiply(Fp *a, Fp *b)
 	return (fp.fp);
 }
 
-static void	round_digit(char *digits, t_digits d)
+void	round_digit(char *digits, t_digits d)
 {
 	uint64_t	frac;
 
@@ -151,14 +113,7 @@ static void	round_digit(char *digits, t_digits d)
 	}
 }
 
-typedef struct s_grisu2
-{
-	Fp					w;
-	Fp					lower;
-	Fp					upper;
-}						t_grisu2;
-
-static void	init_digits_struct(uint64_t *g_tens, t_digits *d, t_grisu2 *g)
+void	init_digits_struct(uint64_t *g_tens, t_digits *d, t_grisu2 *g)
 {
 	d->idx = 0;
 	d->wfrac = g->upper.frac - g->w.frac;
@@ -171,7 +126,7 @@ static void	init_digits_struct(uint64_t *g_tens, t_digits *d, t_grisu2 *g)
 	d->divp = g_tens + 10;
 }
 
-static int	process_integer_part(t_digits *d, char *digits, int *K)
+int	process_integer_part(t_digits *d, char *digits, int *K)
 {
 	while (d->kappa > 0)
 	{
@@ -200,7 +155,7 @@ static int	process_integer_part(t_digits *d, char *digits, int *K)
 	return (-1);
 }
 
-static int	process_fractional_part(uint64_t *g_tens, t_digits *d, \
+int	process_fractional_part(uint64_t *g_tens, t_digits *d, \
 		char *digits, int *K)
 {
 	d->unit = g_tens + 18;
@@ -223,7 +178,7 @@ static int	process_fractional_part(uint64_t *g_tens, t_digits *d, \
 	}
 }
 
-static int	generate_digits(uint64_t *g_tens, t_grisu2 *g, char *digits, int *K)
+int	generate_digits(uint64_t *g_tens, t_grisu2 *g, char *digits, int *K)
 {
 	t_digits	d;
 	int			result;
@@ -235,7 +190,7 @@ static int	generate_digits(uint64_t *g_tens, t_grisu2 *g, char *digits, int *K)
 	return (process_fractional_part(g_tens, &d, digits, K));
 }
 
-static int	grisu2(double d, char *digits, int *K)
+int	grisu2(double d, char *digits, int *K)
 {
 	int			k;
 	Fp			cp;
@@ -260,35 +215,14 @@ static int	grisu2(double d, char *digits, int *K)
 	return (generate_digits(g_tens, &g, digits, K));
 }
 
-typedef struct s_fpconv
-{
-	char				digits[18];
-	int					str_len;
-	bool				neg;
-	int					spec;
-	int					k;
-	int					ndigits;
-}						t_fpconv;
-
-typedef struct s_emit_digits
-{
-	int					exp;
-	int					max_trailing_zeros;
-	int					offset;
-	int					idx;
-	char				sign;
-	int					cent;
-	int					dec;
-}						t_emit_digits;
-
-static int	emit_integer_format(t_fpconv f, char *dest)
+int	emit_integer_format(t_fpconv f, char *dest)
 {
 	ft_memcpy(dest, f.digits, f.ndigits);
 	ft_memset(dest + f.ndigits, '0', f.k);
 	return (f.ndigits + f.k);
 }
 
-static int	emit_decimal_leading_zeros(t_fpconv f, char *dest, int offset)
+int	emit_decimal_leading_zeros(t_fpconv f, char *dest, int offset)
 {
 	offset = -(offset);
 	dest[0] = '0';
@@ -298,7 +232,7 @@ static int	emit_decimal_leading_zeros(t_fpconv f, char *dest, int offset)
 	return (f.ndigits + 2 + offset);
 }
 
-static int	emit_decimal_with_point(t_fpconv f, char *dest, int offset)
+int	emit_decimal_with_point(t_fpconv f, char *dest, int offset)
 {
 	ft_memcpy(dest, f.digits, offset);
 	dest[offset] = '.';
@@ -306,7 +240,7 @@ static int	emit_decimal_with_point(t_fpconv f, char *dest, int offset)
 	return (f.ndigits + 1);
 }
 
-static int	emit_scientific_mantissa(t_fpconv f, char *dest, int *idx)
+int	emit_scientific_mantissa(t_fpconv f, char *dest, int *idx)
 {
 	f.ndigits = min(f.ndigits, 18 - f.neg);
 	*idx = 0;
@@ -320,7 +254,7 @@ static int	emit_scientific_mantissa(t_fpconv f, char *dest, int *idx)
 	return (f.ndigits);
 }
 
-static int	emit_exponent_digits(int exp, char *dest, int idx)
+int	emit_exponent_digits(int exp, char *dest, int idx)
 {
 	int	cent;
 	int	dec;
@@ -346,7 +280,7 @@ static int	emit_exponent_digits(int exp, char *dest, int idx)
 	return (idx);
 }
 
-static int	emit_scientific_exponent(t_fpconv f, char *dest, int idx)
+int	emit_scientific_exponent(t_fpconv f, char *dest, int idx)
 {
 	char	sign;
 	int		exp;
@@ -361,7 +295,7 @@ static int	emit_scientific_exponent(t_fpconv f, char *dest, int idx)
 	return (emit_exponent_digits(exp, dest, idx));
 }
 
-static int	emit_scientific_format(t_fpconv f, char *dest)
+int	emit_scientific_format(t_fpconv f, char *dest)
 {
 	int	idx;
 
@@ -369,7 +303,7 @@ static int	emit_scientific_format(t_fpconv f, char *dest)
 	return (emit_scientific_exponent(f, dest, idx));
 }
 
-static int	emit_digits(t_fpconv f, char *dest)
+int	emit_digits(t_fpconv f, char *dest)
 {
 	t_emit_digits	e;
 
@@ -390,7 +324,7 @@ static int	emit_digits(t_fpconv f, char *dest)
 	return (emit_scientific_format(f, dest));
 }
 
-static int	filter_special(double fp, char *dest)
+int	filter_special(double fp, char *dest)
 {
 	uint64_t	bits;
 	bool		nan;
@@ -440,4 +374,30 @@ int	fpconv_dtoa(double d, char dest[24])
 	f.ndigits = grisu2(d, f.digits, &(f.k));
 	f.str_len += emit_digits(f, dest + f.str_len);
 	return (f.str_len);
+}
+
+Fp find_cachedpow10(int exp, int* k)
+{
+    const double one_log_ten = 0.30102999566398114;
+
+    int approx = -(exp + npowers) * one_log_ten;
+    int idx = (approx - firstpower) / steppowers;
+
+    while(1) {
+        int current = exp + powers_ten[idx].exp + 64;
+
+        if(current < expmin) {
+            idx++;
+            continue;
+        }
+
+        if(current > expmax) {
+            idx--;
+            continue;
+        }
+
+        *k = (firstpower + idx * steppowers);
+
+        return powers_ten[idx];
+    }
 }

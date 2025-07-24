@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/23 19:10:25 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/24 15:09:04 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,91 @@
 #define EXPOSURE 300000000.0
 #define GLOBAL_EXPOSURE 1000000.0
 #define EPSILON 1e-6
+#define FRACMASK 0x000FFFFFFFFFFFFFU
+#define EXPMASK 0x7FF0000000000000U
+#define HIDDENBIT 0x0010000000000000U
+#define SIGNMASK 0x8000000000000000U
+#define EXPBIAS (1023 + 52)
+
+#define npowers     87
+#define steppowers  8
+#define firstpower -348 /* 10 ^ -348 */
+
+#define expmax     -32
+#define expmin     -60
+
 
 # include <stdint.h>
 # include <stdbool.h>
 # include "../42_MyLibC/mylibc.h"
+
+typedef struct Fp {
+    uint64_t frac;
+    int exp;
+} Fp;
+
+union					u_dbl_bits
+{
+	double				dbl;
+	uint64_t			i;
+};
+
+
+typedef struct s_Fp
+{
+	uint64_t			lomask;
+	uint64_t			ah_bl;
+	uint64_t			al_bh;
+	uint64_t			al_bl;
+	uint64_t			ah_bh;
+	uint64_t			tmp;
+	Fp					fp;
+}						t_Fp;
+
+typedef struct s_digits
+{
+	uint64_t			wfrac;
+	uint64_t			delta;
+	Fp					one;
+	uint64_t			part1;
+	uint64_t			part2;
+	int					idx;
+	int					kappa;
+	uint64_t			*divp;
+	uint64_t			div;
+	unsigned int		digit;
+	uint64_t			tmp;
+	uint64_t			*unit;
+}						t_digits;
+
+
+typedef struct s_grisu2
+{
+	Fp					w;
+	Fp					lower;
+	Fp					upper;
+}						t_grisu2;
+
+typedef struct s_fpconv
+{
+	char				digits[18];
+	int					str_len;
+	bool				neg;
+	int					spec;
+	int					k;
+	int					ndigits;
+}						t_fpconv;
+
+typedef struct s_emit_digits
+{
+	int					exp;
+	int					max_trailing_zeros;
+	int					offset;
+	int					idx;
+	char				sign;
+	int					cent;
+	int					dec;
+}						t_emit_digits;
 
 typedef struct s_mat3{
 	double m[3][3];
@@ -409,4 +490,12 @@ bool	cylinder_cap_intersection(const t_ray ray,
 void	init_cylinder_intersection(t_cylinder_inter *cy, const t_object obj);
 // grisu.c
 int fpconv_dtoa(double fp, char dest[24]);
+// grisu_utils.c
+Fp find_cachedpow10(int exp, int* k);
+ uint64_t	get_dbits(double d);
+int	absv(int n);
+int	min(int a, int b);
+ uint64_t	get_dbits(double d);
+ Fp	build_fp(double d);
+ void	_normalize(Fp *fp);
 #endif
