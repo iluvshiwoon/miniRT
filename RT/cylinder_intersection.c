@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 17:12:12 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 13:16:25 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 16:10:45 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	fill_intersection_data(t_intersection *intersection,
 			intersection->point, ray);
 }
 
-bool	is_intersection_cylinder(const t_ray ray, const t_object obj,
+int	is_intersection_cylinder(const t_ray ray, const t_object obj,
 		t_intersection *intersection)
 {
 	t_cylinder_inter	cy;

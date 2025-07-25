@@ -6,12 +6,12 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 17:53:36 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/24 16:17:46 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 14:58:57 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../miniRT.h"
 
-Fp	g_powers_ten[] = {
+t_fp	g_powers_ten[] = {
 {18054884314459144840U, -1220}, {13451937075301367670U, -1193}, \
 	{10022474136428063862U, -1166}, {14934650266808366570U, -1140}, \
 	{11127181549972568877U, -1113}, {16580792590934885855U, -1087}, \
@@ -131,29 +131,29 @@ int	fpconv_dtoa(double d, char dest[24])
 	return (f.str_len);
 }
 
-Fp	find_cachedpow10(int exp, int *k)
+t_fp	find_cachedpow10(int exp, int *k)
 {
 	const double	one_log_ten = 0.30102999566398114;
 	int				approx;
 	int				idx;
 	int				current;
 
-	approx = -(exp + npowers) * one_log_ten;
-	idx = (approx - firstpower) / steppowers;
+	approx = -(exp + NPOWERS) * one_log_ten;
+	idx = (approx - FIRSTPOWER) / STEPPOWERS;
 	while (1)
 	{
 		current = exp + g_powers_ten[idx].exp + 64;
-		if (current < expmin)
+		if (current < EXPMIN)
 		{
 			idx++;
 			continue ;
 		}
-		if (current > expmax)
+		if (current > EXPMAX)
 		{
 			idx--;
 			continue ;
 		}
-		*k = (firstpower + idx * steppowers);
+		*k = (FIRSTPOWER + idx * STEPPOWERS);
 		return (g_powers_ten[idx]);
 	}
 }

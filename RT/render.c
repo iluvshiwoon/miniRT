@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 17:17:58 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 17:23:03 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 16:02:04 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../miniRT.h"
@@ -14,15 +14,15 @@
 bool	render_pixels(t_rt *rt, t_render *r)
 {
 	r->index = rt->state.shuffled_pixels[rt->state.pixel_index];
-	r->x = r->index % rt->W;
-	r->y = rt->H - 1 - (r->index / rt->W);
+	r->x = r->index % rt->w;
+	r->y = rt->h - 1 - (r->index / rt->w);
 	r->k = -1;
 	r->ray = rt->state.rays[r->index];
 	r->pixel_intensity = (t_vec){0., 0., 0.};
 	while (++(r->k) < r->nrays)
 		r->pixel_intensity = vec_plus(r->pixel_intensity, vec_mult(1.0
 					/ r->nrays, get_color(r->ray, rt, 5)));
-	my_mlx_put_pixel(&rt->image, r->x, rt->H - 1 - r->y, create_trgb(255, \
+	my_mlx_put_pixel(&rt->image, r->x, rt->h - 1 - r->y, create_trgb(255, \
 		fmin(255, fmax(0, pow(r->pixel_intensity.x, 1 / 2.2))), \
 		fmin(255, fmax(0, pow(r->pixel_intensity.y, 1 / 2.2))), \
 		fmin(255, fmax(0, pow(r->pixel_intensity.z, 1 / 2.2)))));

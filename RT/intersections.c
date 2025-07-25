@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 18:13:15 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/19 17:18:22 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 16:22:45 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ bool	plane_intersection_solve(const t_ray ray, const t_plane plane,
 	return (*t > EPSILON);
 }
 
-bool	sphere_second_degree_solve(const t_ray ray, const t_sphere sphere,
+bool	sphere_second_degree_solve(const t_ray ray, const t_sphere sphere, \
 		double *s)
 {
 	double	t[2];
@@ -52,7 +52,7 @@ bool	sphere_second_degree_solve(const t_ray ray, const t_sphere sphere,
 	return (true);
 }
 
-bool	is_intersection_plane(const t_ray ray, const t_object obj,
+int	is_intersection_plane(const t_ray ray, const t_object obj,
 		t_intersection *intersection)
 {
 	bool	has_sol;
@@ -71,7 +71,7 @@ bool	is_intersection_plane(const t_ray ray, const t_object obj,
 	return (has_sol);
 }
 
-bool	is_intersection_sphere(const t_ray ray, const t_object obj,
+int	is_intersection_sphere(const t_ray ray, const t_object obj,
 		t_intersection *intersection)
 {
 	bool		has_sol;

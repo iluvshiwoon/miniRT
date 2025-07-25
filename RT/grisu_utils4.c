@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 14:25:30 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/24 15:40:35 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 16:21:04 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	generate_digits(uint64_t *g_tens, t_grisu2 *g, char *digits, int *K)
 int	grisu2(double d, char *digits, int *K)
 {
 	int			k;
-	Fp			cp;
+	t_fp		cp;
 	t_grisu2	g;
 	uint64_t	*g_tens;
 

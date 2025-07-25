@@ -6,13 +6,13 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 14:25:30 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/24 15:40:31 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 14:58:57 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 
-void	get_normalized_boundaries(Fp *fp, Fp *lower, Fp *upper)
+void	get_normalized_boundaries(t_fp *fp, t_fp *lower, t_fp *upper)
 {
 	int	u_shift;
 	int	l_shift;
@@ -37,9 +37,9 @@ void	get_normalized_boundaries(Fp *fp, Fp *lower, Fp *upper)
 	lower->exp = upper->exp;
 }
 
-Fp	multiply(Fp *a, Fp *b)
+t_fp	multiply(t_fp *a, t_fp *b)
 {
-	t_Fp	fp;
+	t__fp	fp;
 
 	fp.lomask = 0x00000000FFFFFFFF;
 	fp.ah_bl = (a->frac >> 32) * (b->frac & fp.lomask);
@@ -48,7 +48,7 @@ Fp	multiply(Fp *a, Fp *b)
 	fp.ah_bh = (a->frac >> 32) * (b->frac >> 32);
 	fp.tmp = (fp.ah_bl & fp.lomask) + (fp.al_bh & fp.lomask) + (fp.al_bl >> 32);
 	fp.tmp += 1U << 31;
-	fp.fp = (Fp){fp.ah_bh + (fp.ah_bl >> 32) + (fp.al_bh >> 32)
+	fp.fp = (t_fp){fp.ah_bh + (fp.ah_bl >> 32) + (fp.al_bh >> 32)
 		+ (fp.tmp >> 32), a->exp + b->exp + 64};
 	return (fp.fp);
 }

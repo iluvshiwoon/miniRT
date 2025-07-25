@@ -6,14 +6,14 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 17:53:06 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 17:59:36 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 16:02:48 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 
 uint32_t	pcg_setseq_64_xsh_rr_32_boundedrand_r(\
-		struct pcg_state_setseq_64 *rng, uint32_t bound)
+		struct s_pcg_state_setseq_64 *rng, uint32_t bound)
 {
 	uint32_t	threshold;
 	uint32_t	r;
@@ -29,7 +29,7 @@ uint32_t	pcg_setseq_64_xsh_rr_32_boundedrand_r(\
 
 double	double_rng(t_pcg32_random *rng)
 {
-	return (ldexp(pcg32_random_r(rng), -32));
+	return (ldexp(pcg_setseq_64_xsh_rr_32_random_r(rng), -32));
 }
 
 bool	entropy_getbytes(void *dest, size_t size)
@@ -44,12 +44,12 @@ bool	entropy_getbytes(void *dest, size_t size)
 	return ((close(fd) == 0) && (sz == (ssize_t)size));
 }
 
-void	pcg_setseq_64_step_r(struct pcg_state_setseq_64 *rng)
+void	pcg_setseq_64_step_r(struct s_pcg_state_setseq_64 *rng)
 {
 	rng->state = rng->state * PCG_DEFAULT_MULTIPLIER_64 + rng->inc;
 }
 
-void	pcg_setseq_64_srandom_r(struct pcg_state_setseq_64 *rng,
+void	pcg_setseq_64_srandom_r(struct s_pcg_state_setseq_64 *rng,
 		uint64_t initstate, uint64_t initseq)
 {
 	rng->state = 0U;

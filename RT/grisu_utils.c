@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 14:25:30 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/24 15:06:47 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 14:58:57 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ uint64_t	get_dbits(double d)
 	return (dbl_bits.i);
 }
 
-Fp	build_fp(double d)
+t_fp	build_fp(double d)
 {
 	uint64_t	bits;
-	Fp			fp;
+	t_fp		fp;
 
 	bits = get_dbits(d);
 	fp.frac = bits & FRACMASK;
@@ -54,7 +54,7 @@ Fp	build_fp(double d)
 	return (fp);
 }
 
-void	_normalize(Fp *fp)
+void	_normalize(t_fp *fp)
 {
 	int	shift;
 

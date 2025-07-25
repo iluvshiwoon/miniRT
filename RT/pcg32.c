@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 17:28:39 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 17:59:53 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 16:20:46 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ uint32_t	pcg_output_xsh_rr_64_32(uint64_t state)
 	return (pcg_rotr_32(((state >> 18u) ^ state) >> 27u, state >> 59u));
 }
 
-uint32_t	pcg_setseq_64_xsh_rr_32_random_r(struct pcg_state_setseq_64 *rng)
+uint32_t	pcg_setseq_64_xsh_rr_32_random_r(struct s_pcg_state_setseq_64 *rng)
 {
 	uint64_t	oldstate;
 
@@ -53,7 +53,8 @@ uint64_t	pcg_advance_lcg_64(uint64_t state, uint64_t delta,
 	return (acc_mult * state + acc_plus);
 }
 
-void	pcg_setseq_64_advance_r(struct pcg_state_setseq_64 *rng, uint64_t delta)
+void	pcg_setseq_64_advance_r(struct s_pcg_state_setseq_64 *rng, \
+		uint64_t delta)
 {
 	rng->state = pcg_advance_lcg_64(rng->state, delta,
 			PCG_DEFAULT_MULTIPLIER_64, rng->inc);

@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 16:30:24 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 16:57:30 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 16:01:43 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	gen_shuffled_pixels(t_rt *rt, int *array)
 		array[i] = i;
 	while (--i + 1 > 0)
 	{
-		j = pcg32_boundedrand_r(&rt->rng, rt->total_pixels);
+		j = pcg_setseq_64_xsh_rr_32_boundedrand_r(&rt->rng, rt->total_pixels);
 		temp = array[i];
 		array[i] = array[j];
 		array[j] = temp;
@@ -36,7 +36,7 @@ void	gen_rays(t_rt *rt)
 	int			pixel_index;
 
 	gr.cam = rt->scene.camera;
-	gr.focal_length = (rt->W / 2.0) / tan(gr.cam.fov / 2.0);
+	gr.focal_length = (rt->w / 2.0) / tan(gr.cam.fov / 2.0);
 	gr.cam_z = vec_mult(-1, gr.cam.direction);
 	gr.cam_y = normalize(gr.cam.up);
 	gr.cam_x = normalize(cross(gr.cam_y, gr.cam_z));
@@ -47,10 +47,10 @@ void	gen_rays(t_rt *rt)
 	pixel_index = 0;
 	while (pixel_index < rt->total_pixels)
 	{
-		gr.x = pixel_index % rt->W;
-		gr.y = rt->H - 1 - (pixel_index / rt->W);
-		gr.u = -(gr.x - rt->W / 2.0);
-		gr.v = gr.y - rt->H / 2.0;
+		gr.x = pixel_index % rt->w;
+		gr.y = rt->h - 1 - (pixel_index / rt->w);
+		gr.u = -(gr.x - rt->w / 2.0);
+		gr.v = gr.y - rt->h / 2.0;
 		gr.direction = vec_plus(vec_plus(vec_mult(gr.u, gr.cam_x) \
 		, vec_mult(gr.v, gr.cam_y)), vec_mult(gr.focal_length, gr.cam_z));
 		gr.direction = normalize(gr.direction);
@@ -64,7 +64,7 @@ void	init_render(t_rt *rt)
 	rt->state.re_render_scene = false;
 	if (rt->image.img)
 		mlx_destroy_image(rt->mlx, rt->image.img);
-	rt->image.img = mlx_new_image(rt->mlx, rt->W, rt->H);
+	rt->image.img = mlx_new_image(rt->mlx, rt->w, rt->h);
 	if (!rt->image.img)
 		close_win(rt);
 	rt->image.addr = mlx_get_data_addr(rt->image.img, &rt->image.bits_per_pixel,
