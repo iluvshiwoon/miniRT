@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:01:40 by gschwand          #+#    #+#             */
-/*   Updated: 2025/04/01 08:23:27 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 13:55:54 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ void				print_lst_file(t_file **file);
 
 // alloc_rt.c
 void				alloc_rt(t_rt *rt, t_file **file);
-
+void	check_files(t_rt *rt, t_file **file);
+// scene_utils.c
+void	creat_struct_parser_minirt(t_parser *parser);
+void	creat_scene(t_rt *rt, t_file **file);
 // element/element_utils.c
 t_vec				parse_color(t_rt *rt, char *line);
 t_vec				parse_vec(t_rt *rt, char *line);

@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 17:12:12 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/19 17:18:26 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 13:16:25 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ t_vec	calculate_body_normal(const t_cylinder_inter *cy,
 	t_vec	axis_projection;
 
 	to_point = vec_minus(intersection_point, cy->cylinder.origin);
-	axis_projection = vec_mult(vec_scal(to_point, cy->cylinder.direction),
-			cy->cylinder.direction);
+	axis_projection = vec_mult(vec_scal(to_point, cy->cylinder.dir),
+			cy->cylinder.dir);
 	return (normalize(vec_minus(to_point, axis_projection)));
 }
 

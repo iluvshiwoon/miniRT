@@ -6,62 +6,71 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:32:15 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/18 17:44:10 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 13:11:39 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../miniRT.h"
-void translate_sphere(t_rt * rt, int id, t_vec vec)
+
+void	translate_sphere(t_rt *rt, int id, t_vec vec)
 {
-	t_sphere * sphere;
+	t_sphere	*sphere;
 
 	sphere = rt->scene.objects[id].obj;
 	sphere->origin = vec_plus(sphere->origin, vec);
-	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
+	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
+			rt->scene.objects[id]);
 	rt->state.re_render_scene = true;
 }
 
-char * string_sphere(t_rt * rt, const struct s_object object)
+char	*string_sphere(t_rt *rt, const struct s_object object)
 {
-	char * r_value;
-	char * dest;
-    t_sphere *sphere;
+	char		*r_value;
+	char		*dest;
+	t_sphere	*sphere;
 
-    dest = (char[24 + 1]){};
-    sphere = object.obj;
-    r_value = rt_ft_strjoin(rt, "sp  ", vec_toa(rt, sphere->origin));
-    r_value = rt_ft_strjoin(rt, r_value, " ");
-    fpconv_dtoa(sphere->radius, dest);
-    r_value = rt_ft_strjoin(rt, r_value, dest);
-    r_value = rt_ft_strjoin(rt, r_value, " ");
-    r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, vec_mult(255, object.albedo)));
-
-    return r_value;
+	dest = (char [24 + 1]){};
+	sphere = object.obj;
+	r_value = rt_ft_strjoin(rt, "sp  ", vec_toa(rt, sphere->origin));
+	r_value = rt_ft_strjoin(rt, r_value, " ");
+	fpconv_dtoa(sphere->radius, dest);
+	r_value = rt_ft_strjoin(rt, r_value, dest);
+	r_value = rt_ft_strjoin(rt, r_value, " ");
+	r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, vec_mult(255,
+					object.albedo)));
+	return (r_value);
 }
 
-void	parse_sphere(t_rt *rt, char *line, int * id)
+void	fill_sphere(t_rt *rt, t_sphere *sphere, int id)
 {
-	char	**tab;
-    t_sphere * sphere;
+	rt->scene.objects[id].obj = sphere;
+	rt->scene.objects[id].id = id;
+	rt->scene.objects[id].type = sp;
+	rt->scene.objects[id].display_string = &string_sphere;
+	rt->scene.objects[id].translate = &translate_sphere;
+	rt->scene.objects[id].string = string_sphere(rt, \
+			rt->scene.objects[id]);
+}
 
-    sphere = wrap_malloc(rt, sizeof(*sphere));
-    tab = rt_ft_split(rt, line, ' ');
+void	parse_sphere(t_rt *rt, char *line, int *id)
+{
+	char		**tab;
+	t_sphere	*sphere;
+
+	sphere = wrap_malloc(rt, sizeof(*sphere));
+	tab = rt_ft_split(rt, line, ' ');
 	if (tab[1] && tab[2] && tab[3])
 	{
 		sphere->origin = parse_vec(rt, tab[1]);
 		sphere->radius = ft_atoi_double(tab[2]);
 		if (sphere->radius < 0)
-			exit_error(rt,"Error: Invalid radius for sphere");
-        rt->scene.objects[*id].is_intersection = &is_intersection_sphere;
-        rt->scene.objects[*id].albedo =vec_mult(1.0/255,parse_color(rt, tab[3])); 
-        rt->scene.objects[*id].obj = sphere;
-        rt->scene.objects[*id].id = *id;
-        rt->scene.objects[*id].type = sp;
-	rt->scene.objects[*id].display_string = &string_sphere;
-	rt->scene.objects[*id].translate = &translate_sphere;
-        rt->scene.objects[*id].string = string_sphere(rt, rt->scene.objects[*id]);
-        (*id)++;
-        return;
+			exit_error(rt, "Error: Invalid radius for sphere");
+		rt->scene.objects[*id].is_intersection = &is_intersection_sphere;
+		rt->scene.objects[*id].albedo = vec_mult(1.0 / 255, parse_color(rt,
+					tab[3]));
+		fill_sphere(rt, sphere, *id);
+				(*id)++;
+		return ;
 	}
-    exit_error(rt, "Error: Invalid number of arguments for sphere");
+	exit_error(rt, "Error: Invalid number of arguments for sphere");
 }

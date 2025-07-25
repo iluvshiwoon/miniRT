@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 13:08:19 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 13:25:01 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ typedef struct s_plane {
 
 typedef struct s_cylinder {
     t_vec origin;
-    t_vec direction;
+    t_vec dir;
     double radius;
     double height;
 } t_cylinder;
@@ -382,6 +382,17 @@ typedef struct s_rot_plane
 	t_mat3	yaw_r;
 
 }t_rot_plane;
+
+typedef struct s_cl
+{
+	t_cylinder	*cyl;
+	t_vec		axis;
+	t_vec		temp;
+	t_vec		right;
+	t_vec		forward;
+	t_mat3		pitch_rot;
+	t_mat3		yaw_rot;
+}t_cl;
 
 // utils.c
 int close_win(t_rt * rt);

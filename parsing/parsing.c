@@ -6,13 +6,13 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:23 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/25 12:53:37 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 13:21:17 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 
-void    parsing_minirt(t_rt *rt,char *namefile)
+void	parsing_minirt(t_rt *rt, char *namefile)
 {
 	t_file	**file;
 
