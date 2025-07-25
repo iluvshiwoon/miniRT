@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/24 17:08:30 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 12:38:46 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,6 +221,12 @@ enum e_type {
 	cy
 };
 
+typedef struct s_rvec {
+	double pitch;
+	double yaw;
+	double roll;
+} t_rvec;
+
 typedef struct s_object {
     int id;
     enum e_type type;
@@ -228,11 +234,9 @@ typedef struct s_object {
     bool (*is_intersection)(const t_ray, const struct s_object, t_intersection *);
     char *(*display_string)(t_rt *, const struct s_object);
     void (*translate)(t_rt * rt, int id, t_vec vec);
-    void (*rotate)(t_rt * rt, int id, double pitch, double yaw, double roll);
+    void (*rotate)(t_rt * rt, int id, t_rvec rvec);
     t_vec albedo; 
     char * string;
-    // char ** (*create_properties)(t_rt *,const struct s_object);
-    // char ** properties;
 } t_object;
 
 typedef struct s_scene {
@@ -245,8 +249,8 @@ typedef struct s_scene {
 
 typedef struct s_mt_state
 {
-    uint32_t state_array[624];         // the array for the state vector 
-    int state_index;                 // index into state vector array, 0 <= state_index <= n-1   always
+    uint32_t state_array[624];        
+    int state_index;                
     double max_range;
 } t_mt_state;
 
@@ -523,4 +527,20 @@ void apply_movement(t_rt *rt, int id, enum e_type type, t_vec local_movement);
 void handle_rotation_keys(t_rt *rt, int id, enum e_type type, int keycode);
 void handle_toggle_keys(t_rt *rt, int keycode);
 void handle_navigation_keys(t_rt *rt, int keycode);
+// Camera main functions
+t_vec	camera_to_world_movement(t_camera cam, t_vec local_movement);
+void	rotate_camera_local(t_rt *rt, int id, t_rvec rvec);
+void	translate_camera(t_rt *rt, int id, t_vec vec);
+char	*string_camera(t_rt *rt, const struct s_object object);
+void	parse_camera(t_rt *rt, char *line, int *id);
+
+// Camera utility functions (for camera_utils.c)
+void	apply_pitch_rotation(t_vec *forward, t_vec *up, t_vec right, double pitch);
+void	apply_yaw_rotation(t_vec *forward, t_vec *right, t_vec up, double yaw);
+void	apply_roll_rotation(t_vec *up, t_vec *right, t_vec forward, double roll);
+void	finalize_camera_rotation(t_rt *rt, int id, t_vec forward, t_vec up);
+
+// Camera parse utility functions (for camera_parse.c)
+void	setup_camera_orientation(t_camera *camera);
+void	setup_camera_object(t_rt *rt, t_camera *camera, int *id);
 #endif

@@ -6,13 +6,13 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:33:07 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/19 17:58:40 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 12:40:39 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../miniRT.h"
 
-void rotate_plane_local(t_rt* rt,int id, double pitch, double yaw, double roll) {
+void rotate_plane_local(t_rt* rt,int id,t_rvec rvec) {
 	t_plane * plane = rt->scene.objects[id].obj;
 	
     t_vec normal = normalize(plane->normal);
@@ -22,22 +22,17 @@ void rotate_plane_local(t_rt* rt,int id, double pitch, double yaw, double roll) 
     t_vec right = normalize(cross(temp, normal));
     t_vec forward = cross(normal, right);
     
-    if (fabs(pitch) > 1e-6) {
-        t_mat3 pitch_rot = create_rotation_axis(right, pitch);
+    if (fabs(rvec.pitch) > 1e-6) {
+        t_mat3 pitch_rot = create_rotation_axis(right, rvec.pitch);
         plane->normal = normalize(mat3_multiply_vec(pitch_rot, plane->normal));
     }
     
-    if (fabs(yaw) > 1e-6) {
-        t_mat3 yaw_rot = create_rotation_axis(forward, yaw);
+    if (fabs(rvec.yaw) > 1e-6) {
+        t_mat3 yaw_rot = create_rotation_axis(forward, rvec.yaw);
         plane->normal = normalize(mat3_multiply_vec(yaw_rot, plane->normal));
     }
-    
-    // if (fabs(roll) > 1e-6) {
-    //     t_mat3 roll_rot = create_rotation_axis(normal, roll);
-    //     plane->normal = normalize(mat3_multiply_vec(roll_rot, plane->normal));
-    // }
     rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
-    if (roll == 0)
+    if (rvec.roll == 0)
     	rt->state.re_render_scene = true;
 }
 void translate_plane(t_rt * rt, int id, t_vec vec)

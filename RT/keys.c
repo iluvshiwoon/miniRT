@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 16:21:09 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/24 16:28:51 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 12:43:36 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,17 +57,17 @@ void	handle_rotation_keys(t_rt *rt, int id, enum e_type type, int keycode)
 	if (type != C && type != cy && type != pl)
 		return ;
 	if (keycode == KEY_PITCH_UP)
-		rt->scene.objects[id].rotate(rt, id, -0.07, 0, 0);
+		rt->scene.objects[id].rotate(rt, id,(t_rvec){ -0.07, 0, 0});
 	else if (keycode == KEY_PITCH_DOWN)
-		rt->scene.objects[id].rotate(rt, id, 0.07, 0, 0);
+		rt->scene.objects[id].rotate(rt, id,(t_rvec){ 0.07, 0, 0});
 	else if (keycode == KEY_YAW_LEFT)
-		rt->scene.objects[id].rotate(rt, id, 0, 0.07, 0);
+		rt->scene.objects[id].rotate(rt, id,(t_rvec){ 0, 0.07, 0});
 	else if (keycode == KEY_YAW_RIGHT)
-		rt->scene.objects[id].rotate(rt, id, 0, -0.07, 0);
+		rt->scene.objects[id].rotate(rt, id, (t_rvec){0, -0.07, 0});
 	else if (keycode == KEY_ROLL_LEFT)
-		rt->scene.objects[id].rotate(rt, id, 0, 0, 0.07);
+		rt->scene.objects[id].rotate(rt, id, (t_rvec){0, 0, 0.07});
 	else if (keycode == KEY_ROLL_RIGHT)
-		rt->scene.objects[id].rotate(rt, id, 0, 0, -0.07);
+		rt->scene.objects[id].rotate(rt, id, (t_rvec){0, 0, -0.07});
 }
 
 void	handle_toggle_keys(t_rt *rt, int keycode)

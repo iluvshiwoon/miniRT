@@ -6,39 +6,31 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:35:47 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/19 17:57:34 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 12:42:10 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../miniRT.h"
-void rotate_cylinder_local(t_rt* rt,int id, double pitch, double yaw, double roll) {
+void rotate_cylinder_local(t_rt* rt,int id,t_rvec rvec) {
 	t_cylinder * cyl = rt->scene.objects[id].obj;
-    // Current cylinder axes
-    t_vec axis = normalize(cyl->direction);  // cylinder's "up"
+    t_vec axis = normalize(cyl->direction);
     t_vec temp = {0, 1, 0};
     if (fabs(axis.y) > 0.99) temp = (t_vec){1, 0, 0};
     
     t_vec right = normalize(cross(temp, axis));
     t_vec forward = cross(axis, right);
     
-    // Rotate the cylinder's direction vector
-    if (fabs(pitch) > 1e-6) {
-        t_mat3 pitch_rot = create_rotation_axis(right, pitch);
+    if (fabs(rvec.pitch) > 1e-6) {
+        t_mat3 pitch_rot = create_rotation_axis(right, rvec.pitch);
         cyl->direction = normalize(mat3_multiply_vec(pitch_rot, cyl->direction));
     }
     
-    if (fabs(yaw) > 1e-6) {
-        t_mat3 yaw_rot = create_rotation_axis(forward, yaw);
+    if (fabs(rvec.yaw) > 1e-6) {
+        t_mat3 yaw_rot = create_rotation_axis(forward, rvec.yaw);
         cyl->direction = normalize(mat3_multiply_vec(yaw_rot, cyl->direction));
     }
-    
-    // Roll rotates around the cylinder's own axis
-    // if (fabs(roll) > 1e-6) {
-    //     t_mat3 roll_rot = create_rotation_axis(axis, roll);
-    //     cyl->direction = normalize(mat3_multiply_vec(roll_rot, cyl->direction));
-    // }
     rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt, rt->scene.objects[id]);
-    if (roll == 0)
+    if (rvec.roll == 0)
     	rt->state.re_render_scene = true;
 }
 void translate_cylinder(t_rt * rt, int id, t_vec vec)

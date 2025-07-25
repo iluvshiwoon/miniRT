@@ -8,7 +8,7 @@ C_FILES = RT/miniRT.c RT/vector1.c RT/vector.c RT/wrap_malloc.c \
 			parsing/open_file.c \
 			parsing/alloc_rt.c \
 			parsing/element/Ambient_light.c \
-			parsing/element/camera.c \
+			parsing/element/camera.c parsing/element/camera_utils.c parsing/element/camera_parse.c\
 			parsing/element/light.c \
 			parsing/element/plane.c \
 			parsing/element/sphere.c \
