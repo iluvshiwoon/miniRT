@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:41 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 12:38:46 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/07/25 13:08:19 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,6 +370,18 @@ typedef struct s_rt {
 	t_object selected;
 	t_pass_config *config;
 } t_rt;
+
+typedef struct s_rot_plane
+{
+	t_plane	*pl;
+	t_vec	norm;
+	t_vec	temp;
+	t_vec	right;
+	t_vec	forward;
+	t_mat3	pitch_r;
+	t_mat3	yaw_r;
+
+}t_rot_plane;
 
 // utils.c
 int close_win(t_rt * rt);
