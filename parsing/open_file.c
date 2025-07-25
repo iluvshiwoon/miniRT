@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 10:48:32 by gschwand          #+#    #+#             */
-/*   Updated: 2025/04/02 15:26:01 by gschwand         ###   ########.fr       */
+/*   Updated: 2025/07/25 13:58:59 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ void	print_lst_file(t_file **file)
 	}
 }
 
-
-t_file	*lstnew_file(t_rt * rt, char *line)
+t_file	*lstnew_file(t_rt *rt, char *line)
 {
 	t_file	*new;
 
@@ -50,11 +49,11 @@ void	lst_add_back_file(t_file **file, t_file *node)
 	tmp->next = node;
 }
 
-void	alloc_file_lst(t_rt * rt, t_file **file, int fd)
+void	alloc_file_lst(t_rt *rt, t_file **file, int fd)
 {
 	t_file	*node;
 	char	*line;
-    char *temp;
+	char	*temp;
 
 	node = *file;
 	while (!*file || node->line)
@@ -62,9 +61,9 @@ void	alloc_file_lst(t_rt * rt, t_file **file, int fd)
 		line = get_next_line(fd);
 		if (!line)
 			break ;
-        temp = line;
-        line = rt_ft_strdup(rt, line);
-        free(temp);
+		temp = line;
+		line = rt_ft_strdup(rt, line);
+		free(temp);
 		if (line[0] != '\n')
 		{
 			if (line[ft_strlen(line) - 1] == '\n')
@@ -75,21 +74,21 @@ void	alloc_file_lst(t_rt * rt, t_file **file, int fd)
 	}
 }
 
-t_file	**open_file(t_rt * rt, char *namefile)
+t_file	**open_file(t_rt *rt, char *namefile)
 {
 	t_file	**file;
 	char	*line;
 
-    file = wrap_malloc(rt, sizeof(t_file *));
+	file = wrap_malloc(rt, sizeof(t_file *));
 	*file = NULL;
-	rt->fd_file = open(namefile, O_RDONLY); // check_error
+	rt->fd_file = open(namefile, O_RDONLY);
 	if (rt->fd_file == -1)
 		exit_error(rt, "open failed\n");
 	line = get_next_line(rt->fd_file);
-    namefile = line;
-    if (namefile)
-        line = rt_ft_strdup(rt, namefile);
-    free(namefile);
+	namefile = line;
+	if (namefile)
+		line = rt_ft_strdup(rt, namefile);
+	free(namefile);
 	if (!line)
 		return (exit_error(rt, "Error file can't be read\n"), NULL);
 	if (line[0] != '\n')
