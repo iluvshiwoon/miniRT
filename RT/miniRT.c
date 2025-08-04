@@ -76,8 +76,8 @@ void	init_main(t_rt *rt, char **av)
 	pcg_setseq_64_srandom_r(&rt->rng, seeds[0], seeds[1]);
 	rt->current_heap = rt->parsing_heap;
 	parsing_minirt(rt, av[1]);
-	rt->w = 800;
-	rt->h = 800;
+	rt->w = 1300;
+	rt->h = 1300;
 	rt->total_pixels = rt->w * rt->h;
 	rt->current_heap = rt->graphic_heap;
 }
