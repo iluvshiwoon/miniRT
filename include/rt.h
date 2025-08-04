@@ -378,7 +378,6 @@ typedef struct s_shared{
     pthread_mutex_t display_mutex;
     pthread_mutex_t work_mutex;
     pthread_cond_t work_available;
-    pthread_cond_t work_complete;
     pthread_cond_t to_display;
     atomic_int pixels_completed;
     atomic_bool should_exit;

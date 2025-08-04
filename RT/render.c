@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "../miniRT.h"
+#include <sys/time.h>
 
 void    fill_chunk_index(t_rt * rt, t_chunk * chunks, int num_threads)
 {
@@ -29,7 +30,7 @@ void    fill_chunk_index(t_rt * rt, t_chunk * chunks, int num_threads)
     }
 }
 
-void render_chunk(t_rt *rt, t_worker * worker)
+void render_chunk(t_rt *rt, t_worker * worker, int pass)
 {
     t_render r; 
     int start_pixel;
@@ -37,14 +38,14 @@ void render_chunk(t_rt *rt, t_worker * worker)
     int completed;
     int skip;
     int update_freq;
-    int pass;
-
-    pass = atomic_load(&worker->shared->current_pass);
+    // struct timeval start, end;
+    // gettimeofday(&start, NULL);
+    // printf("Worker %d: START at %ld.%06ld\n", worker->data.thread_id, start.tv_sec, start.tv_usec);
     start_pixel = worker->data.start_pixel;
     end_pixel = worker->data.end_pixel;
     skip = rt->config[pass].skip;
     r.nrays = rt->config[pass].bounces;
-    update_freq = rt->config[pass].update_freq;
+    // update_freq = rt->config[pass].update_freq;
     while (start_pixel < end_pixel)
     {
         r.index = rt->state.shuffled_pixels[start_pixel];
@@ -64,17 +65,21 @@ void render_chunk(t_rt *rt, t_worker * worker)
                                                                        fmin(255, fmax(0, pow(r.pixel_intensity.y, 1 / 2.2))), \
                                                                        fmin(255, fmax(0, pow(r.pixel_intensity.z, 1 / 2.2)))));
         start_pixel += skip;
-        completed = atomic_fetch_add(&worker->shared->pixels_completed, skip);
+        // completed = atomic_fetch_add(&worker->shared->pixels_completed, skip);
     }
+    // gettimeofday(&end, NULL);
+    // printf("Worker %d: DONE at %ld.%06ld\n", worker->data.thread_id, end.tv_sec, end.tv_usec);
 }
 
 void * worker_thread_loop(void * arg)
 {
     t_worker * worker;
     t_shared * shared;
+    int pass;
 
     worker = arg;
     shared = worker->shared;
+    pass = 0;
     while (!atomic_load(&shared->should_exit))
     {
         pthread_mutex_lock(&shared->work_mutex);
@@ -83,8 +88,11 @@ void * worker_thread_loop(void * arg)
         pthread_mutex_unlock(&shared->work_mutex);
         if (atomic_load(&shared->should_exit))
             break;
-        render_chunk(shared->rt, worker);
-        pthread_cond_signal(&shared->work_complete);
+        while (pass < 3)
+        {
+            render_chunk(shared->rt, worker, pass);
+            pass++;
+        }
     }
     return NULL;
 }
@@ -122,13 +130,12 @@ void    init_multi_threading(t_rt * rt)
         exit_error(rt, "Failed to initialize mutex");
     if (pthread_mutex_init(&rt->shared->work_mutex, NULL) != 0)
         exit_error(rt, "Failed to initialize mutex");
-    if (pthread_cond_init(&rt->shared->work_complete, NULL) != 0)
-        exit_error(rt, "Failed to initialize condition");
     if (pthread_cond_init(&rt->shared->work_available, NULL) != 0)
         exit_error(rt, "Failed to initialize condition");
     if (pthread_cond_init(&rt->shared->to_display, NULL) != 0)
         exit_error(rt, "Failed to initialize condition");
-    rt->shared->num_threads = sysconf(_SC_NPROCESSORS_ONLN);
+    // rt->shared->num_threads = sysconf(_SC_NPROCESSORS_ONLN);
+    rt->shared->num_threads = 2;
     if (rt->shared->num_threads <= 0)
         exit_error(rt, "Failed to retrieve number of available threads");
     rt->shared->chunks = wrap_malloc(rt, sizeof(*rt->shared->chunks)*rt->shared->num_threads);
@@ -136,43 +143,34 @@ void    init_multi_threading(t_rt * rt)
     init_thread(rt);
 }
 
-int	render(t_rt *rt)
+int render(t_rt *rt)
 {
-    static struct timespec last_update = {};
-    struct timespec now;
-
-	if (rt->state.re_render_scene)
-		init_render(rt);
-	else if (rt->state.pass == 3)
-	{
-		mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
-		if (rt->state.display_string == true)
-			display_string(rt, rt->state.display_id);
-		return (1);
-	}
-    atomic_store(&rt->shared->current_pass, rt->state.pass);
-
-    pthread_mutex_lock(&rt->shared->work_mutex);
-    atomic_store(&rt->shared->work_ready, true);
-    pthread_cond_broadcast(&rt->shared->work_available);
-    pthread_mutex_unlock(&rt->shared->work_mutex);
-
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    if ((now.tv_sec - last_update.tv_sec) * 1000 + (now.tv_nsec - last_update.tv_nsec)/1000000 > 50)
-    {
+    static bool threads_started = false;
+    
+    if (rt->state.re_render_scene) {
+        init_render(rt);
+        threads_started = false;
+    }
+    
+    if (rt->state.pass >= 3) {
         mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
         if (rt->state.display_string == true)
             display_string(rt, rt->state.display_id);
-        last_update = now;
+        return (1);
     }
-
-    if (atomic_load(&rt->shared->pixels_completed) >= rt->total_pixels) {
-        mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
-        if (rt->state.display_string == true)
-            display_string(rt, rt->state.display_id);
-        rt->state.pass++;
-        atomic_store(&rt->shared->pixels_completed, 0);
-        atomic_store(&rt->shared->work_ready, false);
+    
+    if (!threads_started) {
+        pthread_mutex_lock(&rt->shared->work_mutex);
+        atomic_store(&rt->shared->work_ready, true);
+        pthread_cond_broadcast(&rt->shared->work_available);
+        pthread_mutex_unlock(&rt->shared->work_mutex);
+        threads_started = true;
+        rt->state.pass = 3;
     }
-	return (0);
+    
+    mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
+    if (rt->state.display_string == true)
+        display_string(rt, rt->state.display_id);
+    
+    return (0);
 }
