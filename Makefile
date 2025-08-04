@@ -18,7 +18,7 @@ C_FILES = RT/miniRT.c RT/vector1.c RT/vector.c RT/wrap_malloc.c \
 			parsing/element/atoi_double.c
 
 O_FILES = $(C_FILES:%.c=build/%.o)
-C_FLAGS = -Wall -Wextra -g
+C_FLAGS = -Wall -Wextra -g -fsanitize=thread
 NAME = miniRT
 
 .PHONY: all clean fclean re

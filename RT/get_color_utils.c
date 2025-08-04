@@ -41,16 +41,16 @@ t_vec	calculate_ambient_lighting(t_rt *rt, t_get_color *gc)
 				rt->scene.objects[gc->obj_id].albedo)));
 }
 
-t_vec	generate_random_hemisphere_direction(t_rt *rt, t_vec normal)
+t_vec	generate_random_hemisphere_direction(t_rt *rt, t_vec normal, t_pcg32_random *rng)
 {
 	t_get_color	gc;
 
-	gc.r1 = double_rng(&rt->rng);
-	gc.r2 = double_rng(&rt->rng);
+	gc.r1 = double_rng(rng);
+	gc.r2 = double_rng(rng);
 	gc.direction_random_local_basis = (t_vec){cos(2 * M_PI * gc.r1) * sqrt(1
 			- gc.r2), sin(2 * M_PI * gc.r1) * sqrt(1 - gc.r2), sqrt(gc.r2)};
-	gc.random_vec = (t_vec){double_rng(&rt->rng) - 0.5, double_rng(&rt->rng)
-		- 0.5, double_rng(&rt->rng) - 0.5};
+	gc.random_vec = (t_vec){double_rng(rng) - 0.5, double_rng(rng)
+		- 0.5, double_rng(rng) - 0.5};
 	gc.tangent1 = normalize(cross(normal, gc.random_vec));
 	gc.tangent2 = cross(gc.tangent1, normal);
 	return (vec_plus(vec_plus(vec_mult(gc.direction_random_local_basis.x,
@@ -60,16 +60,16 @@ t_vec	generate_random_hemisphere_direction(t_rt *rt, t_vec normal)
 }
 
 t_vec	calculate_recursive_reflection(t_rt *rt, t_get_color *gc,
-		int nb_rebound)
+		int nb_rebound, t_pcg32_random *rng)
 {
 	t_vec	direction_random;
 	t_ray	random_ray;
 	t_vec	recursive_color;
 
 	direction_random = generate_random_hemisphere_direction(rt,
-			gc->intersection.normal);
+			gc->intersection.normal, rng);
 	random_ray = (t_ray){vec_plus(gc->intersection.point, vec_mult(0.001,
 				gc->intersection.normal)), direction_random};
-	recursive_color = get_color(random_ray, rt, nb_rebound - 1);
+	recursive_color = get_color(random_ray, rt, nb_rebound - 1, rng);
 	return (vec_m_vec(recursive_color, rt->scene.objects[gc->obj_id].albedo));
 }

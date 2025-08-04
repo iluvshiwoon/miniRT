@@ -47,6 +47,9 @@
 # include "../42_MyLibC/mylibc.h"
 # include <stdbool.h>
 # include <stdint.h>
+# include <pthread.h>
+# include <stdatomic.h>
+
 
 typedef struct s_fp
 {
@@ -132,7 +135,6 @@ typedef struct s_render_state
 {
 	bool							re_render_scene;
 	int								pass;
-	int								pixel_index;
 	int								*shuffled_pixels;
 	t_ray							*rays;
 	bool							display_string;
@@ -269,7 +271,7 @@ typedef struct s_pcg_state_setseq_64
 {
 	uint64_t						state;
 	uint64_t						inc;
-}t_pcg32_random;
+} t_pcg32_random;
 
 typedef struct cylinder_inter
 {
@@ -364,6 +366,41 @@ typedef struct s_render
 	t_vec							pixel_intensity;
 }									t_render;
 
+typedef struct s_chunk{
+    int start_pixel;
+    int end_pixel;
+} t_chunk;
+
+typedef struct s_worker t_worker;
+
+typedef struct s_shared{
+    t_rt *rt;
+    pthread_mutex_t display_mutex;
+    pthread_mutex_t work_mutex;
+    pthread_cond_t work_available;
+    pthread_cond_t work_complete;
+    pthread_cond_t to_display;
+    atomic_int pixels_completed;
+    atomic_bool should_exit;
+    atomic_bool work_ready;
+    atomic_int  current_pass;
+    int num_threads;
+    t_chunk * chunks;
+} t_shared; 
+
+typedef struct s_thread_data {
+	t_pcg32_random	rng;
+    int start_pixel;
+    int end_pixel;
+    int thread_id;
+} t_thread_data;
+
+typedef struct s_worker {
+    t_shared * shared;
+    pthread_t thread;
+    t_thread_data data;
+} t_worker;
+
 typedef struct s_rt
 {
 	void							*mlx;
@@ -382,6 +419,8 @@ typedef struct s_rt
 	t_scene							scene;
 	t_object						selected;
 	t_pass_config					*config;
+    t_shared                        *shared;
+    t_worker                        *workers;
 }									t_rt;
 
 typedef struct s_rot_plane
@@ -424,8 +463,6 @@ void								free_heap(t_rt *rt);
 t_link_list							*init_alloc(t_link_list **list);
 bool								plane_intersection_solve(const t_ray ray,
 										const t_plane plane, double *t);
-t_vec								get_color(t_ray ray, t_rt *rt,
-										int nb_rebound);
 int									is_intersection_sphere(const t_ray ray, \
 										const t_object obj,
 										t_intersection *intersection);
@@ -497,11 +534,9 @@ t_vec								calculate_ambient_lighting(t_rt *rt,
 										t_get_color *gc);
 t_vec								generate_random_hemisphere_direction(\
 		t_rt *rt,
-										t_vec normal);
+										t_vec normal, t_pcg32_random *rng);
 t_vec								calculate_recursive_reflection(t_rt *rt,
-										t_get_color *gc, int nb_rebound);
-t_vec								get_color(t_ray ray, t_rt *rt,
-										int nb_rebound);
+										t_get_color *gc, int nb_rebound, t_pcg32_random *rng);
 bool								visible_intersection(const t_ray ray,
 										t_scene scene,
 										t_intersection *intersection,
@@ -592,4 +627,6 @@ void								finalize_camera_rotation(t_rt *rt, int id,
 void								setup_camera_orientation(t_camera *camera);
 void								setup_camera_object(t_rt *rt,
 										t_camera *camera, int *id);
+void    init_multi_threading(t_rt * rt);
+t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng);
 #endif

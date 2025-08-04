@@ -22,8 +22,7 @@ bool	visible_intersection(const t_ray ray, t_scene scene,
 	intersection->t = 1e99;
 	has_inter = false;
 	while (scene.total_objects)
-	{
-		obj = &scene.objects[scene.total_objects - 1];
+	{ obj = &scene.objects[scene.total_objects - 1];
 		if (obj->is_intersection != NULL && obj->is_intersection(ray, *obj,
 				&local_intersection))
 		{
@@ -41,7 +40,7 @@ bool	visible_intersection(const t_ray ray, t_scene scene,
 	return (has_inter);
 }
 
-t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound)
+t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng)
 {
 	t_get_color	gc;
 	t_vec		direct_light;
@@ -57,7 +56,7 @@ t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound)
 	direct_light = calculate_direct_lighting(rt, &gc);
 	ambient_light = calculate_ambient_lighting(rt, &gc);
 	gc.pixel = vec_plus(direct_light, ambient_light);
-	reflection = calculate_recursive_reflection(rt, &gc, nb_rebound);
+	reflection = calculate_recursive_reflection(rt, &gc, nb_rebound, rng);
 	gc.pixel = vec_plus(gc.pixel, reflection);
 	return (gc.pixel);
 }

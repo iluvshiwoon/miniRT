@@ -14,11 +14,17 @@
 
 int	close_win(t_rt *rt)
 {
-	mlx_destroy_image(rt->mlx, rt->image.img);
-	mlx_destroy_window(rt->mlx, rt->win);
-	mlx_destroy_display(rt->mlx);
-	free(rt->mlx);
-	close(rt->fd_file);
+    if (rt->mlx && rt->image.img)
+	    mlx_destroy_image(rt->mlx, rt->image.img);
+    if (rt->mlx && rt->win)
+	    mlx_destroy_window(rt->mlx, rt->win);
+    if (rt->mlx)
+    {
+	    mlx_destroy_display(rt->mlx);
+	    free(rt->mlx);
+    }
+    if (rt->fd_file)
+	    close(rt->fd_file);
 	free_heap(rt);
 	exit(0);
 }

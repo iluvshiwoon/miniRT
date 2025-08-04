@@ -15,8 +15,5 @@
 void	exit_error(t_rt *rt, char *msg)
 {
 	ft_printf_fd(2, "%s\n", msg);
-	if (rt->fd_file)
-		close(rt->fd_file);
-	free_heap(rt);
-	exit(12);
+    close_win(rt);
 }

@@ -90,8 +90,8 @@ int	main(int ac, char **av)
 		return (1);
 	rt = (t_rt){};
 	init_main(&rt, av);
-	rt.config = (t_pass_config[]){{4, 2, rt.w}, \
-		{10, 1, rt.w / 2}, {80, 1, rt.w / 8}};
+	rt.config = (t_pass_config[]){{4, 2, rt.w * 80}, \
+		{10, 1, rt.w * 40}, {80, 1, rt.w*20}};
 	rt.mlx = mlx_init();
 	if (!rt.mlx)
 		printf("malloc error mlx_init\n");
@@ -101,6 +101,7 @@ int	main(int ac, char **av)
 	rt.state.shuffled_pixels = wrap_malloc(&rt, rt.w * rt.h
 			* sizeof(*(rt.state.shuffled_pixels)));
 	gen_shuffled_pixels(&rt, rt.state.shuffled_pixels);
+    init_multi_threading(&rt);
 	mlx_hook(rt.win, KeyPress, KeyPressMask, &key_events, &rt);
 	mlx_hook(rt.win, DestroyNotify, 0, &close_win, &rt);
 	mlx_loop_hook(rt.mlx, render, &rt);

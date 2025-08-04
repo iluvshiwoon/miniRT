@@ -18,6 +18,8 @@
 # include <math.h>
 # include <unistd.h>
 # include <fcntl.h>
+#include <pthread.h>
+#include <stdatomic.h>
 # include "minilibx-linux/mlx.h"
 # include "include/rt.h"
 # include "include/parsing.h"
