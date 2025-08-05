@@ -70,8 +70,6 @@ void	init_render(t_rt *rt)
 	rt->image.addr = mlx_get_data_addr(rt->image.img, &rt->image.bits_per_pixel,
 			&rt->image.line_length, &rt->image.endian);
 	rt->state.pass = 0;
-    atomic_store(&rt->shared->pixels_completed,0);
-	// rt->state.pixel_index = 0;
 	gen_rays(rt);
 }
 

@@ -37,11 +37,6 @@ void render_chunk(t_rt *rt, t_worker * worker, int pass)
     int end_pixel;
     int skip;
     
-    // Safety checks
-    if (!rt || !rt->config || !rt->state.shuffled_pixels || !rt->state.rays) {
-        printf("ERROR: Invalid rt structure in render_chunk\n");
-        return;
-    }
     start_pixel = worker->data.start_pixel;
     end_pixel = worker->data.end_pixel;
     skip = rt->config[pass].skip;
@@ -87,7 +82,7 @@ void * worker_thread_loop(void * arg)
     
     worker = arg;
     shared = worker->shared;
-    
+    pass = 0;
     while (!atomic_load(&shared->should_exit))
     {
         pthread_mutex_lock(&shared->work_mutex);
@@ -97,26 +92,23 @@ void * worker_thread_loop(void * arg)
         
         if (atomic_load(&shared->should_exit))
             break;
-        
-        // Check if we need to pause BEFORE doing any work
-        while (atomic_load(&shared->work_paused) && !atomic_load(&shared->should_exit)) {
-            static bool counted = false;
-            if (!counted) {
-                atomic_fetch_add(&shared->paused_threads, 1);
-                counted = true;
+            
+        // Check if we should pause BEFORE starting work
+        if (atomic_load(&shared->work_paused)) {
+            pass = 0;
+            atomic_fetch_add(&shared->paused_threads, 1);
+            // Wait until unpaused
+            while (atomic_load(&shared->work_paused) 
+                   && !atomic_load(&shared->should_exit)) {
+                usleep(1000); // 1ms
             }
-            usleep(1000);
-            if (!atomic_load(&shared->work_paused)) {
-                atomic_fetch_sub(&shared->paused_threads, 1);
-                counted = false;
-            }
+            atomic_fetch_sub(&shared->paused_threads, 1);
+            if (atomic_load(&shared->should_exit))
+                break;
         }
         
-        if (atomic_load(&shared->should_exit))
-            break;
-            
-        pass = 0;
-        while (pass < 3 && !atomic_load(&shared->work_paused) && !atomic_load(&shared->should_exit))
+        while (pass < 3 && !atomic_load(&shared->work_paused) 
+               && !atomic_load(&shared->should_exit))
         {
             render_chunk(shared->rt, worker, pass);
             pass++;
@@ -157,7 +149,6 @@ void    init_multi_threading(t_rt * rt)
     // Then explicitly initialize atomics:
     atomic_store(&rt->shared->work_paused, false);
     atomic_store(&rt->shared->paused_threads, 0);
-    atomic_store(&rt->shared->pixels_completed, 0);
     atomic_store(&rt->shared->should_exit, false);
     atomic_store(&rt->shared->work_ready, false);
     atomic_store(&rt->shared->current_pass, 0);
@@ -169,7 +160,7 @@ void    init_multi_threading(t_rt * rt)
         exit_error(rt, "Failed to initialize condition");
     if (pthread_cond_init(&rt->shared->to_display, NULL) != 0)
         exit_error(rt, "Failed to initialize condition");
-    rt->shared->num_threads = sysconf(_SC_NPROCESSORS_ONLN);
+    rt->shared->num_threads = sysconf(_SC_NPROCESSORS_ONLN) * 16;
     // rt->shared->num_threads = 2;
     if (rt->shared->num_threads <= 0)
         exit_error(rt, "Failed to retrieve number of available threads");
@@ -183,27 +174,28 @@ int render(t_rt *rt)
     static bool first_render = true;
     
     if (atomic_load(&rt->state.re_render_scene)) {
+        // Only pause threads if they're already running (not first render)
         if (!first_render) {
-            printf("Stopping threads for re-render...\n");
-            
-            // First, stop work from being assigned
+            // printf("Pausing threads for re-render...\n");
             pthread_mutex_lock(&rt->shared->work_mutex);
-            atomic_store(&rt->shared->work_ready, false);
             atomic_store(&rt->shared->work_paused, true);
             pthread_mutex_unlock(&rt->shared->work_mutex);
             
-            // Wait for ALL threads to acknowledge pause
+            // Wait for threads to pause
             while (atomic_load(&rt->shared->paused_threads) < rt->shared->num_threads) {
                 usleep(1000);
             }
-            printf("All threads stopped\n");
+            // printf("All threads paused\n");
+            key_events(0,rt);
+            // atomic_store(&rt->state.render_paused, true);
+            // while (atomic_load(&rt->state.render_paused) == true)
+            //     usleep(1000);
+            // printf("Re render now\n");
         }
         
-        // Now safe to reinitialize
         init_render(rt);
-        printf("Scene reinitialized\n");
         
-        // Resume/start workers
+        // Start/resume workers
         pthread_mutex_lock(&rt->shared->work_mutex);
         atomic_store(&rt->shared->work_paused, false);
         atomic_store(&rt->shared->work_ready, true);
@@ -212,7 +204,6 @@ int render(t_rt *rt)
         
         rt->state.pass = 3;
         first_render = false;
-        printf("Threads resumed\n");
     }
     
     if (rt->state.pass >= 3) {

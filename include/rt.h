@@ -134,6 +134,7 @@ typedef struct s_ray				t_ray;
 typedef struct s_render_state
 {
 	atomic_bool							re_render_scene;
+	atomic_bool							render_paused;
 	int								pass;
 	int								*shuffled_pixels;
 	t_ray							*rays;
@@ -379,7 +380,6 @@ typedef struct s_shared{
     pthread_mutex_t work_mutex;
     pthread_cond_t work_available;
     pthread_cond_t to_display;
-    atomic_int pixels_completed;
     atomic_bool should_exit;
     atomic_bool work_paused;
     atomic_int  paused_threads;
@@ -534,7 +534,6 @@ t_vec								calculate_direct_lighting(t_rt *rt,
 t_vec								calculate_ambient_lighting(t_rt *rt,
 										t_get_color *gc);
 t_vec								generate_random_hemisphere_direction(\
-		t_rt *rt,
 										t_vec normal, t_pcg32_random *rng);
 t_vec								calculate_recursive_reflection(t_rt *rt,
 										t_get_color *gc, int nb_rebound, t_pcg32_random *rng);
@@ -606,7 +605,7 @@ void								apply_movement(t_rt *rt, int id,
 void								handle_rotation_keys(t_rt *rt, int id,
 										enum e_type type, int keycode);
 void								handle_toggle_keys(t_rt *rt, int keycode);
-void								handle_navigation_keys(t_rt *rt,
+bool								handle_navigation_keys(t_rt *rt,
 										int keycode);
 t_vec								camera_to_world_movement(t_camera cam,
 										t_vec local_movement);
@@ -630,4 +629,5 @@ void								setup_camera_object(t_rt *rt,
 										t_camera *camera, int *id);
 void    init_multi_threading(t_rt * rt);
 t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng);
+int	key_events(int keycode, t_rt *rt);
 #endif

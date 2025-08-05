@@ -42,26 +42,36 @@ int	key_events(int keycode, t_rt *rt)
 	int			id;
 	enum e_type	type;
 	t_vec		local_movement;
+    static int  last_keycode;
 
-	id = rt->state.display_id;
-	type = rt->scene.objects[id].type;
-	if (keycode == KEY_ESC)
-	{
-		close_win(rt);
-		return (0);
-	}
+    id = rt->state.display_id;
+    type = rt->scene.objects[id].type;
+	if (handle_navigation_keys(rt, keycode) == true)
+        return(0);
+    if (atomic_load(&rt->state.re_render_scene) == false)
+    {
+        atomic_store(&rt->state.re_render_scene, true);
+        last_keycode = keycode;
+        return (0);
+    }
+    if (atomic_load(&rt->shared->work_paused) != true)
+        return (0);
+    if (last_keycode == KEY_ESC)
+    {
+        close_win(rt);
+        return (0);
+    }
 	if (type != A)
 	{
-		local_movement = handle_movement_keys(keycode);
+		local_movement = handle_movement_keys(last_keycode);
 		apply_movement(rt, id, type, local_movement);
 	}
-	handle_rotation_keys(rt, id, type, keycode);
-	handle_toggle_keys(rt, keycode);
-	handle_navigation_keys(rt, keycode);
-	if (keycode == KEY_ENTER)
+	handle_rotation_keys(rt, id, type, last_keycode);
+	handle_toggle_keys(rt, last_keycode);
+	if (last_keycode == KEY_ENTER)
 		write_to_file(rt);
 	else
-		printf("%d\n", keycode);
+		printf("%d\n", last_keycode);
 	return (0);
 }
 
