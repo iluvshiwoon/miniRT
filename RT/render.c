@@ -35,18 +35,21 @@ void render_chunk(t_rt *rt, t_worker * worker, int pass)
     t_render r; 
     int start_pixel;
     int end_pixel;
-    int completed;
     int skip;
-    int update_freq;
-    // struct timeval start, end;
-    // gettimeofday(&start, NULL);
-    // printf("Worker %d: START at %ld.%06ld\n", worker->data.thread_id, start.tv_sec, start.tv_usec);
+    
+    // Safety checks
+    if (!rt || !rt->config || !rt->state.shuffled_pixels || !rt->state.rays) {
+        printf("ERROR: Invalid rt structure in render_chunk\n");
+        return;
+    }
     start_pixel = worker->data.start_pixel;
     end_pixel = worker->data.end_pixel;
     skip = rt->config[pass].skip;
     r.nrays = rt->config[pass].bounces;
-    // update_freq = rt->config[pass].update_freq;
-    while (start_pixel < end_pixel)
+    
+    while (start_pixel < end_pixel 
+           && !atomic_load(&worker->shared->should_exit)
+           && !atomic_load(&worker->shared->work_paused))
     {
         r.index = rt->state.shuffled_pixels[start_pixel];
         r.x = r.index % rt->w;
@@ -54,21 +57,26 @@ void render_chunk(t_rt *rt, t_worker * worker, int pass)
         r.k = 0;
         r.ray = rt->state.rays[r.index];
         r.pixel_intensity = (t_vec){};
-        while (r.k < r.nrays)
+        
+        while (r.k < r.nrays 
+               && !atomic_load(&worker->shared->should_exit)
+               && !atomic_load(&worker->shared->work_paused))
         {
             r.pixel_intensity = vec_plus(r.pixel_intensity, vec_mult(1.0
                                                                      / r.nrays, get_color(r.ray, rt, 5, &worker->data.rng)));
             r.k++;
         }
-        my_mlx_put_pixel(&rt->image, r.x, rt->h - 1 - r.y, create_trgb(255, \
-                                                                       fmin(255, fmax(0, pow(r.pixel_intensity.x, 1 / 2.2))), \
-                                                                       fmin(255, fmax(0, pow(r.pixel_intensity.y, 1 / 2.2))), \
-                                                                       fmin(255, fmax(0, pow(r.pixel_intensity.z, 1 / 2.2)))));
+        
+        if (!atomic_load(&worker->shared->should_exit) 
+            && !atomic_load(&worker->shared->work_paused))
+        {
+            my_mlx_put_pixel(&rt->image, r.x, rt->h - 1 - r.y, create_trgb(255, \
+                                                                           fmin(255, fmax(0, pow(r.pixel_intensity.x, 1 / 2.2))), \
+                                                                           fmin(255, fmax(0, pow(r.pixel_intensity.y, 1 / 2.2))), \
+                                                                           fmin(255, fmax(0, pow(r.pixel_intensity.z, 1 / 2.2)))));
+        }
         start_pixel += skip;
-        // completed = atomic_fetch_add(&worker->shared->pixels_completed, skip);
     }
-    // gettimeofday(&end, NULL);
-    // printf("Worker %d: DONE at %ld.%06ld\n", worker->data.thread_id, end.tv_sec, end.tv_usec);
 }
 
 void * worker_thread_loop(void * arg)
@@ -76,19 +84,39 @@ void * worker_thread_loop(void * arg)
     t_worker * worker;
     t_shared * shared;
     int pass;
-
+    
     worker = arg;
     shared = worker->shared;
-    pass = 0;
+    
     while (!atomic_load(&shared->should_exit))
     {
         pthread_mutex_lock(&shared->work_mutex);
         while (!atomic_load(&shared->work_ready) && !atomic_load(&shared->should_exit))
             pthread_cond_wait(&shared->work_available, &shared->work_mutex);
         pthread_mutex_unlock(&shared->work_mutex);
+        
         if (atomic_load(&shared->should_exit))
             break;
-        while (pass < 3)
+        
+        // Check if we need to pause BEFORE doing any work
+        while (atomic_load(&shared->work_paused) && !atomic_load(&shared->should_exit)) {
+            static bool counted = false;
+            if (!counted) {
+                atomic_fetch_add(&shared->paused_threads, 1);
+                counted = true;
+            }
+            usleep(1000);
+            if (!atomic_load(&shared->work_paused)) {
+                atomic_fetch_sub(&shared->paused_threads, 1);
+                counted = false;
+            }
+        }
+        
+        if (atomic_load(&shared->should_exit))
+            break;
+            
+        pass = 0;
+        while (pass < 3 && !atomic_load(&shared->work_paused) && !atomic_load(&shared->should_exit))
         {
             render_chunk(shared->rt, worker, pass);
             pass++;
@@ -126,6 +154,13 @@ void    init_multi_threading(t_rt * rt)
     rt->shared = wrap_malloc(rt, sizeof(*rt->shared));
     *rt->shared = (t_shared){};
     rt->shared->rt = rt;
+    // Then explicitly initialize atomics:
+    atomic_store(&rt->shared->work_paused, false);
+    atomic_store(&rt->shared->paused_threads, 0);
+    atomic_store(&rt->shared->pixels_completed, 0);
+    atomic_store(&rt->shared->should_exit, false);
+    atomic_store(&rt->shared->work_ready, false);
+    atomic_store(&rt->shared->current_pass, 0);
     if (pthread_mutex_init(&rt->shared->display_mutex, NULL) != 0)
         exit_error(rt, "Failed to initialize mutex");
     if (pthread_mutex_init(&rt->shared->work_mutex, NULL) != 0)
@@ -134,8 +169,8 @@ void    init_multi_threading(t_rt * rt)
         exit_error(rt, "Failed to initialize condition");
     if (pthread_cond_init(&rt->shared->to_display, NULL) != 0)
         exit_error(rt, "Failed to initialize condition");
-    // rt->shared->num_threads = sysconf(_SC_NPROCESSORS_ONLN);
-    rt->shared->num_threads = 2;
+    rt->shared->num_threads = sysconf(_SC_NPROCESSORS_ONLN);
+    // rt->shared->num_threads = 2;
     if (rt->shared->num_threads <= 0)
         exit_error(rt, "Failed to retrieve number of available threads");
     rt->shared->chunks = wrap_malloc(rt, sizeof(*rt->shared->chunks)*rt->shared->num_threads);
@@ -145,11 +180,39 @@ void    init_multi_threading(t_rt * rt)
 
 int render(t_rt *rt)
 {
-    static bool threads_started = false;
+    static bool first_render = true;
     
-    if (rt->state.re_render_scene) {
+    if (atomic_load(&rt->state.re_render_scene)) {
+        if (!first_render) {
+            printf("Stopping threads for re-render...\n");
+            
+            // First, stop work from being assigned
+            pthread_mutex_lock(&rt->shared->work_mutex);
+            atomic_store(&rt->shared->work_ready, false);
+            atomic_store(&rt->shared->work_paused, true);
+            pthread_mutex_unlock(&rt->shared->work_mutex);
+            
+            // Wait for ALL threads to acknowledge pause
+            while (atomic_load(&rt->shared->paused_threads) < rt->shared->num_threads) {
+                usleep(1000);
+            }
+            printf("All threads stopped\n");
+        }
+        
+        // Now safe to reinitialize
         init_render(rt);
-        threads_started = false;
+        printf("Scene reinitialized\n");
+        
+        // Resume/start workers
+        pthread_mutex_lock(&rt->shared->work_mutex);
+        atomic_store(&rt->shared->work_paused, false);
+        atomic_store(&rt->shared->work_ready, true);
+        pthread_cond_broadcast(&rt->shared->work_available);
+        pthread_mutex_unlock(&rt->shared->work_mutex);
+        
+        rt->state.pass = 3;
+        first_render = false;
+        printf("Threads resumed\n");
     }
     
     if (rt->state.pass >= 3) {
@@ -158,19 +221,6 @@ int render(t_rt *rt)
             display_string(rt, rt->state.display_id);
         return (1);
     }
-    
-    if (!threads_started) {
-        pthread_mutex_lock(&rt->shared->work_mutex);
-        atomic_store(&rt->shared->work_ready, true);
-        pthread_cond_broadcast(&rt->shared->work_available);
-        pthread_mutex_unlock(&rt->shared->work_mutex);
-        threads_started = true;
-        rt->state.pass = 3;
-    }
-    
-    mlx_put_image_to_window(rt->mlx, rt->win, rt->image.img, 0, 0);
-    if (rt->state.display_string == true)
-        display_string(rt, rt->state.display_id);
     
     return (0);
 }

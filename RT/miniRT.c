@@ -69,7 +69,7 @@ void	init_main(t_rt *rt, char **av)
 {
 	uint64_t	seeds[2];
 
-	rt->state.re_render_scene = true;
+    atomic_store(&rt->state.re_render_scene, true);
 	rt->graphic_heap = init_alloc(&rt->graphic_heap);
 	rt->parsing_heap = init_alloc(&rt->parsing_heap);
 	entropy_getbytes((void *)seeds, sizeof(seeds));

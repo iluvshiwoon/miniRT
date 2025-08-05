@@ -133,7 +133,7 @@ typedef struct s_pass_config
 typedef struct s_ray				t_ray;
 typedef struct s_render_state
 {
-	bool							re_render_scene;
+	atomic_bool							re_render_scene;
 	int								pass;
 	int								*shuffled_pixels;
 	t_ray							*rays;
@@ -381,6 +381,8 @@ typedef struct s_shared{
     pthread_cond_t to_display;
     atomic_int pixels_completed;
     atomic_bool should_exit;
+    atomic_bool work_paused;
+    atomic_int  paused_threads;
     atomic_bool work_ready;
     atomic_int  current_pass;
     int num_threads;

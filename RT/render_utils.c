@@ -61,7 +61,7 @@ void	gen_rays(t_rt *rt)
 
 void	init_render(t_rt *rt)
 {
-	rt->state.re_render_scene = false;
+    atomic_store(&rt->state.re_render_scene, false);
 	if (rt->image.img)
 		mlx_destroy_image(rt->mlx, rt->image.img);
 	rt->image.img = mlx_new_image(rt->mlx, rt->w, rt->h);

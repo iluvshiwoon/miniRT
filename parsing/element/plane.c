@@ -36,7 +36,7 @@ void	rotate_plane_local(t_rt *rt, int id, t_rvec rvec)
 	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
 			rt->scene.objects[id]);
 	if (rvec.roll == 0)
-		rt->state.re_render_scene = true;
+        atomic_store(&rt->state.re_render_scene, true);
 }
 
 void	translate_plane(t_rt *rt, int id, t_vec vec)
@@ -47,7 +47,7 @@ void	translate_plane(t_rt *rt, int id, t_vec vec)
 	plane->origin = vec_plus(plane->origin, vec);
 	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
 			rt->scene.objects[id]);
-	rt->state.re_render_scene = true;
+    atomic_store(&rt->state.re_render_scene, true);
 }
 
 char	*string_plane(t_rt *rt, const struct s_object object)

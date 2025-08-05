@@ -61,5 +61,5 @@ void	finalize_camera_rotation(t_rt *rt, int id, t_vec forward, t_vec up)
 	rt->scene.camera = *cam;
 	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
 			rt->scene.objects[id]);
-	rt->state.re_render_scene = true;
+    atomic_store(&rt->state.re_render_scene, true);
 }

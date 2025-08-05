@@ -20,7 +20,7 @@ void	translate_sphere(t_rt *rt, int id, t_vec vec)
 	sphere->origin = vec_plus(sphere->origin, vec);
 	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
 			rt->scene.objects[id]);
-	rt->state.re_render_scene = true;
+    atomic_store(&rt->state.re_render_scene, true);
 }
 
 char	*string_sphere(t_rt *rt, const struct s_object object)
