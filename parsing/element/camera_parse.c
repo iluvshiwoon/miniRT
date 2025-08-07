@@ -38,6 +38,9 @@ void	setup_camera_object(t_rt *rt, t_camera *camera, int *id)
 	rt->scene.objects[*id].translate = &translate_camera;
 	rt->scene.objects[*id].string = string_camera(rt,
 			rt->scene.objects[*id]);
+	// Initialize material properties with default values
+	rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0}; // No specular for camera
+	rt->scene.objects[*id].shininess = 0.0; // No shininess for camera
 	(*id)++;
 	rt->scene.camera = *camera;
 }

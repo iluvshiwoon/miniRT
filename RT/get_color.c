@@ -45,7 +45,9 @@ t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng)
 	t_get_color	gc;
 	t_vec		direct_light;
 	t_vec		ambient_light;
+	t_vec		specular_light;
 	t_vec		reflection;
+	t_vec		view_direction;
 
 	gc.pixel = (t_vec){};
 	gc.obj_id = 0;
@@ -53,9 +55,20 @@ t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng)
 		return ((t_vec){0, 0, 0});
 	if (!visible_intersection(ray, rt->scene, &(gc.intersection), &(gc.obj_id)))
 		return ((t_vec){0, 0, 0});
+	
+	// Calculate view direction (from intersection point to camera)
+	view_direction = normalize(vec_minus(ray.origin, gc.intersection.point));
+	
+	// Calculate Phong lighting components
 	direct_light = calculate_direct_lighting(rt, &gc);
 	ambient_light = calculate_ambient_lighting(rt, &gc);
+	specular_light = calculate_specular_reflection(rt, &gc, view_direction);
+	
+	// Combine all lighting components
 	gc.pixel = vec_plus(direct_light, ambient_light);
+	gc.pixel = vec_plus(gc.pixel, specular_light);
+	
+	// Add recursive reflection for global illumination
 	reflection = calculate_recursive_reflection(rt, &gc, nb_rebound, rng);
 	gc.pixel = vec_plus(gc.pixel, reflection);
 	return (gc.pixel);

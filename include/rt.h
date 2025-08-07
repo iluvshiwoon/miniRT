@@ -21,6 +21,7 @@
 # define KEY_A 97
 # define KEY_D 100
 # define KEY_Z 122
+# define KEY_B 98
 # define KEY_ENTER 65293
 # define KEY_SHIFT 65505
 # define KEY_CTRL 65507
@@ -243,6 +244,9 @@ struct								s_object
 	enum e_type						type;
 	void							*obj;
 	t_vec							albedo;
+	t_vec							specular;
+	double							shininess;
+	bool							checkerboard;
 	char							*string;
 	void							(*rotate)(t_rt *rt, int id, t_rvec rvec);
 	void							(*translate)(t_rt *rt, int id, t_vec vec);
@@ -304,6 +308,10 @@ typedef struct s_get_color
 	t_vec							light_contribution;
 	t_vec							ambient_contribution;
 	t_vec							ambient_light;
+	t_vec							light_direction;
+	t_vec							half_vector;
+	double							cos_alpha;
+	t_vec							specular_contribution;
 	double							r1;
 	double							r2;
 	t_vec							direction_random_local_basis;
@@ -533,6 +541,10 @@ t_vec								calculate_direct_lighting(t_rt *rt,
 										t_get_color *gc);
 t_vec								calculate_ambient_lighting(t_rt *rt,
 										t_get_color *gc);
+t_vec								calculate_specular_reflection(t_rt *rt,
+										t_get_color *gc, t_vec view_direction);
+t_vec								get_checkerboard_color(t_vec point, t_vec albedo);
+t_vec								get_material_color(t_object *obj, t_vec point);
 t_vec								generate_random_hemisphere_direction(\
 										t_vec normal, t_pcg32_random *rng);
 t_vec								calculate_recursive_reflection(t_rt *rt,

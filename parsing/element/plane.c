@@ -87,6 +87,9 @@ void	parse_plane(t_rt *rt, char *line, int *id)
 		rt->scene.objects[*id].translate = &translate_plane;
 		rt->scene.objects[*id].string = string_plane(rt,
 				rt->scene.objects[*id]);
+		// Initialize material properties with default values
+		rt->scene.objects[*id].specular = (t_vec){0.5, 0.5, 0.5}; // Default specular color
+		rt->scene.objects[*id].shininess = 32.0; // Default shininess
 		(*id)++;
 		return ;
 	}

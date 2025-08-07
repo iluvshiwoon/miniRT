@@ -41,6 +41,55 @@ t_vec	calculate_ambient_lighting(t_rt *rt, t_get_color *gc)
 				rt->scene.objects[gc->obj_id].albedo)));
 }
 
+t_vec	calculate_specular_reflection(t_rt *rt, t_get_color *gc, t_vec view_direction)
+{
+	// Shadow check (same as in calculate_direct_lighting)
+	if (gc->inter && gc->intersection_light.t * gc->intersection_light.t < gc->d_light2)
+		return ((t_vec){0, 0, 0});
+	gc->light_direction = normalize(vec_minus(rt->scene.light.origin, gc->intersection.point));
+	gc->half_vector = normalize(vec_plus(gc->light_direction, view_direction));
+	gc->cos_alpha = fmax(0, vec_scal(gc->half_vector, gc->intersection.normal));
+	gc->cos_alpha = pow(gc->cos_alpha, rt->scene.objects[gc->obj_id].shininess);
+	gc->specular_contribution = vec_mult(rt->scene.light.intensity * EXPOSURE
+			* gc->cos_alpha / gc->d_light2, rt->scene.light.color);
+	return (vec_m_vec(gc->specular_contribution,
+				rt->scene.objects[gc->obj_id].specular));
+}
+
+t_vec	get_checkerboard_color(t_vec point, t_vec albedo)
+{
+	int		checker_x, checker_y, checker_z;
+	t_vec	checker_color;
+	double	scale;
+
+	scale = 2.0; // Size of checkerboard squares
+	checker_x = (int)(point.x * scale);
+	checker_y = (int)(point.y * scale);
+	checker_z = (int)(point.z * scale);
+	
+	// Create alternating pattern based on sum of coordinates
+	if ((checker_x + checker_y + checker_z) % 2 == 0)
+	{
+		// White squares
+		checker_color = (t_vec){1.0, 1.0, 1.0};
+	}
+	else
+	{
+		// Colored squares (use the original albedo)
+		checker_color = albedo;
+	}
+	
+	return (checker_color);
+}
+
+t_vec	get_material_color(t_object *obj, t_vec point)
+{
+	if (obj->checkerboard)
+		return (get_checkerboard_color(point, obj->albedo));
+	else
+		return (obj->albedo);
+}
+
 t_vec	generate_random_hemisphere_direction(t_vec normal, t_pcg32_random *rng)
 {
 	t_get_color	gc;

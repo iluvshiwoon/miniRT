@@ -49,6 +49,9 @@ void	parse_amb_light(t_rt *rt, char *line, int *id)
 		rt->scene.objects[*id].display_string = &string_ambient;
 		rt->scene.objects[*id].string = string_ambient(rt,
 				rt->scene.objects[*id]);
+		// Initialize material properties with default values
+		rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0}; // No specular for ambient light
+		rt->scene.objects[*id].shininess = 0.0; // No shininess for ambient light
 		(*id)++;
 		rt->scene.ambient_light = *ambient_light;
 		return ;

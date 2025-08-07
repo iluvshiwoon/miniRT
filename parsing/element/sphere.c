@@ -50,6 +50,9 @@ void	fill_sphere(t_rt *rt, t_sphere *sphere, int id)
 	rt->scene.objects[id].translate = &translate_sphere;
 	rt->scene.objects[id].string = string_sphere(rt, \
 			rt->scene.objects[id]);
+	// Initialize material properties with default values
+	rt->scene.objects[id].specular = (t_vec){0.5, 0.5, 0.5}; // Default specular color
+	rt->scene.objects[id].shininess = 32.0; // Default shininess
 }
 
 void	parse_sphere(t_rt *rt, char *line, int *id)

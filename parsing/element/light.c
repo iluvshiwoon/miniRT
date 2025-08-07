@@ -71,6 +71,9 @@ void	parse_light(t_rt *rt, char *line, int *id)
 		rt->scene.objects[*id].is_intersection = NULL;
 		light->color = vec_mult(1.0 / 255, parse_color(rt, tab[3]));
 		set_light(rt, light, *id);
+		// Initialize material properties with default values
+		rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0}; // No specular for light
+		rt->scene.objects[*id].shininess = 0.0; // No shininess for light
 		(*id)++;
 		return ;
 	}
