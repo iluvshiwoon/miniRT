@@ -80,6 +80,7 @@ void	fill_intersection_data(t_intersection *intersection,
 				ray.direction));
 	intersection->normal = calculate_intersection_normal(cy,
 			intersection->point, ray);
+	intersection->hit_cap = cy->hit_cap;
 }
 
 int	is_intersection_cylinder(const t_ray ray, const t_object obj,

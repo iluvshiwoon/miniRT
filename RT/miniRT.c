@@ -67,6 +67,11 @@ int	key_events(int keycode, t_rt *rt)
 	}
 	if (!(type != C && type != cy && type != pl))
 	    handle_rotation_keys(rt, id, last_keycode);
+	if (last_keycode == KEY_B)
+	{
+		rt->scene.objects[rt->state.display_id].checkerboard = 
+			!rt->scene.objects[rt->state.display_id].checkerboard;
+	}
 	return (0);
 }
 

@@ -215,6 +215,7 @@ typedef struct s_intersection
 	t_vec							point;
 	t_vec							normal;
 	double							t;
+	bool							hit_cap;
 }									t_intersection;
 
 typedef struct s_rt					t_rt;
@@ -544,7 +545,11 @@ t_vec								calculate_ambient_lighting(t_rt *rt,
 t_vec								calculate_specular_reflection(t_rt *rt,
 										t_get_color *gc, t_vec view_direction);
 t_vec								get_checkerboard_color(t_vec point, t_vec albedo);
-t_vec								get_material_color(t_object *obj, t_vec point);
+t_vec								get_plane_checkerboard(t_vec point, t_vec albedo, t_plane *plane);
+t_vec								get_sphere_checkerboard(t_vec point, t_vec albedo, t_sphere *sphere);
+t_vec								get_cylinder_checkerboard(t_vec point, t_vec albedo, t_cylinder *cylinder);
+t_vec								get_cylinder_cap_checkerboard(t_vec point, t_vec albedo, t_cylinder *cylinder);
+t_vec								get_material_color(t_object *obj, t_vec point, t_intersection *intersection);
 t_vec								generate_random_hemisphere_direction(\
 										t_vec normal, t_pcg32_random *rng);
 t_vec								calculate_recursive_reflection(t_rt *rt,

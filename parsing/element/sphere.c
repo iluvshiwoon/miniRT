@@ -53,6 +53,7 @@ void	fill_sphere(t_rt *rt, t_sphere *sphere, int id)
 	// Initialize material properties with default values
 	rt->scene.objects[id].specular = (t_vec){0.5, 0.5, 0.5}; // Default specular color
 	rt->scene.objects[id].shininess = 32.0; // Default shininess
+	rt->scene.objects[id].checkerboard = false; // Default no checkerboard
 }
 
 void	parse_sphere(t_rt *rt, char *line, int *id)

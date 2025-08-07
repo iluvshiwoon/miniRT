@@ -32,6 +32,7 @@ bool	visible_intersection(const t_ray ray, t_scene scene,
 				intersection->t = local_intersection.t;
 				intersection->point = local_intersection.point;
 				intersection->normal = local_intersection.normal;
+				intersection->hit_cap = local_intersection.hit_cap;
 				*obj_id = scene.total_objects - 1;
 			}
 		}

@@ -74,6 +74,7 @@ void	parse_light(t_rt *rt, char *line, int *id)
 		// Initialize material properties with default values
 		rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0}; // No specular for light
 		rt->scene.objects[*id].shininess = 0.0; // No shininess for light
+		rt->scene.objects[*id].checkerboard = false; // No checkerboard for light
 		(*id)++;
 		return ;
 	}

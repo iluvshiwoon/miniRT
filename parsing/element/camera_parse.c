@@ -41,6 +41,7 @@ void	setup_camera_object(t_rt *rt, t_camera *camera, int *id)
 	// Initialize material properties with default values
 	rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0}; // No specular for camera
 	rt->scene.objects[*id].shininess = 0.0; // No shininess for camera
+	rt->scene.objects[*id].checkerboard = false; // No checkerboard for camera
 	(*id)++;
 	rt->scene.camera = *camera;
 }

@@ -90,6 +90,7 @@ void	parse_plane(t_rt *rt, char *line, int *id)
 		// Initialize material properties with default values
 		rt->scene.objects[*id].specular = (t_vec){0.5, 0.5, 0.5}; // Default specular color
 		rt->scene.objects[*id].shininess = 32.0; // Default shininess
+		rt->scene.objects[*id].checkerboard = false; // Default no checkerboard
 		(*id)++;
 		return ;
 	}
