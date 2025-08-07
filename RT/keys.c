@@ -52,10 +52,8 @@ void	apply_movement(t_rt *rt, int id, enum e_type type, t_vec local_movement)
 	}
 }
 
-void	handle_rotation_keys(t_rt *rt, int id, enum e_type type, int keycode)
+void	handle_rotation_keys(t_rt *rt, int id, int keycode)
 {
-	if (type != C && type != cy && type != pl)
-		return ;
 	if (keycode == KEY_PITCH_UP)
 		rt->scene.objects[id].rotate(rt, id, (t_rvec){-0.07, 0, 0});
 	else if (keycode == KEY_PITCH_DOWN)
@@ -70,12 +68,22 @@ void	handle_rotation_keys(t_rt *rt, int id, enum e_type type, int keycode)
 		rt->scene.objects[id].rotate(rt, id, (t_rvec){0, 0, -0.07});
 }
 
-void	handle_toggle_keys(t_rt *rt, int keycode)
+bool	handle_toggle_keys(t_rt *rt, int keycode)
 {
+    bool r_value;
+
+    r_value = false;
 	if (keycode == KEY_C)
+    {
 		rt->state.color_black = !rt->state.color_black;
+        r_value = true;
+    }
 	else if (keycode == KEY_Z)
+    {
 		rt->state.display_string = !rt->state.display_string;
+        r_value = true;
+    }
+    return (r_value);
 }
 
 bool	handle_navigation_keys(t_rt *rt, int keycode)

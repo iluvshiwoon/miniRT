@@ -603,8 +603,8 @@ t_vec								handle_movement_keys(int keycode);
 void								apply_movement(t_rt *rt, int id,
 										enum e_type type, t_vec local_movement);
 void								handle_rotation_keys(t_rt *rt, int id,
-										enum e_type type, int keycode);
-void								handle_toggle_keys(t_rt *rt, int keycode);
+										 int keycode);
+bool								handle_toggle_keys(t_rt *rt, int keycode);
 bool								handle_navigation_keys(t_rt *rt,
 										int keycode);
 t_vec								camera_to_world_movement(t_camera cam,

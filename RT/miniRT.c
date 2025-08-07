@@ -46,7 +46,11 @@ int	key_events(int keycode, t_rt *rt)
 
     id = rt->state.display_id;
     type = rt->scene.objects[id].type;
-	if (handle_navigation_keys(rt, keycode) == true)
+    if (keycode == KEY_ESC)
+        return (close_win(rt),0);
+    if (keycode == KEY_ENTER)
+        write_to_file(rt);
+	if (handle_navigation_keys(rt, keycode) == true || handle_toggle_keys(rt, keycode) == true)
         return(0);
     if (atomic_load(&rt->state.re_render_scene) == false)
     {
@@ -56,22 +60,13 @@ int	key_events(int keycode, t_rt *rt)
     }
     if (atomic_load(&rt->shared->work_paused) != true)
         return (0);
-    if (last_keycode == KEY_ESC)
-    {
-        close_win(rt);
-        return (0);
-    }
 	if (type != A)
 	{
 		local_movement = handle_movement_keys(last_keycode);
 		apply_movement(rt, id, type, local_movement);
 	}
-	handle_rotation_keys(rt, id, type, last_keycode);
-	handle_toggle_keys(rt, last_keycode);
-	if (last_keycode == KEY_ENTER)
-		write_to_file(rt);
-	else
-		printf("%d\n", last_keycode);
+	if (!(type != C && type != cy && type != pl))
+	    handle_rotation_keys(rt, id, last_keycode);
 	return (0);
 }
 
