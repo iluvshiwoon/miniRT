@@ -18,7 +18,6 @@ void	translate_light(t_rt *rt, int id, t_vec vec)
 
 	light = rt->scene.objects[id].obj;
 	light->origin = vec_plus(light->origin, vec);
-	rt->scene.light = *light;
 	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
 			rt->scene.objects[id]);
 	rt->state.re_render_scene = true;
@@ -52,7 +51,6 @@ void	set_light(t_rt *rt, t_light *light, int id)
 	rt->scene.objects[id].translate = &translate_light;
 	rt->scene.objects[id].string = string_light(rt,
 			rt->scene.objects[id]);
-	rt->scene.light = *light;
 }
 
 void	parse_light(t_rt *rt, char *line, int *id)
@@ -71,10 +69,11 @@ void	parse_light(t_rt *rt, char *line, int *id)
 		rt->scene.objects[*id].is_intersection = NULL;
 		light->color = vec_mult(1.0 / 255, parse_color(rt, tab[3]));
 		set_light(rt, light, *id);
-		// Initialize material properties with default values
-		rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0}; // No specular for light
-		rt->scene.objects[*id].shininess = 0.0; // No shininess for light
-		rt->scene.objects[*id].checkerboard = false; // No checkerboard for light
+		rt->scene.lights[rt->scene.num_lights] = light;
+		rt->scene.num_lights++;
+		rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0};
+		rt->scene.objects[*id].shininess = 0.0;
+		rt->scene.objects[*id].checkerboard = false;
 		(*id)++;
 		return ;
 	}

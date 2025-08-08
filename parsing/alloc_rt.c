@@ -42,7 +42,7 @@ void	check_files(t_rt *rt, t_file **file)
 			check_if_element(rt, node->line);
 		node = node->next;
 	}
-	if (amb_light != 1 || light != 1 || camera != 1)
+	if (amb_light != 1 || light < 1 || camera != 1)
 		exit_error(rt, "Error: Invalid number of elements in the file");
 }
 

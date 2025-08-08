@@ -262,7 +262,8 @@ typedef struct s_scene
 	int								total_objects;
 	t_object						*objects;
 	t_camera						camera;
-	t_light							light;
+	t_light							**lights;
+	int								num_lights;
 	t_ambient_light					ambient_light;
 }									t_scene;
 

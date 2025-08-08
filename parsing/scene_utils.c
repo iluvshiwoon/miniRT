@@ -15,20 +15,29 @@
 void	alloc_scene(t_rt *rt, t_file **file)
 {
 	t_file	*node;
+	int		light_count;
 
 	node = *file;
+	light_count = 0;
+	rt->scene.total_objects = 0;
 	while (node)
 	{
+		if (node->line && node->line[0] == 'L' && node->line[1] == ' ')
+			light_count++;
 		rt->scene.total_objects++;
 		node = node->next;
 	}
 	rt->scene.objects = wrap_malloc(rt, sizeof(*rt->scene.objects)
 			* rt->scene.total_objects);
+	if (light_count > 0)
+		rt->scene.lights = wrap_malloc(rt, sizeof(t_light *) * light_count);
 }
 
 void	creat_scene(t_rt *rt, t_file **file)
 {
 	rt->scene = (t_scene){0};
+	rt->scene.lights = NULL;
+	rt->scene.num_lights = 0;
 	check_files(rt, file);
 	alloc_scene(rt, file);
 }
