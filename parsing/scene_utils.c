@@ -47,8 +47,9 @@ void	creat_struct_parser_minirt(t_parser *parser)
 	parser[0] = (t_parser){"sp ", parse_sphere};
 	parser[1] = (t_parser){"pl ", parse_plane};
 	parser[2] = (t_parser){"cy ", parse_cylinder};
-	parser[3] = (t_parser){"A ", parse_amb_light};
-	parser[4] = (t_parser){"C ", parse_camera};
-	parser[5] = (t_parser){"L ", parse_light};
-	parser[6] = (t_parser){NULL, NULL};
+	parser[3] = (t_parser){"co ", parse_cone};
+	parser[4] = (t_parser){"A ", parse_amb_light};
+	parser[5] = (t_parser){"C ", parse_camera};
+	parser[6] = (t_parser){"L ", parse_light};
+	parser[7] = (t_parser){NULL, NULL};
 }

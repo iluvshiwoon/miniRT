@@ -210,6 +210,14 @@ typedef struct s_cylinder
 	double							height;
 }									t_cylinder;
 
+typedef struct s_cone
+{
+	t_vec							origin;
+	t_vec							dir;
+	double							radius;
+	double							height;
+}									t_cone;
+
 typedef struct s_intersection
 {
 	t_vec							point;
@@ -227,7 +235,8 @@ enum								e_type
 	C,
 	sp,
 	pl,
-	cy
+	cy,
+	co
 };
 
 typedef struct s_rvec
@@ -351,6 +360,49 @@ typedef struct s_cylinder_cap
 	int								i;
 }									t_cylinder_cap;
 
+typedef struct cone_inter
+{
+	t_cone							cone;
+	double							body_t;
+	bool							body_has_sol;
+	double							cap_t;
+	t_vec							cap_normal;
+	bool							cap_has_sol;
+	bool							has_sol;
+	double							final_t;
+	bool							hit_cap;
+	t_vec							to_point;
+	t_vec							axis_projection;
+	t_vec							to_ray_origin;
+}									t_cone_inter;
+
+typedef struct s_cone_inter_solve
+{
+	t_vec							oc;
+	t_vec							ray_dir_proj;
+	t_vec							oc_proj;
+	double							a;
+	double							half_b;
+	double							c;
+	double							discriminant;
+	double							sqrt_discriminant;
+	double							t1;
+	double							t2;
+	double							candidate_t;
+	t_vec							hit_point;
+	t_vec							to_hit;
+	double							height_proj;
+}									t_cone_inter_solve;
+
+typedef struct s_cone_cap
+{
+	t_plane							cap_plane;
+	double							min_t;
+	double							current_t;
+	t_vec							p;
+	int								i;
+}									t_cone_cap;
+
 typedef struct s_gen_rays
 {
 	t_camera						cam;
@@ -456,6 +508,8 @@ typedef struct s_cl
 	t_mat3							yaw_rot;
 }									t_cl;
 
+
+
 int									close_win(t_rt *rt);
 int									create_trgb(int t, int r, int g, int b);
 void								my_mlx_put_pixel(t_data *data, int x, int y,
@@ -550,6 +604,8 @@ t_vec								get_plane_checkerboard(t_vec point, t_vec albedo, t_plane *plane);
 t_vec								get_sphere_checkerboard(t_vec point, t_vec albedo, t_sphere *sphere);
 t_vec								get_cylinder_checkerboard(t_vec point, t_vec albedo, t_cylinder *cylinder);
 t_vec								get_cylinder_cap_checkerboard(t_vec point, t_vec albedo, t_cylinder *cylinder);
+t_vec								get_cone_checkerboard(t_vec point, t_vec albedo, t_cone *cone);
+t_vec								get_cone_cap_checkerboard(t_vec point, t_vec albedo, t_cone *cone);
 t_vec								get_material_color(t_object *obj, t_vec point, t_intersection *intersection);
 t_vec								generate_random_hemisphere_direction(\
 										t_vec normal, t_pcg32_random *rng);
@@ -583,6 +639,35 @@ bool								cylinder_cap_intersection(const t_ray ray,
 										t_vec *normal);
 void								init_cylinder_intersection(\
 		t_cylinder_inter *cy, const t_object obj);
+
+// Cone intersection functions
+int									is_intersection_cone(const t_ray ray, \
+										const t_object obj,
+										t_intersection *intersection);
+void								determine_closest_cone_intersection(\
+		t_cone_inter *co);
+t_vec								calculate_cone_body_normal(\
+		const t_cone_inter *co, const t_vec intersection_point);
+t_vec								calculate_cone_intersection_normal(\
+		const t_cone_inter *co, \
+		const t_vec intersection_point, const t_ray ray);
+void								fill_cone_intersection_data(\
+		t_intersection *intersection, \
+		const t_cone_inter *co, const t_ray ray);
+bool								cone_intersection_solve1(\
+		t_cone_inter_solve *co, \
+		const t_ray ray, const t_cone cone);
+bool								cone_intersection_solve(\
+		const t_ray ray, const t_cone cone, double *t);
+void								cone_cap_calc(t_cone_cap *co,
+										const t_ray ray,
+										const t_cone cone,
+										t_vec *normal);
+bool								cone_cap_intersection(const t_ray ray,
+										const t_cone cone, double *t,
+										t_vec *normal);
+void								init_cone_intersection(\
+		t_cone_inter *co, const t_object obj);
 int									fpconv_dtoa(double fp, char dest[24]);
 t_fp								find_cachedpow10(int exp, int *k);
 uint64_t							get_dbits(double d);

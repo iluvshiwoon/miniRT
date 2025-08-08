@@ -220,6 +220,47 @@ t_vec	get_cylinder_cap_checkerboard(t_vec point, t_vec albedo, t_cylinder *cylin
 	return (albedo);
 }
 
+t_vec	get_cone_checkerboard(t_vec point, t_vec albedo, t_cone *cone)
+{
+	t_vec	axis = normalize(cone->dir);
+	t_vec	to_point = vec_minus(point, cone->origin);
+
+	// Find a vector perpendicular to the axis for the local basis
+	t_vec	temp = (fabs(axis.y) < 0.99) ? (t_vec){0, 1, 0} : (t_vec){1, 0, 0};
+	t_vec	right = normalize(cross(temp, axis));
+	t_vec	up = normalize(cross(axis, right));
+
+	// Project to_point into the local basis
+	double	x = vec_scal(to_point, right);
+	double	y = vec_scal(to_point, up);
+	double	z = vec_scal(to_point, axis);
+
+	// Cone coordinates: angle around axis and height along axis
+	double	theta = atan2(y, x); // [-pi, pi]
+	double	height_ratio = z / cone->height; // [0, 1]
+
+	// Scale for proper square aspect ratio
+	// Circumference varies with height, so we need to scale accordingly
+	double	radius_at_height = cone->radius * (1.0 - height_ratio);
+	double	circumference = 2 * M_PI * radius_at_height;
+	double	theta_scale = 8.0; // number of divisions around
+	double	height_scale = 4.0; // number of divisions along height
+
+	int	checker_theta = (int)floor((theta + M_PI) / (2 * M_PI) * theta_scale);
+	int	checker_height = (int)floor(height_ratio * height_scale);
+
+	if ((checker_theta + checker_height) % 2 == 0)
+		return ((t_vec){1.0, 1.0, 1.0});
+	else
+		return (albedo);
+}
+
+t_vec	get_cone_cap_checkerboard(t_vec point, t_vec albedo, t_cone *cone)
+{
+	// Base cap uses solid color, no checkerboard pattern
+	return (albedo);
+}
+
 t_vec	get_material_color(t_object *obj, t_vec point, t_intersection *intersection)
 {
 	if (!obj->checkerboard)
@@ -237,6 +278,13 @@ t_vec	get_material_color(t_object *obj, t_vec point, t_intersection *intersectio
 	}
 	else if (obj->type == pl)
 		return (get_plane_checkerboard(point, obj->albedo, (t_plane *)obj->obj));
+	else if (obj->type == co)
+	{
+		if (intersection && intersection->hit_cap)
+			return (get_cone_cap_checkerboard(point, obj->albedo, (t_cone *)obj->obj));
+		else
+			return (get_cone_checkerboard(point, obj->albedo, (t_cone *)obj->obj));
+	}
 	else
 		return (get_checkerboard_color(point, obj->albedo)); // For other objects
 }

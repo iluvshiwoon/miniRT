@@ -15,7 +15,7 @@
 void	check_if_element(t_rt *rt, char *str)
 {
 	if (ft_strncmp(str, "sp ", 3) && ft_strncmp(str, "pl ", 3)
-		&& ft_strncmp(str, "cy ", 3))
+		&& ft_strncmp(str, "cy ", 3) && ft_strncmp(str, "co ", 3))
 		exit_error(rt, "Error: Invalid line in the file");
 }
 
@@ -48,7 +48,7 @@ void	check_files(t_rt *rt, t_file **file)
 
 void	alloc_element(t_rt *rt, t_file **file)
 {
-	t_parser	parsers[7];
+	t_parser	parsers[8];
 	t_file		*node;
 	int			i;
 	int			j;

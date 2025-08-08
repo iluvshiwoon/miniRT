@@ -58,6 +58,9 @@ double				ft_atoi_double(char *s);
 // element/cylinder.c
 void				parse_cylinder(t_rt *rt, char *line, int *id);
 
+// element/cone.c
+void				parse_cone(t_rt *rt, char *line, int *id);
+
 // element/light.c
 void				parse_light(t_rt *rt, char *line, int *id);
 

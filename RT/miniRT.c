@@ -65,7 +65,7 @@ int	key_events(int keycode, t_rt *rt)
 		local_movement = handle_movement_keys(last_keycode);
 		apply_movement(rt, id, type, local_movement);
 	}
-	if (!(type != C && type != cy && type != pl))
+	if (!(type != C && type != cy && type != pl && type != co))
 	    handle_rotation_keys(rt, id, last_keycode);
 	if (last_keycode == KEY_B)
 	{
