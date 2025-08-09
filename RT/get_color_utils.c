@@ -271,30 +271,30 @@ t_vec	get_material_color(t_object *obj, t_vec point, t_intersection *intersectio
 		get_uv(obj, point, &u, &v);
 		return (get_texture_color(obj, u, v));
 	}
-	if (!obj->checkerboard)
-		return (obj->albedo);
-	
-	// Use different patterns based on object type
-	if (obj->type == sp)
-		return (get_sphere_checkerboard(point, obj->albedo, (t_sphere *)obj->obj));
-	else if (obj->type == cy)
+	if (obj->checkerboard)
 	{
-		if (intersection && intersection->hit_cap)
-			return (get_cylinder_cap_checkerboard(point, obj->albedo, (t_cylinder *)obj->obj));
+		if (obj->type == sp)
+			return (get_sphere_checkerboard(point, obj->albedo, (t_sphere *)obj->obj));
+		else if (obj->type == cy)
+		{
+			if (intersection && intersection->hit_cap)
+				return (get_cylinder_cap_checkerboard(point, obj->albedo, (t_cylinder *)obj->obj));
+			else
+				return (get_cylinder_checkerboard(point, obj->albedo, (t_cylinder *)obj->obj));
+		}
+		else if (obj->type == pl)
+			return (get_plane_checkerboard(point, obj->albedo, (t_plane *)obj->obj));
+		else if (obj->type == co)
+		{
+			if (intersection && intersection->hit_cap)
+				return (get_cone_cap_checkerboard(point, obj->albedo, (t_cone *)obj->obj));
+			else
+				return (get_cone_checkerboard(point, obj->albedo, (t_cone *)obj->obj));
+		}
 		else
-			return (get_cylinder_checkerboard(point, obj->albedo, (t_cylinder *)obj->obj));
+			return (get_checkerboard_color(point, obj->albedo));
 	}
-	else if (obj->type == pl)
-		return (get_plane_checkerboard(point, obj->albedo, (t_plane *)obj->obj));
-	else if (obj->type == co)
-	{
-		if (intersection && intersection->hit_cap)
-			return (get_cone_cap_checkerboard(point, obj->albedo, (t_cone *)obj->obj));
-		else
-			return (get_cone_checkerboard(point, obj->albedo, (t_cone *)obj->obj));
-	}
-	else
-		return (get_checkerboard_color(point, obj->albedo)); // For other objects
+	return (obj->albedo);
 }
 
 t_vec	generate_random_hemisphere_direction(t_vec normal, t_pcg32_random *rng)
