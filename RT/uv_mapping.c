@@ -40,8 +40,8 @@ void	get_plane_uv(t_object *obj, t_vec p, double *u, double *v)
 	else
 		u_axis = normalize(cross((t_vec){0, 1, 0}, pl->normal));
 	v_axis = normalize(cross(pl->normal, u_axis));
-	*u = fmod(vec_scal(p, u_axis), 1.0);
-	*v = fmod(vec_scal(p, v_axis), 1.0);
+	*u = fmod(vec_scal(p, u_axis) / obj->texture_scale.x, 1.0);
+	*v = fmod(vec_scal(p, v_axis) / obj->texture_scale.y, 1.0);
 	if (*u < 0)
 		*u += 1.0;
 	if (*v < 0)
@@ -129,4 +129,22 @@ t_vec	get_normal_from_map(t_object *obj, double u, double v, t_vec normal)
 	tbn.m[2][1] = bitangent.z;
 	tbn.m[2][2] = normal.z;
 	return (normalize(mat3_multiply_vec(tbn, map_normal)));
+}
+
+t_vec	get_texture_color(t_object *obj, double u, double v)
+{
+	int		x;
+	int		y;
+	char	*dst;
+	t_vec	color;
+	int		color_int;
+
+	x = u * (obj->texture_map.width - 1);
+	y = (1.0 - v) * (obj->texture_map.height - 1);
+	dst = obj->texture_map.addr + (y * obj->texture_map.line_length + x * (obj->texture_map.bits_per_pixel / 8));
+	color_int = *(unsigned int *)dst;
+	color.x = ((color_int >> 16) & 0xFF) / 255.0;
+	color.y = ((color_int >> 8) & 0xFF) / 255.0;
+	color.z = (color_int & 0xFF) / 255.0;
+	return (color);
 } 

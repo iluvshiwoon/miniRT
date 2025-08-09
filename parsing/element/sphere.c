@@ -43,6 +43,16 @@ char	*string_sphere(t_rt *rt, const struct s_object object)
 		r_value = rt_ft_strjoin(rt, r_value, " ");
 		r_value = rt_ft_strjoin(rt, r_value, object.normal_map_path);
 	}
+	if (object.texture_map_path)
+	{
+		r_value = rt_ft_strjoin(rt, r_value, " ");
+		r_value = rt_ft_strjoin(rt, r_value, object.texture_map_path);
+	}
+	if (object.texture_scale.x != 0)
+	{
+		r_value = rt_ft_strjoin(rt, r_value, " ");
+		r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, object.texture_scale));
+	}
 	return (r_value);
 }
 
@@ -70,6 +80,7 @@ void	parse_sphere(t_rt *rt, char *line, int *id)
 	tab = rt_ft_split(rt, line, ' ');
 	if (tab[1] && tab[2] && tab[3])
 	{
+		rt->scene.objects[*id].texture_map_path = NULL;
 		rt->scene.objects[*id].normal_map_path = NULL;
 		sphere->origin = parse_vec(rt, tab[1]);
 		sphere->radius = ft_atoi_double(tab[2]);
@@ -78,10 +89,21 @@ void	parse_sphere(t_rt *rt, char *line, int *id)
 		rt->scene.objects[*id].is_intersection = &is_intersection_sphere;
 		rt->scene.objects[*id].albedo = vec_mult(1.0 / 255, parse_color(rt,
 					tab[3]));
+		rt->scene.objects[*id].texture_scale = (t_vec){1.0, 1.0, 1.0};
 		if (tab[4])
 		{
-			rt->scene.objects[*id].normal_map_path = rt_ft_strdup(rt, tab[4]);
-			printf("Found normal map for sphere: %s\n", rt->scene.objects[*id].normal_map_path);
+			if (ft_strncmp(tab[4], ".", 2) != 0)
+			{
+				rt->scene.objects[*id].normal_map_path = rt_ft_strdup(rt, tab[4]);
+				printf("Found normal map for sphere: %s\n", rt->scene.objects[*id].normal_map_path);
+			}
+			if (tab[5])
+			{
+				if (ft_strncmp(tab[5], ".", 2) != 0)
+					rt->scene.objects[*id].texture_map_path = rt_ft_strdup(rt, tab[5]);
+				if (tab[6])
+					rt->scene.objects[*id].texture_scale = parse_vec(rt, tab[6]);
+			}
 		}
 		fill_sphere(rt, sphere, *id);
 				(*id)++;

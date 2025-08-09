@@ -80,5 +80,7 @@ void		parse_light(t_rt *rt, char *line, int *id);
 void		parse_ambient_light(t_rt *rt, char *line, int *id);
 void		load_normal_maps(t_rt *rt);
 void		free_normal_maps(t_rt *rt);
+void		load_texture_maps(t_rt *rt);
+void		free_texture_maps(t_rt *rt);
 
 #endif

@@ -263,6 +263,14 @@ t_vec	get_cone_cap_checkerboard(t_vec point, t_vec albedo, t_cone *cone)
 
 t_vec	get_material_color(t_object *obj, t_vec point, t_intersection *intersection)
 {
+	double	u;
+	double	v;
+
+	if (obj->texture_map_path)
+	{
+		get_uv(obj, point, &u, &v);
+		return (get_texture_color(obj, u, v));
+	}
 	if (!obj->checkerboard)
 		return (obj->albedo);
 	

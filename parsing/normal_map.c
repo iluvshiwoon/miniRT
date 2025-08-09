@@ -39,6 +39,29 @@ void	load_normal_maps(t_rt *rt)
 	}
 }
 
+void	load_texture_maps(t_rt *rt)
+{
+	int	i;
+
+	i = 0;
+	while (i < rt->scene.total_objects)
+	{
+		if (rt->scene.objects[i].texture_map_path)
+		{
+			rt->scene.objects[i].texture_map.img = mlx_xpm_file_to_image(rt->mlx,
+					rt->scene.objects[i].texture_map_path, &rt->scene.objects[i].texture_map.width, &rt->scene.objects[i].texture_map.height);
+			if (!rt->scene.objects[i].texture_map.img)
+				exit_error(rt, "Error: Could not load texture map");
+			rt->scene.objects[i].texture_map.addr = mlx_get_data_addr(
+					rt->scene.objects[i].texture_map.img,
+					&rt->scene.objects[i].texture_map.bits_per_pixel,
+					&rt->scene.objects[i].texture_map.line_length,
+					&rt->scene.objects[i].texture_map.endian);
+		}
+		i++;
+	}
+}
+
 void	free_normal_maps(t_rt *rt)
 {
 	int	i;
@@ -48,6 +71,19 @@ void	free_normal_maps(t_rt *rt)
 	{
 		if (rt->scene.objects[i].normal_map.img)
 			mlx_destroy_image(rt->mlx, rt->scene.objects[i].normal_map.img);
+		i++;
+	}
+}
+
+void	free_texture_maps(t_rt *rt)
+{
+	int	i;
+
+	i = 0;
+	while (i < rt->scene.total_objects)
+	{
+		if (rt->scene.objects[i].texture_map.img)
+			mlx_destroy_image(rt->mlx, rt->scene.objects[i].texture_map.img);
 		i++;
 	}
 } 

@@ -36,6 +36,7 @@ int	close_win(t_rt *rt)
 		pthread_cond_destroy(&rt->shared->to_display);
 	}
 	free_normal_maps(rt);
+	free_texture_maps(rt);
 	if (rt->win)
 		mlx_destroy_window(rt->mlx, rt->win);
 	if (rt->mlx)
