@@ -56,3 +56,4 @@ dkms.conf
 .envrc*
 minilibx-linux/
 */*.xpm
+*.xpm
