@@ -55,3 +55,4 @@ dkms.conf
 .direnv
 .envrc*
 minilibx-linux/
+*/*.xpm
