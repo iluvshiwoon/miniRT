@@ -3,6 +3,7 @@ C_FILES = RT/miniRT.c RT/vector1.c RT/vector.c RT/wrap_malloc.c \
 		  RT/rt_ft_strdup.c RT/pcg32.c RT/pcg32_1.c RT/intersections.c RT/my_mlx_utils.c RT/utils.c RT/grisu.c RT/grisu_utils.c RT/grisu_utils2.c RT/grisu_utils3.c RT/grisu_utils4.c \
 		  RT/print_object.c RT/rotation.c RT/render_utils.c RT/render.c RT/get_color.c RT/get_color_utils.c\
 		  RT/cylinder_intersection.c RT/cylinder_intersection_utils.c RT/cone_intersection.c RT/cone_intersection_utils.c RT/keys.c\
+		  RT/uv_mapping.c\
 			parsing/parsing.c \
 			parsing/check_args.c \
 			parsing/open_file.c \
@@ -16,12 +17,13 @@ C_FILES = RT/miniRT.c RT/vector1.c RT/vector.c RT/wrap_malloc.c \
 			parsing/element/cylinder.c \
 			parsing/element/cone.c \
 			parsing/element/element_utils.c \
-			parsing/element/atoi_double.c
-
+			parsing/element/atoi_double.c \
+			parsing/normal_map.c
+CC = gcc
 O_FILES = $(C_FILES:%.c=build/%.o)
-C_FLAGS = -Wall -Wextra -g -fsanitize=thread
+# C_FLAGS = -Wall -Wextra -g -fsanitize=thread
 # C_FLAGS = -Wall -Wextra -g -fsanitize=address
-# C_FLAGS = -Wall -Wextra
+C_FLAGS = -Wall -Wextra
 NAME = miniRT
 
 .PHONY: all clean fclean re

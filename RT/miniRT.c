@@ -94,27 +94,30 @@ void	init_main(t_rt *rt, char **av)
 
 int	main(int ac, char **av)
 {
-	t_rt		rt;
+	t_rt		*rt;
 
 	if (check_args(ac, av))
 		return (1);
-	rt = (t_rt){};
-	init_main(&rt, av);
-	rt.config = (t_pass_config[]){{4, 2, rt.w * 80}, \
-		{10, 1, rt.w * 40}, {80, 1, rt.w*20}};
-	rt.mlx = mlx_init();
-	if (!rt.mlx)
+	rt = malloc(sizeof(t_rt));
+	if (!rt)
+		return (1);
+	ft_memset(rt, 0, sizeof(t_rt));
+	rt->mlx = mlx_init();
+	if (!rt->mlx)
 		printf("malloc error mlx_init\n");
-	rt.win = mlx_new_window(rt.mlx, rt.w, rt.h, "miniRT");
-	if (!rt.win)
+	init_main(rt, av);
+	rt->config = (t_pass_config[]){{4, 2, rt->w * 80}, \
+		{10, 1, rt->w * 40}, {80, 1, rt->w*20}};
+	rt->win = mlx_new_window(rt->mlx, rt->w, rt->h, "miniRT");
+	if (!rt->win)
 		printf("malloc error mlx_init\n");
-	rt.state.shuffled_pixels = wrap_malloc(&rt, rt.w * rt.h
-			* sizeof(*(rt.state.shuffled_pixels)));
-	gen_shuffled_pixels(&rt, rt.state.shuffled_pixels);
-    init_multi_threading(&rt);
-	mlx_hook(rt.win, KeyPress, KeyPressMask, &key_events, &rt);
-	mlx_hook(rt.win, DestroyNotify, 0, &close_win, &rt);
-	mlx_loop_hook(rt.mlx, render, &rt);
-	mlx_loop(rt.mlx);
+	rt->state.shuffled_pixels = wrap_malloc(rt, rt->w * rt->h
+			* sizeof(*(rt->state.shuffled_pixels)));
+	gen_shuffled_pixels(rt, rt->state.shuffled_pixels);
+    init_multi_threading(rt);
+	mlx_hook(rt->win, KeyPress, KeyPressMask, &key_events, rt);
+	mlx_hook(rt->win, DestroyNotify, 0, &close_win, rt);
+	mlx_loop_hook(rt->mlx, render, rt);
+	mlx_loop(rt->mlx);
 	return (0);
 }

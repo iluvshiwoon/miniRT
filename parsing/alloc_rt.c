@@ -77,4 +77,5 @@ void	alloc_rt(t_rt *rt, t_file **file)
 {
 	creat_scene(rt, file);
 	alloc_element(rt, file);
+	load_normal_maps(rt);
 }

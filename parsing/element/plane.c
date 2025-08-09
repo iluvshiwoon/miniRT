@@ -62,6 +62,11 @@ char	*string_plane(t_rt *rt, const struct s_object object)
 	r_value = rt_ft_strjoin(rt, r_value, " ");
 	r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, vec_mult(255,
 					object.albedo)));
+	if (object.normal_map_path)
+	{
+		r_value = rt_ft_strjoin(rt, r_value, " ");
+		r_value = rt_ft_strjoin(rt, r_value, object.normal_map_path);
+	}
 	return (r_value);
 }
 
@@ -74,11 +79,17 @@ void	parse_plane(t_rt *rt, char *line, int *id)
 	tab = rt_ft_split(rt, line, ' ');
 	if (tab[1] && tab[2] && tab[3])
 	{
+		rt->scene.objects[*id].normal_map_path = NULL;
 		plane->origin = parse_vec(rt, tab[1]);
 		plane->normal = normalize(parse_vec(rt, tab[2]));
 		rt->scene.objects[*id].is_intersection = &is_intersection_plane;
 		rt->scene.objects[*id].albedo = vec_mult(1.0 / 255, parse_color(rt,
 					tab[3]));
+		if (tab[4])
+		{
+			rt->scene.objects[*id].normal_map_path = rt_ft_strdup(rt, tab[4]);
+			printf("Found normal map for plane: %s\n", rt->scene.objects[*id].normal_map_path);
+		}
 		rt->scene.objects[*id].obj = plane;
 		rt->scene.objects[*id].id = *id;
 		rt->scene.objects[*id].type = pl;

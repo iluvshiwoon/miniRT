@@ -57,6 +57,16 @@ t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng)
 	if (!visible_intersection(ray, rt->scene, &(gc.intersection), &(gc.obj_id)))
 		return ((t_vec){0, 0, 0});
 	
+	if (rt->scene.objects[gc.obj_id].normal_map_path)
+	{
+		double	u;
+		double	v;
+
+		get_uv(&rt->scene.objects[gc.obj_id], gc.intersection.point, &u, &v);
+		// printf("Object %d has a normal map, u: %f, v: %f\n", gc.obj_id, u, v);
+		gc.intersection.normal = get_normal_from_map(&rt->scene.objects[gc.obj_id], u, v, gc.intersection.normal);
+	}
+	
 	// Calculate view direction (from intersection point to camera)
 	view_direction = normalize(vec_minus(ray.origin, gc.intersection.point));
 	

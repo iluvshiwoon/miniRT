@@ -1,0 +1,132 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   uv_mapping.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kershuen <kershuen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/26 11:00:00 by kershuen          #+#    #+#             */
+/*   Updated: 2025/07/26 11:00:00 by kershuen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../miniRT.h"
+#include <math.h>
+
+void	get_sphere_uv(t_object *obj, t_vec p, double *u, double *v)
+{
+	t_sphere	*sphere;
+	t_vec		p_local;
+	double		phi;
+	double		theta;
+
+	sphere = (t_sphere *)obj->obj;
+	p_local = normalize(vec_minus(p, sphere->origin));
+	phi = atan2(p_local.z, p_local.x);
+	theta = asin(p_local.y);
+	*u = 1 - (phi + M_PI) / (2 * M_PI);
+	*v = (theta + M_PI / 2) / M_PI;
+}
+
+void	get_plane_uv(t_object *obj, t_vec p, double *u, double *v)
+{
+	t_plane	*pl;
+	t_vec	u_axis;
+	t_vec	v_axis;
+
+	pl = (t_plane *)obj->obj;
+	if (fabs(pl->normal.y) > 0.99)
+		u_axis = (t_vec){1, 0, 0};
+	else
+		u_axis = normalize(cross((t_vec){0, 1, 0}, pl->normal));
+	v_axis = normalize(cross(pl->normal, u_axis));
+	*u = fmod(vec_scal(p, u_axis), 1.0);
+	*v = fmod(vec_scal(p, v_axis), 1.0);
+	if (*u < 0)
+		*u += 1.0;
+	if (*v < 0)
+		*v += 1.0;
+}
+
+void	get_cylinder_uv(t_object *obj, t_vec p, double *u, double *v)
+{
+	t_cylinder	*cy;
+	t_vec		d;
+	double		theta;
+	double		y;
+
+	cy = (t_cylinder *)obj->obj;
+	d = vec_minus(p, cy->origin);
+	theta = atan2(d.x, d.z);
+	y = vec_scal(d, cy->dir);
+	*u = (theta + M_PI) / (2 * M_PI);
+	*v = fmod(y, 1.0);
+	if (*v < 0)
+		*v += 1.0;
+}
+
+void	get_cone_uv(t_object *obj, t_vec p, double *u, double *v)
+{
+	t_cone	*co;
+	t_vec	d;
+	double	theta;
+
+	co = (t_cone *)obj->obj;
+	d = vec_minus(p, co->origin);
+	theta = atan2(d.x, d.z);
+	*u = (theta + M_PI) / (2 * M_PI);
+	*v = fmod(norm2(d), 1.0);
+}
+
+void	get_uv(t_object *obj, t_vec p, double *u, double *v)
+{
+	if (obj->type == sp)
+		get_sphere_uv(obj, p, u, v);
+	else if (obj->type == pl)
+		get_plane_uv(obj, p, u, v);
+	else if (obj->type == cy)
+		get_cylinder_uv(obj, p, u, v);
+	else if (obj->type == co)
+		get_cone_uv(obj, p, u, v);
+	else
+	{
+		*u = 0;
+		*v = 0;
+	}
+}
+
+t_vec	get_normal_from_map(t_object *obj, double u, double v, t_vec normal)
+{
+	int		x;
+	int		y;
+	char	*dst;
+	t_vec	map_normal;
+	t_vec	tangent;
+	t_vec	bitangent;
+	t_mat3	tbn;
+
+	if (!obj->normal_map.img)
+		return (normal);
+	x = u * (obj->normal_map.width - 1);
+	y = (1.0 - v) * (obj->normal_map.height - 1);
+	dst = obj->normal_map.addr + (y * obj->normal_map.line_length + x * (obj->normal_map.bits_per_pixel / 8));
+	map_normal.x = ((*(unsigned int *)dst >> 16) & 0xFF) / 255.0 * 2.0 - 1.0;
+	map_normal.y = ((*(unsigned int *)dst >> 8) & 0xFF) / 255.0 * 2.0 - 1.0;
+	map_normal.z = (*(unsigned int *)dst & 0xFF) / 255.0 * 2.0 - 1.0;
+	map_normal = normalize(map_normal);
+	if (fabs(normal.y) > 0.99)
+		tangent = normalize(cross(normal, (t_vec){0, 0, 1}));
+	else
+		tangent = normalize(cross(normal, (t_vec){0, 1, 0}));
+	bitangent = normalize(cross(normal, tangent));
+	tbn.m[0][0] = tangent.x;
+	tbn.m[0][1] = bitangent.x;
+	tbn.m[0][2] = normal.x;
+	tbn.m[1][0] = tangent.y;
+	tbn.m[1][1] = bitangent.y;
+	tbn.m[1][2] = normal.y;
+	tbn.m[2][0] = tangent.z;
+	tbn.m[2][1] = bitangent.z;
+	tbn.m[2][2] = normal.z;
+	return (normalize(mat3_multiply_vec(tbn, map_normal)));
+} 

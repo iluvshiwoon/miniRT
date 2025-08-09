@@ -29,6 +29,7 @@ void	alloc_scene(t_rt *rt, t_file **file)
 	}
 	rt->scene.objects = wrap_malloc(rt, sizeof(*rt->scene.objects)
 			* rt->scene.total_objects);
+	ft_memset(rt->scene.objects, 0, sizeof(*rt->scene.objects) * rt->scene.total_objects);
 	if (light_count > 0)
 		rt->scene.lights = wrap_malloc(rt, sizeof(t_light *) * light_count);
 }

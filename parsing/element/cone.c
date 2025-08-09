@@ -76,6 +76,11 @@ char	*string_cone(t_rt *rt, const struct s_object object)
 	r_value = rt_ft_strjoin(rt, r_value, "  ");
 	r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, vec_mult(255,
 					object.albedo)));
+	if (object.normal_map_path)
+	{
+		r_value = rt_ft_strjoin(rt, r_value, " ");
+		r_value = rt_ft_strjoin(rt, r_value, object.normal_map_path);
+	}
 	return (r_value);
 }
 
@@ -104,6 +109,7 @@ void	parse_cone(t_rt *rt, char *line, int *id)
 	tab = rt_ft_split(rt, line, ' ');
 	if (tab[1] && tab[2] && tab[3] && tab[4] && tab[5])
 	{
+		rt->scene.objects[*id].normal_map_path = NULL;
 		cone->origin = parse_vec(rt, tab[1]);
 		cone->dir = normalize(parse_vec(rt, tab[2]));
 		cone->radius = ft_atoi_double(tab[3]);
@@ -115,6 +121,11 @@ void	parse_cone(t_rt *rt, char *line, int *id)
 		rt->scene.objects[*id].is_intersection = &is_intersection_cone;
 		rt->scene.objects[*id].albedo = vec_mult(1.0 / 255, parse_color(rt,
 					tab[5]));
+		if (tab[6])
+		{
+			rt->scene.objects[*id].normal_map_path = rt_ft_strdup(rt, tab[6]);
+			printf("Found normal map for cone: %s\n", rt->scene.objects[*id].normal_map_path);
+		}
 		fill_co(rt, cone, *id);
 		(*id)++;
 		return ;

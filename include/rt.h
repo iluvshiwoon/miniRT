@@ -151,6 +151,8 @@ typedef struct s_data
 	int								bits_per_pixel;
 	int								line_length;
 	int								endian;
+	int								width;
+	int								height;
 }									t_data;
 
 typedef struct s_vec
@@ -257,6 +259,8 @@ struct								s_object
 	t_vec							specular;
 	double							shininess;
 	bool							checkerboard;
+	char							*normal_map_path;
+	t_data							normal_map;
 	char							*string;
 	void							(*rotate)(t_rt *rt, int id, t_rvec rvec);
 	void							(*translate)(t_rt *rt, int id, t_vec vec);
@@ -733,4 +737,7 @@ void								setup_camera_object(t_rt *rt,
 void    init_multi_threading(t_rt * rt);
 t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng);
 int	key_events(int keycode, t_rt *rt);
+void	get_uv(t_object *obj, t_vec p, double *u, double *v);
+t_vec	get_normal_from_map(t_object *obj, double u, double v, t_vec normal);
+
 #endif

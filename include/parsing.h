@@ -73,4 +73,12 @@ void				parse_plane(t_rt *rt, char *line, int *id);
 // element/sphere.c
 void				parse_sphere(t_rt *rt, char *line, int *id);
 
+void		parse_cylinder(t_rt *rt, char *line, int *id);
+void		parse_cone(t_rt *rt, char *line, int *id);
+void		parse_camera(t_rt *rt, char *line, int *id);
+void		parse_light(t_rt *rt, char *line, int *id);
+void		parse_ambient_light(t_rt *rt, char *line, int *id);
+void		load_normal_maps(t_rt *rt);
+void		free_normal_maps(t_rt *rt);
+
 #endif
