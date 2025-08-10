@@ -49,3 +49,22 @@ int	close_win(t_rt *rt)
 	free_heap(rt);
 	exit(0);
 }
+
+char	*color_toa(t_rt *rt, t_vec vec)
+{
+	char	*str;
+	char	*tmp;
+	t_vec	color;
+
+	color = vec_mult(255, vec);
+	str = rt_ft_itoa(rt, (int)color.x);
+	tmp = rt_ft_strjoin(rt, str, ",");
+	str = tmp;
+	tmp = rt_ft_strjoin(rt, str, rt_ft_itoa(rt, (int)color.y));
+	str = tmp;
+	tmp = rt_ft_strjoin(rt, str, ",");
+	str = tmp;
+	tmp = rt_ft_strjoin(rt, str, rt_ft_itoa(rt, (int)color.z));
+	str = tmp;
+	return (str);
+}

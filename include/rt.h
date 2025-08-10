@@ -586,6 +586,7 @@ void								pcg_setseq_64_srandom_r(\
 										uint64_t initstate, uint64_t initseq);
 int									fpconv_dtoa(double fp, char dest[24]);
 char								*vec_toa(t_rt *rt, t_vec vec);
+char								*color_toa(t_rt *rt, t_vec vec);
 t_mat3								create_rotation_axis(t_vec axis,
 										double angle);
 t_vec								mat3_multiply_vec(t_mat3 m, t_vec v);
