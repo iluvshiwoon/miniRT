@@ -48,21 +48,52 @@ void	get_plane_uv(t_object *obj, t_vec p, double *u, double *v)
 		*v += 1.0;
 }
 
-void	get_cylinder_uv(t_object *obj, t_vec p, double *u, double *v)
+void	get_cylinder_body_uv(t_object *obj, t_vec p, double *u, double *v)
 {
 	t_cylinder	*cy;
 	t_vec		d;
 	double		theta;
 	double		y;
+	t_vec		u_axis;
 
 	cy = (t_cylinder *)obj->obj;
 	d = vec_minus(p, cy->origin);
-	theta = atan2(d.x, d.z);
+	if (fabs(cy->dir.y) > 0.99)
+		u_axis = (t_vec){1, 0, 0};
+	else
+		u_axis = normalize(cross((t_vec){0, 1, 0}, cy->dir));
+	theta = atan2(vec_scal(d, normalize(cross(u_axis, cy->dir))), vec_scal(d, u_axis));
 	y = vec_scal(d, cy->dir);
 	*u = (theta + M_PI) / (2 * M_PI);
-	*v = fmod(y, 1.0);
+	*v = fmod(y / cy->height, 1.0);
 	if (*v < 0)
 		*v += 1.0;
+}
+
+void	get_cylinder_cap_uv(t_object *obj, t_vec p, double *u, double *v)
+{
+	t_cylinder	*cy;
+	t_vec		d;
+	t_vec		u_axis;
+	t_vec		v_axis;
+
+	cy = (t_cylinder *)obj->obj;
+	d = vec_minus(p, cy->origin);
+	if (fabs(cy->dir.y) > 0.99)
+		u_axis = (t_vec){1, 0, 0};
+	else
+		u_axis = normalize(cross((t_vec){0, 1, 0}, cy->dir));
+	v_axis = normalize(cross(cy->dir, u_axis));
+	*u = (vec_scal(d, u_axis) / cy->radius + 1.0) / 2.0;
+	*v = (vec_scal(d, v_axis) / cy->radius + 1.0) / 2.0;
+}
+
+void	get_cylinder_uv(t_object *obj, t_intersection *intersection, double *u, double *v)
+{
+	if (intersection->hit_cap)
+		get_cylinder_cap_uv(obj, intersection->point, u, v);
+	else
+		get_cylinder_body_uv(obj, intersection->point, u, v);
 }
 
 void	get_cone_uv(t_object *obj, t_vec p, double *u, double *v)
@@ -78,16 +109,16 @@ void	get_cone_uv(t_object *obj, t_vec p, double *u, double *v)
 	*v = fmod(norm2(d), 1.0);
 }
 
-void	get_uv(t_object *obj, t_vec p, double *u, double *v)
+void	get_uv(t_object *obj, t_intersection *intersection, double *u, double *v)
 {
 	if (obj->type == sp)
-		get_sphere_uv(obj, p, u, v);
+		get_sphere_uv(obj, intersection->point, u, v);
 	else if (obj->type == pl)
-		get_plane_uv(obj, p, u, v);
+		get_plane_uv(obj, intersection->point, u, v);
 	else if (obj->type == cy)
-		get_cylinder_uv(obj, p, u, v);
+		get_cylinder_uv(obj, intersection, u, v);
 	else if (obj->type == co)
-		get_cone_uv(obj, p, u, v);
+		get_cone_uv(obj, intersection->point, u, v);
 	else
 	{
 		*u = 0;

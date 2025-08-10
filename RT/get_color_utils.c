@@ -268,7 +268,7 @@ t_vec	get_material_color(t_object *obj, t_vec point, t_intersection *intersectio
 
 	if (obj->texture_map_path)
 	{
-		get_uv(obj, point, &u, &v);
+		get_uv(obj, intersection, &u, &v);
 		return (get_texture_color(obj, u, v));
 	}
 	if (obj->checkerboard)

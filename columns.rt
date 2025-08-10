@@ -1,0 +1,15 @@
+A  0.05 255,255,255
+C  6,-15,13 0,0,1 70
+L  10,-16,0 0.05 255,255,255
+cy  12,-20,2  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column_normal.xpm ./textures/column_texture.xpm 1,1,1
+cy  12,-20,-8  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column_normal.xpm ./textures/column_texture.xpm 1,1,1
+cy  0,-20,-8  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column_normal.xpm ./textures/column_texture.xpm 1,1,1
+cy  0,-20,2  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column_normal.xpm ./textures/column_texture.xpm 1,1,1
+cy  12,-20,-18  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column_normal.xpm ./textures/column_texture.xpm 1,1,1
+cy  0,-20,-18  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column_normal.xpm ./textures/column_texture.xpm 1,1,1
+pl  0,-18,-22 0,0,-1 255,0,127 127,127,127 32 ./normal_maps/white_carved_normal.xpm ./textures/white_carved.xpm 10,10,1
+pl  -4,-18,-76 -1,0,0 255,0,127 127,127,127 32 ./normal_maps/white_carved_normal.xpm ./textures/white_carved.xpm 10,10,1
+pl  18,-18,-76 1,0,0 255,0,127 127,127,127 32 ./normal_maps/white_carved_normal.xpm ./textures/white_carved.xpm 10,10,1
+pl  0,-20,0 0,1,0 127,127,127 127,127,127 32 ./normal_maps/white_carved_normal.xpm ./textures/white_carved.xpm 10,10,1
+pl  0,-10,0 0,1,0 127,127,127 127,127,127 32 ./normal_maps/white_carved_normal.xpm ./textures/white_carved.xpm 10,10,1
+co  12,-14,-6  -0.79819573932668,-0.4890975001968688,-0.3516634712646576 7 50  255,100,100 127,127,127 32 ./normal_maps/carved_wood_normal.xpm . 100,100,100

@@ -24,7 +24,7 @@ void	load_normal_maps(t_rt *rt)
 	{
 		if (rt->scene.objects[i].normal_map_path)
 		{
-			printf("Loading normal map for object %d: %s\n", i, rt->scene.objects[i].normal_map_path);
+			// printf("Loading normal map for object %d: %s\n", i, rt->scene.objects[i].normal_map_path);
 			rt->scene.objects[i].normal_map.img = mlx_xpm_file_to_image(rt->mlx,
 					rt->scene.objects[i].normal_map_path, &rt->scene.objects[i].normal_map.width, &rt->scene.objects[i].normal_map.height);
 			if (!rt->scene.objects[i].normal_map.img)

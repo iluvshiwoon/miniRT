@@ -741,7 +741,7 @@ void								setup_camera_object(t_rt *rt,
 void    init_multi_threading(t_rt * rt);
 t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng);
 int	key_events(int keycode, t_rt *rt);
-void	get_uv(t_object *obj, t_vec p, double *u, double *v);
+void	get_uv(t_object *obj, t_intersection *intersection, double *u, double *v);
 t_vec	get_normal_from_map(t_object *obj, double u, double v, t_vec normal);
 t_vec	get_texture_color(t_object *obj, double u, double v);
 

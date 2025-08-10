@@ -62,8 +62,7 @@ t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng)
 		double	u;
 		double	v;
 
-		get_uv(&rt->scene.objects[gc.obj_id], gc.intersection.point, &u, &v);
-		// printf("Object %d has a normal map, u: %f, v: %f\n", gc.obj_id, u, v);
+		get_uv(&rt->scene.objects[gc.obj_id], &gc.intersection, &u, &v);
 		gc.intersection.normal = get_normal_from_map(&rt->scene.objects[gc.obj_id], u, v, gc.intersection.normal);
 	}
 	

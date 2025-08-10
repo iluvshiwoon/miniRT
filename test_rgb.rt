@@ -4,6 +4,6 @@ C 0,-15,35 0,0,1 60
 
 L 0,18,20 1.0 255,255,255
 
-sp 0,-16,5 4 127,127,127 . . ./earth_normal.xpm ./earth_texture.xpm
-pl 0,-20,0 0,1,0 127,127,127 0,0,0 32 . ./space.xpm 100,100,1
+cy 0,0,0 0,1,0 5 15 10,0,255 . . ./normal_maps/column_normal.xpm ./textures/column_texture.xpm
+pl 0,-20,0 0,1,0 127,127,127
 
