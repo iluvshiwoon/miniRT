@@ -1,6 +1,7 @@
 A  0.05 255,255,255
 C  6,-15,13 0,0,1 70
-L  10,-16,0 0.05 255,255,255
+L  0,-16,-10 0.040 255,255,255
+L  14,-16,8 0.040 139,0,0
 cy  12,-20,2  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column.xpm ./textures/column.xpm 1,1,1
 cy  12,-20,-8  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column.xpm ./textures/column.xpm 1,1,1
 cy  0,-20,-8  0,1,0 1 10  10,0,255 127,127,127 32 ./normal_maps/column.xpm ./textures/column.xpm 1,1,1
@@ -12,4 +13,4 @@ pl  -4,-18,-76 -1,0,0 255,0,127 127,127,127 32 ./normal_maps/white_carved.xpm ./
 pl  18,-18,-76 1,0,0 255,0,127 127,127,127 32 ./normal_maps/white_carved.xpm ./textures/white_carved.xpm 10,10,1
 pl  0,-20,0 0,1,0 127,127,127 127,127,127 32 ./normal_maps/white_carved.xpm ./textures/white_carved.xpm 10,10,1
 pl  0,-10,0 0,1,0 127,127,127 127,127,127 32 ./normal_maps/white_carved.xpm ./textures/white_carved.xpm 10,10,1
-co  12,-14,-6  -0.79819573932668,-0.4890975001968688,-0.3516634712646576 7 50  255,100,100 127,127,127 32 ./normal_maps/carved_metal.xpm ./textures/carved_metal.xpm 1,1,1
+co  12,-14,-6  -0.79819573932668,-0.4890975001968688,-0.3516634712646577 7 50  255,100,100 200,200,200 150 ./normal_maps/carved_metal.xpm ./textures/carved_metal.xpm 5,5,1
