@@ -23,6 +23,7 @@
               valgrind
               gcc
               # clang-tools
+              norminette
 	      llvmPackages_12.clang-tools
               libbsd
               # X11 libraries and development headers
