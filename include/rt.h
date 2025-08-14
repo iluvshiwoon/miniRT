@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:06:07 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 16:19:09 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/14 19:04:51 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -556,6 +556,21 @@ typedef struct s_cone_idx_args
     t_vec up;
 }   t_cone_idx_args;
 
+typedef struct s_cone_idx {
+	double			x;
+	double			y;
+	double			z;
+	double			theta;
+	double			height_ratio;
+}t_cone_idx;
+
+typedef struct s_checkboard{
+	t_vec			axis;
+	t_vec			right;
+	t_vec			up;
+	t_vec			to_point;
+}t_checkboard;
+
 
 
 int									close_win(t_rt *rt);
@@ -798,4 +813,7 @@ void	write_to_file(t_rt *rt);
 void    get_cone_uv(t_object *obj, t_intersection *intersection, double *u, double *v);
 void    fill_chunk_index(t_rt * rt, t_chunk * chunks, int num_threads);
 void * worker_thread_loop(void * arg);
+t_vec	cylinder_checker_color_from_idx(t_checker_idx idx, t_vec albedo);
+void	cone_local_basis(t_cone *cone, t_vec *axis, t_vec *right, t_vec *up);
+t_checker_idx	cone_checker_indices(t_cone_idx_args a);
 #endif

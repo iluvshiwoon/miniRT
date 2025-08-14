@@ -6,7 +6,7 @@
 /*   By: kershuen <kershuen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 10:00:00 by kershuen          #+#    #+#             */
-/*   Updated: 2025/07/26 10:00:00 by kershuen         ###   ########.fr       */
+/*   Updated: 2025/08/14 19:08:22 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 void	load_normal_maps(t_rt *rt)
 {
 	int	i;
-	int	width;
-	int	height;
 
 	i = 0;
 	while (i < rt->scene.total_objects)

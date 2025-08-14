@@ -6,7 +6,7 @@
 /*   By: kershuen <kershuen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 11:00:00 by kershuen          #+#    #+#             */
-/*   Updated: 2025/07/26 11:00:00 by kershuen         ###   ########.fr       */
+/*   Updated: 2025/08/14 19:08:55 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,103 +96,6 @@ void	get_cylinder_uv(t_object *obj, t_intersection *intersection, double *u, dou
 		get_cylinder_body_uv(obj, intersection->point, u, v);
 }
 
-static void	cone_local_axes(t_cone *co, t_vec *u_axis, t_vec *v_axis)
-{
-    if (fabs(co->dir.y) > 0.99)
-        *u_axis = (t_vec){1, 0, 0};
-    else
-        *u_axis = normalize(cross((t_vec){0, 1, 0}, co->dir));
-    *v_axis = normalize(cross(co->dir, *u_axis));
-}
-
-static double	cone_clamped_height(t_cone *co, t_vec d)
-{
-    double  h;
-
-    h = vec_scal(d, co->dir);
-    if (h < 0.0)
-        h = 0.0;
-    if (h > co->height)
-        h = co->height;
-    return (h);
-}
-
-static double	cone_theta(t_vec radial, t_vec u_axis, t_vec v_axis)
-{
-    if (norm2(radial) < 1e-12)
-        return (0.0);
-    return (atan2(vec_scal(radial, v_axis), vec_scal(radial, u_axis)));
-}
-
-static void	cone_apply_tiling(t_object *obj, double *u, double *v)
-{
-    if (obj->texture_scale.x != 0.0)
-        *u = fmod(*u / obj->texture_scale.x, 1.0);
-    else
-        *u = fmod(*u, 1.0);
-    if (obj->texture_scale.y != 0.0)
-        *v = fmod(*v / obj->texture_scale.y, 1.0);
-    else
-        *v = fmod(*v, 1.0);
-    if (*u < 0.0)
-        *u += 1.0;
-    if (*v < 0.0)
-        *v += 1.0;
-}
-
-static void	get_cone_body_uv(t_object *obj, t_vec p, double *u, double *v)
-{
-    t_cone  *co;
-    t_vec   d;
-    t_vec   u_axis;
-    t_vec   v_axis;
-    t_vec   axis_component;
-    t_vec   radial;
-    double  h;
-    double  theta;
-
-    co = (t_cone *)obj->obj;
-    d = vec_minus(p, co->origin);
-    cone_local_axes(co, &u_axis, &v_axis);
-    h = cone_clamped_height(co, d);
-    axis_component = vec_mult(h, co->dir);
-    radial = vec_minus(d, axis_component);
-    theta = cone_theta(radial, u_axis, v_axis);
-    *u = (theta + M_PI) / (2.0 * M_PI);
-    *v = h / co->height;
-    cone_apply_tiling(obj, u, v);
-}
-
-static void get_cone_cap_uv(t_object *obj, t_vec p, double *u, double *v)
-{
-    t_cone  *co;
-    t_vec   base_center;
-    t_vec   u_axis;
-    t_vec   v_axis;
-    t_vec   d;
-
-    co = (t_cone *)obj->obj;
-    base_center = vec_plus(co->origin, vec_mult(co->height, co->dir));
-    d = vec_minus(p, base_center);
-
-    if (fabs(co->dir.y) > 0.99)
-        u_axis = (t_vec){1, 0, 0};
-    else
-        u_axis = normalize(cross((t_vec){0, 1, 0}, co->dir));
-    v_axis = normalize(cross(co->dir, u_axis));
-
-    *u = (vec_scal(d, u_axis) / co->radius + 1.0) / 2.0;
-    *v = (vec_scal(d, v_axis) / co->radius + 1.0) / 2.0;
-
-    // Optional tiling on cap (keep behavior similar to cylinder caps = no tiling)
-    if (*u < 0.0) *u = 0.0;
-    if (*u > 1.0) *u = 1.0;
-    if (*v < 0.0) *v = 0.0;
-    if (*v > 1.0) *v = 1.0;
-}
-
-// moved to uv_mapping_cone.c
-
 void	get_uv(t_object *obj, t_intersection *intersection, double *u, double *v)
 {
 	if (obj->type == sp)
@@ -201,7 +104,7 @@ void	get_uv(t_object *obj, t_intersection *intersection, double *u, double *v)
 		get_plane_uv(obj, intersection->point, u, v);
 	else if (obj->type == cy)
 		get_cylinder_uv(obj, intersection, u, v);
-    else if (obj->type == co)
+	else if (obj->type == co)
         get_cone_uv(obj, intersection, u, v);
 	else
 	{

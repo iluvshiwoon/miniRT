@@ -6,39 +6,12 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 00:19:53 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 16:03:08 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/14 19:07:21 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 #include "unistd.h"
-
-static void	handle_system_keys(t_rt *rt, int keycode)
-{
-    if (keycode == KEY_ESC)
-    {
-        close_win(rt);
-        return ;
-    }
-    if (keycode == KEY_ENTER)
-        write_to_file(rt);
-}
-
-static void	apply_actions(t_rt *rt, int id, enum e_type type, int keycode)
-{
-    t_vec	local_movement;
-
-    if (type != A)
-    {
-        local_movement = handle_movement_keys(keycode);
-        apply_movement(rt, id, type, local_movement);
-    }
-    if (!(type != C && type != cy && type != pl && type != co))
-        handle_rotation_keys(rt, id, keycode);
-    if (keycode == KEY_B)
-        rt->scene.objects[rt->state.display_id].checkerboard = \
-            !rt->scene.objects[rt->state.display_id].checkerboard;
-}
 
 void	write_to_file(t_rt *rt)
 {
@@ -77,8 +50,8 @@ void	init_main(t_rt *rt, char **av)
 	pcg_setseq_64_srandom_r(&rt->rng, seeds[0], seeds[1]);
 	rt->current_heap = rt->parsing_heap;
 	parsing_minirt(rt, av[1]);
-	rt->w = 1300;
-	rt->h = 1300;
+	rt->w = 500;
+	rt->h = 500;
 	rt->total_pixels = rt->w * rt->h;
 	rt->current_heap = rt->graphic_heap;
 }

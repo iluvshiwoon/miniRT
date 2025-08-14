@@ -6,94 +6,11 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 19:55:30 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/18 20:09:02 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/14 18:57:02 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
-
-static void	plane_local_basis(t_plane *plane, t_vec *right, t_vec *up)
-{
-    t_vec   temp;
-
-    temp = (t_vec){0, 1, 0};
-    if (fabs(plane->normal.y) > 0.99)
-        temp = (t_vec){1, 0, 0};
-    *right = normalize(cross(temp, plane->normal));
-    *up = normalize(cross(plane->normal, *right));
-}
-
-static t_vec	plane_checker_color(double u, double v, t_vec albedo)
-{
-    int checker_u;
-    int checker_v;
-
-    checker_u = (int)floor(u);
-    checker_v = (int)floor(v);
-    if ((checker_u + checker_v) % 2 == 0)
-        return ((t_vec){1.0, 1.0, 1.0});
-    return (albedo);
-}
-
-static void	cylinder_local_basis(t_cylinder *cylinder, t_vec *axis, \
-    t_vec *right, t_vec *up)
-{
-    t_vec   temp;
-
-    *axis = normalize(cylinder->dir);
-    temp = (fabs(axis->y) < 0.99) ? (t_vec){0, 1, 0} : (t_vec){1, 0, 0};
-    *right = normalize(cross(temp, *axis));
-    *up = normalize(cross(*axis, *right));
-}
-
-static t_checker_idx	cylinder_checker_indices(t_cyl_idx_args a)
-{
-    double  x;
-    double  y;
-    double  z;
-    double  theta;
-    double  height_ratio;
-    t_checker_idx idx;
-
-    x = vec_scal(a.to_point, a.right);
-    y = vec_scal(a.to_point, a.up);
-    z = vec_scal(a.to_point, a.axis);
-    theta = atan2(y, x);
-    height_ratio = z / a.cylinder->height;
-    idx.a = (int)floor((theta + M_PI) / (2 * M_PI) * 8.0);
-    idx.b = (int)floor(height_ratio * 4.0);
-    return (idx);
-}
-
-static void	cone_local_basis(t_cone *cone, t_vec *axis, t_vec *right, \
-    t_vec *up)
-{
-    t_vec   temp;
-
-    *axis = normalize(cone->dir);
-    temp = (fabs(axis->y) < 0.99) ? (t_vec){0, 1, 0} : (t_vec){1, 0, 0};
-    *right = normalize(cross(temp, *axis));
-    *up = normalize(cross(*axis, *right));
-}
-
-static t_checker_idx	cone_checker_indices(t_cone_idx_args a)
-{
-    double  x;
-    double  y;
-    double  z;
-    double  theta;
-    double  height_ratio;
-    t_checker_idx idx;
-
-    x = vec_scal(a.to_point, a.right);
-    y = vec_scal(a.to_point, a.up);
-    z = vec_scal(a.to_point, a.axis);
-    theta = atan2(y, x);
-    height_ratio = z / a.cone->height;
-    idx.a = (int)floor((theta + M_PI) / (2 * M_PI) * 8.0);
-    idx.b = (int)floor(height_ratio * 4.0);
-    return (idx);
-}
 
 static t_vec	material_checker_dispatch(t_object *obj, t_vec point, \
     t_intersection *intersection)
@@ -104,8 +21,7 @@ static t_vec	material_checker_dispatch(t_object *obj, t_vec point, \
     else if (obj->type == cy)
     {
         if (intersection && intersection->hit_cap)
-            return (get_cylinder_cap_checkerboard(point, obj->albedo, \
-                (t_cylinder *)obj->obj));
+            return (obj->albedo);
         return (get_cylinder_checkerboard(point, obj->albedo, \
             (t_cylinder *)obj->obj));
     }
@@ -115,8 +31,7 @@ static t_vec	material_checker_dispatch(t_object *obj, t_vec point, \
     else if (obj->type == co)
     {
         if (intersection && intersection->hit_cap)
-            return (get_cone_cap_checkerboard(point, obj->albedo, \
-                (t_cone *)obj->obj));
+            return (obj->albedo);
         return (get_cone_checkerboard(point, obj->albedo, \
             (t_cone *)obj->obj));
     }
