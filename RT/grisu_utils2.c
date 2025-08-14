@@ -82,29 +82,29 @@ void	init_digits_struct(uint64_t *g_tens, t_digits *d, t_grisu2 *g)
 
 int	process_integer_part(t_digits *d, char *digits, int *K)
 {
-	while (d->kappa > 0)
-	{
-		d->div = *(d->divp);
-		d->digit = d->part1 / d->div;
-		if (d->digit || d->idx)
-			digits[d->idx++] = d->digit + '0';
-		d->part1 -= d->digit * d->div;
-		d->kappa--;
-		d->tmp = (d->part1 << -d->one.exp) + d->part2;
-		if (d->tmp <= d->delta)
-		{
-			*K += d->kappa;
-			while (d->tmp < d->wfrac && d->delta - d->tmp >= d->div << \
-				-d->one.exp && ((d->tmp + d->div) << -d->one.exp < d->wfrac
-					|| d->wfrac - d->tmp > (d->tmp + d->div) << ((-d->one.exp)
-						- d->wfrac)))
-			{
-				digits[d->idx - 1]--;
-				d->tmp += d->div << -d->one.exp;
-			}
-			return (d->idx);
-		}
-		d->divp++;
-	}
-	return (-1);
+    while (d->kappa > 0)
+    {
+        d->div = *(d->divp);
+        d->digit = d->part1 / d->div;
+        if (d->digit || d->idx)
+            digits[d->idx++] = d->digit + '0';
+        d->part1 -= d->digit * d->div;
+        d->kappa--;
+        d->tmp = (d->part1 << -d->one.exp) + d->part2;
+        if (d->tmp <= d->delta)
+        {
+            *K += d->kappa;
+            while (d->tmp < d->wfrac && d->delta - d->tmp >= d->div << \
+                -d->one.exp && ((d->tmp + d->div) << -d->one.exp < d->wfrac
+                    || d->wfrac - d->tmp > (d->tmp + d->div) << ((-d->one.exp)
+                        - d->wfrac)))
+            {
+                digits[d->idx - 1]--;
+                d->tmp += d->div << -d->one.exp;
+            }
+            return (d->idx);
+        }
+        d->divp++;
+    }
+    return (-1);
 }

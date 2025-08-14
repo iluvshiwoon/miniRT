@@ -12,6 +12,29 @@
 
 #include "../../miniRT.h"
 
+static char	*append_optional_maps_pl(t_rt *rt, char *r_value, \
+    const struct s_object object)
+{
+    if (object.normal_map_path || object.texture_map_path || \
+        object.texture_scale.x != 1.0 || object.texture_scale.y != 1.0)
+    {
+        r_value = rt_ft_strjoin(rt, r_value, " ");
+        if (object.normal_map_path)
+            r_value = rt_ft_strjoin(rt, r_value, object.normal_map_path);
+        else
+            r_value = rt_ft_strjoin(rt, r_value, ".");
+        r_value = rt_ft_strjoin(rt, r_value, " ");
+        if (object.texture_map_path)
+            r_value = rt_ft_strjoin(rt, r_value, object.texture_map_path);
+        else
+            r_value = rt_ft_strjoin(rt, r_value, ".");
+        r_value = rt_ft_strjoin(rt, r_value, " ");
+        r_value = rt_ft_strjoin(rt, r_value, \
+            vec_toa(rt, object.texture_scale));
+    }
+    return (r_value);
+}
+
 void	rotate_plane_local(t_rt *rt, int id, t_rvec rvec)
 {
 	t_rot_plane	r;
@@ -68,21 +91,7 @@ char	*string_plane(t_rt *rt, const struct s_object object)
 	ft_memset(dest, 0, sizeof(dest));
 	fpconv_dtoa(object.shininess, dest);
 	r_value = rt_ft_strjoin(rt, r_value, dest);
-	if (object.normal_map_path || object.texture_map_path || object.texture_scale.x != 1.0 || object.texture_scale.y != 1.0)
-	{
-		r_value = rt_ft_strjoin(rt, r_value, " ");
-		if (object.normal_map_path)
-			r_value = rt_ft_strjoin(rt, r_value, object.normal_map_path);
-		else
-			r_value = rt_ft_strjoin(rt, r_value, ".");
-		r_value = rt_ft_strjoin(rt, r_value, " ");
-		if (object.texture_map_path)
-			r_value = rt_ft_strjoin(rt, r_value, object.texture_map_path);
-		else
-			r_value = rt_ft_strjoin(rt, r_value, ".");
-		r_value = rt_ft_strjoin(rt, r_value, " ");
-		r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, object.texture_scale));
-	}
+    r_value = append_optional_maps_pl(rt, r_value, object);
 	return (r_value);
 }
 

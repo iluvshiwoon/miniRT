@@ -12,6 +12,29 @@
 
 #include "../../miniRT.h"
 
+static char	*append_optional_maps_sp(t_rt *rt, char *r_value, \
+    const struct s_object object)
+{
+    if (object.normal_map_path || object.texture_map_path || \
+        object.texture_scale.x != 1.0 || object.texture_scale.y != 1.0)
+    {
+        r_value = rt_ft_strjoin(rt, r_value, " ");
+        if (object.normal_map_path)
+            r_value = rt_ft_strjoin(rt, r_value, object.normal_map_path);
+        else
+            r_value = rt_ft_strjoin(rt, r_value, ".");
+        r_value = rt_ft_strjoin(rt, r_value, " ");
+        if (object.texture_map_path)
+            r_value = rt_ft_strjoin(rt, r_value, object.texture_map_path);
+        else
+            r_value = rt_ft_strjoin(rt, r_value, ".");
+        r_value = rt_ft_strjoin(rt, r_value, " ");
+        r_value = rt_ft_strjoin(rt, r_value, \
+            vec_toa(rt, object.texture_scale));
+    }
+    return (r_value);
+}
+
 void	translate_sphere(t_rt *rt, int id, t_vec vec)
 {
 	t_sphere	*sphere;
@@ -26,38 +49,29 @@ void	translate_sphere(t_rt *rt, int id, t_vec vec)
 char	*string_sphere(t_rt *rt, const struct s_object object)
 {
 	char		*r_value;
-	char		*dest;
 	t_sphere	*sphere;
 
-	dest = (char [24 + 1]){};
 	sphere = object.obj;
 	r_value = rt_ft_strjoin(rt, "sp  ", vec_toa(rt, sphere->origin));
 	r_value = rt_ft_strjoin(rt, r_value, " ");
-	fpconv_dtoa(sphere->radius, dest);
-	r_value = rt_ft_strjoin(rt, r_value, dest);
+    {
+        char dest2[24 + 1];
+        ft_memset(dest2, 0, sizeof(dest2));
+        fpconv_dtoa(sphere->radius, dest2);
+        r_value = rt_ft_strjoin(rt, r_value, dest2);
+    }
 	r_value = rt_ft_strjoin(rt, r_value, " ");
 	r_value = rt_ft_strjoin(rt, r_value, color_toa(rt, object.albedo));
 	r_value = rt_ft_strjoin(rt, r_value, " ");
 	r_value = rt_ft_strjoin(rt, r_value, color_toa(rt, object.specular));
 	r_value = rt_ft_strjoin(rt, r_value, " ");
-	ft_memset(dest, 0, sizeof(dest));
-	fpconv_dtoa(object.shininess, dest);
-	r_value = rt_ft_strjoin(rt, r_value, dest);
-	if (object.normal_map_path || object.texture_map_path || object.texture_scale.x != 1.0 || object.texture_scale.y != 1.0)
-	{
-		r_value = rt_ft_strjoin(rt, r_value, " ");
-		if (object.normal_map_path)
-			r_value = rt_ft_strjoin(rt, r_value, object.normal_map_path);
-		else
-			r_value = rt_ft_strjoin(rt, r_value, ".");
-		r_value = rt_ft_strjoin(rt, r_value, " ");
-		if (object.texture_map_path)
-			r_value = rt_ft_strjoin(rt, r_value, object.texture_map_path);
-		else
-			r_value = rt_ft_strjoin(rt, r_value, ".");
-		r_value = rt_ft_strjoin(rt, r_value, " ");
-		r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, object.texture_scale));
-	}
+    {
+        char dest3[24 + 1];
+        ft_memset(dest3, 0, sizeof(dest3));
+        fpconv_dtoa(object.shininess, dest3);
+        r_value = rt_ft_strjoin(rt, r_value, dest3);
+    }
+    r_value = append_optional_maps_sp(rt, r_value, object);
 	return (r_value);
 }
 

@@ -296,7 +296,7 @@ typedef struct s_pcg_state_setseq_64
 	uint64_t						inc;
 } t_pcg32_random;
 
-typedef struct cylinder_inter
+typedef struct s_cylinder_inter
 {
 	t_cylinder						cylinder;
 	double							body_t;
@@ -367,7 +367,7 @@ typedef struct s_cylinder_cap
 	int								i;
 }									t_cylinder_cap;
 
-typedef struct cone_inter
+typedef struct s_cone_inter
 {
 	t_cone							cone;
 	double							body_t;
@@ -514,6 +514,47 @@ typedef struct s_cl
 	t_mat3							pitch_rot;
 	t_mat3							yaw_rot;
 }									t_cl;
+
+typedef struct s_checker_idx
+{
+    int a;
+    int b;
+}   t_checker_idx;
+
+typedef struct s_chk3
+{
+    int checker_x;
+    int checker_y;
+    int checker_z;
+    double scale;
+}   t_chk3;
+
+typedef struct s_sph_chk
+{
+    double u;
+    double v;
+    int checker_u;
+    int checker_v;
+    double scale;
+}   t_sph_chk;
+
+typedef struct s_cyl_idx_args
+{
+    t_cylinder *cylinder;
+    t_vec to_point;
+    t_vec axis;
+    t_vec right;
+    t_vec up;
+}   t_cyl_idx_args;
+
+typedef struct s_cone_idx_args
+{
+    t_cone *cone;
+    t_vec to_point;
+    t_vec axis;
+    t_vec right;
+    t_vec up;
+}   t_cone_idx_args;
 
 
 
@@ -666,14 +707,23 @@ bool								cone_intersection_solve1(\
 		t_cone_inter_solve *co, \
 		const t_ray ray, const t_cone cone);
 bool								cone_intersection_solve(\
-		const t_ray ray, const t_cone cone, double *t);
-void								cone_cap_calc(t_cone_cap *co,
-										const t_ray ray,
-										const t_cone cone,
-										t_vec *normal);
-bool								cone_cap_intersection(const t_ray ray,
-										const t_cone cone, double *t,
-										t_vec *normal);
+					const t_ray ray, const t_cone cone, double *t);
+typedef struct s_co_cap_calc_args
+{
+	t_cone_cap							*co;
+	t_ray								ray;
+	t_cone								cone;
+	t_vec								*normal;
+} t_co_cap_calc_args;
+void								cone_cap_calc_s(t_co_cap_calc_args args);
+typedef struct s_co_cap_args
+{
+	t_ray								ray;
+	t_cone								cone;
+	double								*t;
+	t_vec								*normal;
+} t_co_cap_args;
+bool								cone_cap_intersection_s(t_co_cap_args args);
 void								init_cone_intersection(\
 		t_cone_inter *co, const t_object obj);
 int									fpconv_dtoa(double fp, char dest[24]);
@@ -744,5 +794,8 @@ int	key_events(int keycode, t_rt *rt);
 void	get_uv(t_object *obj, t_intersection *intersection, double *u, double *v);
 t_vec	get_normal_from_map(t_object *obj, double u, double v, t_vec normal);
 t_vec	get_texture_color(t_object *obj, double u, double v);
-
+void	write_to_file(t_rt *rt);
+void    get_cone_uv(t_object *obj, t_intersection *intersection, double *u, double *v);
+void    fill_chunk_index(t_rt * rt, t_chunk * chunks, int num_threads);
+void * worker_thread_loop(void * arg);
 #endif

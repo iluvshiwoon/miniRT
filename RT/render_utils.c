@@ -45,18 +45,19 @@ void	gen_rays(t_rt *rt)
 		rt->state.rays = wrap_malloc(rt, sizeof(*(rt->state.rays))
 				* rt->total_pixels);
 	pixel_index = 0;
-	while (pixel_index < rt->total_pixels)
-	{
-		gr.x = pixel_index % rt->w;
-		gr.y = rt->h - 1 - (pixel_index / rt->w);
-		gr.u = -(gr.x - rt->w / 2.0);
-		gr.v = gr.y - rt->h / 2.0;
-		gr.direction = vec_plus(vec_plus(vec_mult(gr.u, gr.cam_x) \
-		, vec_mult(gr.v, gr.cam_y)), vec_mult(gr.focal_length, gr.cam_z));
-		gr.direction = normalize(gr.direction);
-		rt->state.rays[pixel_index] = (t_ray){gr.cam.origin, gr.direction};
-		pixel_index++;
-	}
+    while (pixel_index < rt->total_pixels)
+    {
+        gr.x = pixel_index % rt->w;
+        gr.y = rt->h - 1 - (pixel_index / rt->w);
+        gr.u = -(gr.x - rt->w / 2.0);
+        gr.v = gr.y - rt->h / 2.0;
+        gr.direction = vec_plus(vec_plus(vec_mult(gr.u, gr.cam_x), \
+            vec_mult(gr.v, gr.cam_y)), \
+            vec_mult(gr.focal_length, gr.cam_z));
+        gr.direction = normalize(gr.direction);
+        rt->state.rays[pixel_index] = (t_ray){gr.cam.origin, gr.direction};
+        pixel_index++;
+    }
 }
 
 void	init_render(t_rt *rt)

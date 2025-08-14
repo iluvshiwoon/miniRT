@@ -122,8 +122,8 @@ int	is_intersection_cone(const t_ray ray, const t_object obj,
 	init_cone_intersection(&co, obj);
 	co.body_has_sol = cone_intersection_solve(ray, co.cone,
 			&(co.body_t));
-	co.cap_has_sol = cone_cap_intersection(ray, co.cone, &(co.cap_t),
-			&(co.cap_normal));
+    co.cap_has_sol = cone_cap_intersection_s((t_co_cap_args){ray, co.cone, \
+            &(co.cap_t), &(co.cap_normal)});
 	determine_closest_cone_intersection(&co);
 	if (co.has_sol)
 	{
