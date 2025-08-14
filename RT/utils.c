@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 17:27:42 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/19 17:27:43 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/14 20:31:30 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 #include <X11/X.h>
 #include <X11/keysym.h>
 
-int	close_win(t_rt *rt)
+static void	close_thread(t_rt *rt)
 {
-	int i;
+	int	i;
 
 	if (rt->shared)
 	{
@@ -35,8 +35,15 @@ int	close_win(t_rt *rt)
 		pthread_cond_destroy(&rt->shared->work_available);
 		pthread_cond_destroy(&rt->shared->to_display);
 	}
+}
+
+int	close_win(t_rt *rt)
+{
+	close_thread(rt);
 	free_normal_maps(rt);
 	free_texture_maps(rt);
+	if (rt->mlx && rt->image.addr)
+		mlx_destroy_image(rt->mlx, rt->image.img);
 	if (rt->win)
 		mlx_destroy_window(rt->mlx, rt->win);
 	if (rt->mlx)
@@ -47,6 +54,7 @@ int	close_win(t_rt *rt)
 	if (rt->fd_file > 0)
 		close(rt->fd_file);
 	free_heap(rt);
+	free(rt);
 	exit(0);
 }
 

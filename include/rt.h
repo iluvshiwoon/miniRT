@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:06:07 by kgriset           #+#    #+#             */
-/*   Updated: 2025/08/14 19:04:51 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/14 20:56:01 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -571,7 +571,62 @@ typedef struct s_checkboard{
 	t_vec			to_point;
 }t_checkboard;
 
+typedef struct s_calc_cone {
+	t_vec	to_point;
+	t_vec	axis_projection;
+	t_vec	radial;
+	double	height_proj;
+	double	tan_angle;
+	double	radius_at_height;
+	t_vec	temp;
+	t_vec	normal;
+}t_calc_cone;
 
+typedef struct s_cone_solve
+{
+	double	cos_angle;
+	double	cos_angle_sq;
+	double	tan_angle;
+
+} t_cone_solve;
+
+typedef struct s_light_comp
+{
+	t_vec	direct_light;
+	t_vec	ambient_light;
+	t_vec	specular_light;
+	t_vec	view_direction;
+}			t_light_comp;
+
+typedef struct s_normal
+{
+	int		x;
+	int		y;
+	char	*dst;
+	t_vec	map_normal;
+	t_vec	tangent;
+	t_vec	bitangent;
+}t_normal;
+
+typedef struct s_cap_uv{
+	t_cone	*co;
+	t_vec	base_center;
+	t_vec	u_axis;
+	t_vec	v_axis;
+	t_vec	d;
+}t_cap_uv;
+
+typedef struct s_cone_uv
+{
+	t_cone	*co;
+	t_vec	d;
+	t_vec	u_axis;
+	t_vec	v_axis;
+	t_vec	axis_component;
+	t_vec	radial;
+	double	h;
+	double	theta;
+} t_cone_uv;
 
 int									close_win(t_rt *rt);
 int									create_trgb(int t, int r, int g, int b);
@@ -816,4 +871,39 @@ void * worker_thread_loop(void * arg);
 t_vec	cylinder_checker_color_from_idx(t_checker_idx idx, t_vec albedo);
 void	cone_local_basis(t_cone *cone, t_vec *axis, t_vec *right, t_vec *up);
 t_checker_idx	cone_checker_indices(t_cone_idx_args a);
+void	cone_compute_params(const t_ray ray, const t_cone cone,
+		t_cone_solve * c);
+void	cone_prepare_projections(t_cone_inter_solve *co, const t_ray ray,
+		const t_cone cone);
+void	cone_compute_quadratic(t_cone_inter_solve *co, t_cone_solve c, const t_cone cone);
+void	cone_check_first_root(t_cone_inter_solve *co, const t_ray ray,
+		const t_cone cone);
+bool	cone_cap_intersection_s(t_co_cap_args args);
+void	init_cone_intersection(t_cone_inter *co, const t_object obj);
+void	cyl_prepare_oc_proj(t_cylinder_inter_solve *cy, const t_ray ray,
+		const t_cylinder cylinder);
+void	cyl_prepare_ray_proj(t_cylinder_inter_solve *cy, const t_ray ray,
+		const t_cylinder cylinder);
+void	cyl_compute_quadratic(t_cylinder_inter_solve *cy,
+		const t_cylinder cylinder);
+void	cyl_check_first_root(t_cylinder_inter_solve *cy, const t_ray ray,
+		const t_cylinder cylinder);
+void	update_best_intersection(t_intersection *intersection,
+		t_intersection *local_intersection, int *obj_id, int current_index);
+void	put_pixel_gamma_corrected(t_rt *rt, int x, int y, t_vec intensity);
+void	accumulate_pixel_intensity(t_rt *rt, t_worker *worker, t_render *r);
+void	fill_chunk_index(t_rt *rt, t_chunk *chunks, int num_threads);
+void	process_one_pixel(t_rt *rt, t_worker *worker, t_render *r);
+void	render_chunk(t_rt *rt, t_worker *worker, int pass);
+void	get_cylinder_cap_uv(t_object *obj, t_vec p, double *u, double *v);
+void	get_cylinder_uv(t_object *obj, t_intersection *intersection, double *u,
+		double *v);
+void	get_sphere_uv(t_object *obj, t_vec p, double *u, double *v);
+void	get_plane_uv(t_object *obj, t_vec p, double *u, double *v);
+void	get_cylinder_body_uv(t_object *obj, t_vec p, double *u, double *v);
+void	wait_for_work_available(t_shared *shared);
+void	handle_pause_state(t_shared *shared, int *pass);
+void	get_cylinder_cap_uv(t_object *obj, t_vec p, double *u, double *v);
+void	get_cylinder_uv(t_object *obj, t_intersection *intersection, double *u,
+		double *v);
 #endif

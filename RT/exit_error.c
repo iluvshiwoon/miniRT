@@ -15,5 +15,5 @@
 void	exit_error(t_rt *rt, char *msg)
 {
 	ft_printf_fd(2, "%s\n", msg);
-    close_win(rt);
+	close_win(rt);
 }

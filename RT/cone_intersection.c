@@ -6,11 +6,12 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 16:30:00 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 16:30:00 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/14 19:39:09 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
+#include <math.h>
 
 void	determine_closest_cone_intersection(t_cone_inter *co)
 {
@@ -41,44 +42,28 @@ void	determine_closest_cone_intersection(t_cone_inter *co)
 t_vec	calculate_cone_body_normal(const t_cone_inter *co,
 		const t_vec intersection_point)
 {
-	t_vec	to_point;
-	t_vec	axis_projection;
-	t_vec	radial;
-	double	height_proj;
-	double	tan_angle;
-	double	radius_at_height;
+	t_calc_cone	calc;
 
-	to_point = vec_minus(intersection_point, co->cone.origin);
-	axis_projection = vec_mult(vec_scal(to_point, co->cone.dir),
+	calc.to_point = vec_minus(intersection_point, co->cone.origin);
+	calc.axis_projection = vec_mult(vec_scal(calc.to_point, co->cone.dir),
 			co->cone.dir);
-	height_proj = vec_scal(to_point, co->cone.dir);
-	
-	// Calculate the tangent of the cone angle
-	tan_angle = co->cone.radius / co->cone.height;
-	
-	// Calculate the radius at the current height
-	radius_at_height = co->cone.radius * (1.0 - height_proj / co->cone.height);
-	
-	// The radial direction from the axis to the intersection point
-	radial = vec_minus(to_point, axis_projection);
-	
-	// Normalize the radial component
-	if (norm2(radial) > EPSILON)
-		radial = normalize(radial);
+	calc.height_proj = vec_scal(calc.to_point, co->cone.dir);
+	calc.tan_angle = co->cone.radius / co->cone.height;
+	calc.radius_at_height = co->cone.radius * (1.0 - calc.height_proj
+			/ co->cone.height);
+	calc.radial = vec_minus(calc.to_point, calc.axis_projection);
+	if (norm2(calc.radial) > EPSILON)
+		calc.radial = normalize(calc.radial);
 	else
 	{
-		// If we're exactly on the axis, choose an arbitrary perpendicular direction
-		t_vec temp = (fabs(co->cone.dir.y) < 0.99) ? 
-			(t_vec){0, 1, 0} : (t_vec){1, 0, 0};
-		radial = normalize(cross(temp, co->cone.dir));
+		calc.temp = (t_vec){1, 0, 0};
+		if (fabs(co->cone.dir.y) < 0.99)
+			calc.temp = (t_vec){0, 1, 0};
+		calc.radial = normalize(cross(calc.temp, co->cone.dir));
 	}
-	
-	// The normal is the normalized combination of radial and tangent components
-	// N = normalize(radial - tan(α) * axis)
-	t_vec	normal = normalize(vec_minus(radial, 
-		vec_mult(tan_angle, co->cone.dir)));
-	
-	return (normal);
+	calc.normal = normalize(vec_minus(calc.radial, vec_mult(calc.tan_angle,
+					co->cone.dir)));
+	return (calc.normal);
 }
 
 t_vec	calculate_cone_intersection_normal(const t_cone_inter *co,
@@ -120,14 +105,13 @@ int	is_intersection_cone(const t_ray ray, const t_object obj,
 	t_cone_inter	co;
 
 	init_cone_intersection(&co, obj);
-	co.body_has_sol = cone_intersection_solve(ray, co.cone,
-			&(co.body_t));
-    co.cap_has_sol = cone_cap_intersection_s((t_co_cap_args){ray, co.cone, \
-            &(co.cap_t), &(co.cap_normal)});
+	co.body_has_sol = cone_intersection_solve(ray, co.cone, &(co.body_t));
+	co.cap_has_sol = cone_cap_intersection_s((t_co_cap_args){ray, co.cone,
+			&(co.cap_t), &(co.cap_normal)});
 	determine_closest_cone_intersection(&co);
 	if (co.has_sol)
 	{
 		fill_cone_intersection_data(intersection, &co, ray);
 	}
 	return (co.has_sol);
-} 
+}
