@@ -6,7 +6,7 @@
 /*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 10:15:25 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/25 12:44:39 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/18 10:38:24 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	translate_camera(t_rt *rt, int id, t_vec vec)
 	rt->scene.camera = *camera;
 	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
 			rt->scene.objects[id]);
-    atomic_store(&rt->state.re_render_scene, true);
+	atomic_store(&rt->state.re_render_scene, true);
 }
 
 char	*string_camera(t_rt *rt, const struct s_object object)

@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 12:25:20 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 12:45:12 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/18 10:39:53 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../miniRT.h"
@@ -61,5 +61,5 @@ void	finalize_camera_rotation(t_rt *rt, int id, t_vec forward, t_vec up)
 	rt->scene.camera = *cam;
 	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
 			rt->scene.objects[id]);
-    atomic_store(&rt->state.re_render_scene, true);
+	atomic_store(&rt->state.re_render_scene, true);
 }

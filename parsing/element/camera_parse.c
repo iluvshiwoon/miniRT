@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 12:29:30 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 12:31:00 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/18 10:39:19 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,10 @@ void	setup_camera_object(t_rt *rt, t_camera *camera, int *id)
 	rt->scene.objects[*id].display_string = &string_camera;
 	rt->scene.objects[*id].rotate = &rotate_camera_local;
 	rt->scene.objects[*id].translate = &translate_camera;
-	rt->scene.objects[*id].string = string_camera(rt,
-			rt->scene.objects[*id]);
-	// Initialize material properties with default values
-	rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0}; // No specular for camera
-	rt->scene.objects[*id].shininess = 0.0; // No shininess for camera
-	rt->scene.objects[*id].checkerboard = false; // No checkerboard for camera
+	rt->scene.objects[*id].string = string_camera(rt, rt->scene.objects[*id]);
+	rt->scene.objects[*id].specular = (t_vec){0.0, 0.0, 0.0};
+	rt->scene.objects[*id].shininess = 0.0;
+	rt->scene.objects[*id].checkerboard = false;
 	(*id)++;
 	rt->scene.camera = *camera;
 }

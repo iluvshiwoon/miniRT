@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:06:07 by kgriset           #+#    #+#             */
-/*   Updated: 2025/08/14 20:56:01 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/18 11:45:08 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -627,6 +627,18 @@ typedef struct s_cone_uv
 	double	h;
 	double	theta;
 } t_cone_uv;
+
+typedef struct s_rot_cone
+{
+	t_cone	*cone;
+	t_vec	axis;
+	t_vec	temp;
+	t_vec	right;
+	t_vec	forward;
+	t_mat3	pitch_rot;
+	t_mat3	yaw_rot;
+} t_rot_cone;
+
 
 int									close_win(t_rt *rt);
 int									create_trgb(int t, int r, int g, int b);
