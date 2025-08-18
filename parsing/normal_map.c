@@ -6,7 +6,7 @@
 /*   By: kershuen <kershuen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 10:00:00 by kershuen          #+#    #+#             */
-/*   Updated: 2025/08/14 19:08:22 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/18 10:31:41 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,13 @@ void	load_normal_maps(t_rt *rt)
 	{
 		if (rt->scene.objects[i].normal_map_path)
 		{
-			// printf("Loading normal map for object %d: %s\n", i, rt->scene.objects[i].normal_map_path);
 			rt->scene.objects[i].normal_map.img = mlx_xpm_file_to_image(rt->mlx,
-					rt->scene.objects[i].normal_map_path, &rt->scene.objects[i].normal_map.width, &rt->scene.objects[i].normal_map.height);
+					rt->scene.objects[i].normal_map_path,
+					&rt->scene.objects[i].normal_map.width,
+					&rt->scene.objects[i].normal_map.height);
 			if (!rt->scene.objects[i].normal_map.img)
 				exit_error(rt, "Error: Could not load normal map");
-			rt->scene.objects[i].normal_map.addr = mlx_get_data_addr(
+			rt->scene.objects[i].normal_map.addr = mlx_get_data_addr(\
 					rt->scene.objects[i].normal_map.img,
 					&rt->scene.objects[i].normal_map.bits_per_pixel,
 					&rt->scene.objects[i].normal_map.line_length,
@@ -46,11 +47,14 @@ void	load_texture_maps(t_rt *rt)
 	{
 		if (rt->scene.objects[i].texture_map_path)
 		{
-			rt->scene.objects[i].texture_map.img = mlx_xpm_file_to_image(rt->mlx,
-					rt->scene.objects[i].texture_map_path, &rt->scene.objects[i].texture_map.width, &rt->scene.objects[i].texture_map.height);
+			rt->scene.objects[i].texture_map.img = mlx_xpm_file_to_image(\
+					rt->mlx,
+					rt->scene.objects[i].texture_map_path,
+					&rt->scene.objects[i].texture_map.width,
+					&rt->scene.objects[i].texture_map.height);
 			if (!rt->scene.objects[i].texture_map.img)
 				exit_error(rt, "Error: Could not load texture map");
-			rt->scene.objects[i].texture_map.addr = mlx_get_data_addr(
+			rt->scene.objects[i].texture_map.addr = mlx_get_data_addr(\
 					rt->scene.objects[i].texture_map.img,
 					&rt->scene.objects[i].texture_map.bits_per_pixel,
 					&rt->scene.objects[i].texture_map.line_length,
@@ -84,4 +88,4 @@ void	free_texture_maps(t_rt *rt)
 			mlx_destroy_image(rt->mlx, rt->scene.objects[i].texture_map.img);
 		i++;
 	}
-} 
+}

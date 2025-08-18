@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 13:23:24 by kgriset           #+#    #+#             */
-/*   Updated: 2025/07/25 13:23:53 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/18 10:32:21 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ void	alloc_scene(t_rt *rt, t_file **file)
 	}
 	rt->scene.objects = wrap_malloc(rt, sizeof(*rt->scene.objects)
 			* rt->scene.total_objects);
-	ft_memset(rt->scene.objects, 0, sizeof(*rt->scene.objects) * rt->scene.total_objects);
+	ft_memset(rt->scene.objects, 0, sizeof(*rt->scene.objects) * \
+			rt->scene.total_objects);
 	if (light_count > 0)
 		rt->scene.lights = wrap_malloc(rt, sizeof(t_light *) * light_count);
 }
