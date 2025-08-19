@@ -15,7 +15,7 @@ C_FILES = RT/miniRT.c RT/vector1.c RT/vector.c RT/wrap_malloc.c \
 			parsing/element/plane.c \
 			parsing/element/sphere.c \
 			parsing/element/cylinder.c \
-			parsing/element/cone.c  parsing/element/cone1.c\
+			parsing/element/cone.c \
 			parsing/element/element_utils.c \
 			parsing/element/atoi_double.c \
 			parsing/normal_map.c

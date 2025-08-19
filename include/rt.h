@@ -639,17 +639,6 @@ typedef struct s_rot_cone
 	t_mat3	yaw_rot;
 } t_rot_cone;
 
-typedef struct s_rc_local
-{
-	t_cone	*cone;
-	t_vec	axis;
-	t_vec	temp;
-	t_vec	right;
-	t_vec	forward;
-	t_mat3	pitch_rot;
-	t_mat3	yaw_rot;
-}			t_rc_local;
-
 
 int									close_win(t_rt *rt);
 int									create_trgb(int t, int r, int g, int b);
@@ -929,12 +918,4 @@ void	handle_pause_state(t_shared *shared, int *pass);
 void	get_cylinder_cap_uv(t_object *obj, t_vec p, double *u, double *v);
 void	get_cylinder_uv(t_object *obj, t_intersection *intersection, double *u,
 		double *v);
-char	*append_cone_dims(t_rt *rt, char *r_value, t_cone *cone);
-
-char	*append_optional_maps_co(t_rt *rt, char *r_value,
-		const struct s_object object);
-void	parse_cone_optional1(t_rt *rt, char **tab, int *id);
-void	parse_cone_optional(t_rt *rt, char **tab, int *id);
-void	rotate_cone_local(t_rt *rt, int id, t_rvec rvec);
-
 #endif
