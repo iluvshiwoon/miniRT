@@ -82,8 +82,7 @@ static void	parse_cone_optional(t_rt *rt, char **tab, int *id)
 	}
 }
 
-void	rotate_cone_local(t_rt *rt, int id, t_rvec rvec)
-{
+typedef struct s_rc_local {
 	t_cone	*cone;
 	t_vec	axis;
 	t_vec	temp;
@@ -91,23 +90,28 @@ void	rotate_cone_local(t_rt *rt, int id, t_rvec rvec)
 	t_vec	forward;
 	t_mat3	pitch_rot;
 	t_mat3	yaw_rot;
+} t_rc_local;
 
-	cone = rt->scene.objects[id].obj;
-	axis = normalize(cone->dir);
-	temp = (t_vec){0, 1, 0};
-	if (fabs(axis.y) > 0.99)
-		temp = (t_vec){1, 0, 0};
-	right = normalize(cross(temp, axis));
-	forward = cross(axis, right);
+void	rotate_cone_local(t_rt *rt, int id, t_rvec rvec)
+{
+    t_rc_local r;
+
+	r.cone = rt->scene.objects[id].obj;
+	r.axis = normalize(r.cone->dir);
+	r.temp = (t_vec){0, 1, 0};
+	if (fabs(r.axis.y) > 0.99)
+		r.temp = (t_vec){1, 0, 0};
+	r.right = normalize(cross(r.temp, r.axis));
+	r.forward = cross(r.axis, r.right);
 	if (fabs(rvec.pitch) > 1e-6)
 	{
-		pitch_rot = create_rotation_axis(right, rvec.pitch);
-		cone->dir = normalize(mat3_multiply_vec(pitch_rot, cone->dir));
+		r.pitch_rot = create_rotation_axis(r.right, rvec.pitch);
+		r.cone->dir = normalize(mat3_multiply_vec(r.pitch_rot, r.cone->dir));
 	}
 	if (fabs(rvec.yaw) > 1e-6)
 	{
-		yaw_rot = create_rotation_axis(forward, rvec.yaw);
-		cone->dir = normalize(mat3_multiply_vec(yaw_rot, cone->dir));
+		r.yaw_rot = create_rotation_axis(r.forward, rvec.yaw);
+		r.cone->dir = normalize(mat3_multiply_vec(r.yaw_rot, r.cone->dir));
 	}
 	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
 			rt->scene.objects[id]);
