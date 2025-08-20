@@ -164,8 +164,13 @@ void	fill_co(t_rt *rt, t_cone *cone, int id)
 	rt->scene.objects[id].rotate = &rotate_cone_local;
 	rt->scene.objects[id].translate = &translate_cone;
 	rt->scene.objects[id].string = string_cone(rt, rt->scene.objects[id]);
-	// Initialize material properties with default values
-	rt->scene.objects[id].checkerboard = false; // Default no checkerboard
+	rt->scene.objects[id].checkerboard = false;
+    rt->scene.objects[id].specular = (t_vec){0.5, 0.5, 0.5};
+    rt->scene.objects[id].shininess = 32.0;
+    rt->scene.objects[id].texture_scale = (t_vec){1.0, 1.0, 1.0};
+    rt->scene.objects[id].checkerboard = false;
+    rt->scene.objects[id].texture_map_path = NULL;
+    rt->scene.objects[id].normal_map_path = NULL;
 }
 
 void	parse_cone(t_rt *rt, char *line, int *id)
@@ -177,8 +182,6 @@ void	parse_cone(t_rt *rt, char *line, int *id)
 	tab = rt_ft_split(rt, line, ' ');
 	if (tab[1] && tab[2] && tab[3] && tab[4] && tab[5])
 	{
-		rt->scene.objects[*id].texture_map_path = NULL;
-		rt->scene.objects[*id].normal_map_path = NULL;
 		cone->origin = parse_vec(rt, tab[1]);
 		cone->dir = normalize(parse_vec(rt, tab[2]));
 		cone->radius = ft_atoi_double(tab[3]);
@@ -190,10 +193,6 @@ void	parse_cone(t_rt *rt, char *line, int *id)
 		rt->scene.objects[*id].is_intersection = &is_intersection_cone;
 		rt->scene.objects[*id].albedo = vec_mult(1.0 / 255, parse_color(rt,
 					tab[5]));
-		rt->scene.objects[*id].specular = (t_vec){0.5, 0.5, 0.5};
-		rt->scene.objects[*id].shininess = 32.0;
-		rt->scene.objects[*id].texture_scale = (t_vec){1.0, 1.0, 1.0};
-		rt->scene.objects[*id].checkerboard = false;
 		parse_cone_optional(rt, tab, id);
 		fill_co(rt, cone, *id);
 		(*id)++;
