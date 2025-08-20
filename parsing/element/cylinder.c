@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cylinder.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/27 16:35:47 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/25 13:20:07 by kgriset          ###   ########.fr       */
+/*   Created: 2025/08/20 14:58:27 by kgriset           #+#    #+#             */
+/*   Updated: 2025/08/20 14:58:29 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*string_cylinder(t_rt *rt, const struct s_object object)
 {
 	char		*r_value;
 	t_cylinder	*cylinder;
-		char dest2[24 + 1];
+	char		dest2[24 + 1];
 
 	cylinder = object.obj;
 	r_value = rt_ft_strjoin(rt, "cy  ", vec_toa(rt, cylinder->origin));
@@ -59,12 +59,12 @@ void	fill_cy(t_rt *rt, t_cylinder *cylinder, int id)
 	rt->scene.objects[id].translate = &translate_cylinder;
 	rt->scene.objects[id].string = string_cylinder(rt, rt->scene.objects[id]);
 	rt->scene.objects[id].checkerboard = false;
-    rt->scene.objects[id].specular = (t_vec){0.5, 0.5, 0.5};
-    rt->scene.objects[id].shininess = 32.0;
-    rt->scene.objects[id].texture_scale = (t_vec){1.0, 1.0, 1.0};
-    rt->scene.objects[id].checkerboard = false;
-    rt->scene.objects[id].texture_map_path = NULL;
-    rt->scene.objects[id].normal_map_path = NULL;
+	rt->scene.objects[id].specular = (t_vec){0.5, 0.5, 0.5};
+	rt->scene.objects[id].shininess = 32.0;
+	rt->scene.objects[id].texture_scale = (t_vec){1.0, 1.0, 1.0};
+	rt->scene.objects[id].checkerboard = false;
+	rt->scene.objects[id].texture_map_path = NULL;
+	rt->scene.objects[id].normal_map_path = NULL;
 }
 
 void	parse_cylinder(t_rt *rt, char *line, int *id)

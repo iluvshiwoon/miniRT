@@ -27,7 +27,7 @@ char	*string_cone(t_rt *rt, const struct s_object object)
 {
 	char	*r_value;
 	t_cone	*cone;
-		char dest2[24 + 1];
+	char	dest2[24 + 1];
 
 	cone = object.obj;
 	r_value = rt_ft_strjoin(rt, "co  ", vec_toa(rt, cone->origin));
@@ -59,18 +59,18 @@ void	fill_co(t_rt *rt, t_cone *cone, int id)
 	rt->scene.objects[id].translate = &translate_cone;
 	rt->scene.objects[id].string = string_cone(rt, rt->scene.objects[id]);
 	rt->scene.objects[id].checkerboard = false;
-    rt->scene.objects[id].specular = (t_vec){0.5, 0.5, 0.5};
-    rt->scene.objects[id].shininess = 32.0;
-    rt->scene.objects[id].texture_scale = (t_vec){1.0, 1.0, 1.0};
-    rt->scene.objects[id].checkerboard = false;
-    rt->scene.objects[id].texture_map_path = NULL;
-    rt->scene.objects[id].normal_map_path = NULL;
+	rt->scene.objects[id].specular = (t_vec){0.5, 0.5, 0.5};
+	rt->scene.objects[id].shininess = 32.0;
+	rt->scene.objects[id].texture_scale = (t_vec){1.0, 1.0, 1.0};
+	rt->scene.objects[id].checkerboard = false;
+	rt->scene.objects[id].texture_map_path = NULL;
+	rt->scene.objects[id].normal_map_path = NULL;
 }
 
 void	parse_cone(t_rt *rt, char *line, int *id)
 {
-	char **tab;
-	t_cone *cone;
+	char	**tab;
+	t_cone	*cone;
 
 	cone = wrap_malloc(rt, sizeof(*cone));
 	tab = rt_ft_split(rt, line, ' ');

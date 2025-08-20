@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gschwand <gschwand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/31 11:01:40 by gschwand          #+#    #+#             */
-/*   Updated: 2025/07/25 14:31:02 by kgriset          ###   ########.fr       */
+/*   Created: 2025/08/20 14:56:37 by kgriset           #+#    #+#             */
+/*   Updated: 2025/08/20 14:56:40 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,14 @@ void				parse_plane(t_rt *rt, char *line, int *id);
 // element/sphere.c
 void				parse_sphere(t_rt *rt, char *line, int *id);
 
-void		parse_cylinder(t_rt *rt, char *line, int *id);
-void		parse_cone(t_rt *rt, char *line, int *id);
-void		parse_camera(t_rt *rt, char *line, int *id);
-void		parse_light(t_rt *rt, char *line, int *id);
-void		parse_ambient_light(t_rt *rt, char *line, int *id);
-void		load_normal_maps(t_rt *rt);
-void		free_normal_maps(t_rt *rt);
-void		load_texture_maps(t_rt *rt);
-void		free_texture_maps(t_rt *rt);
+void				parse_cylinder(t_rt *rt, char *line, int *id);
+void				parse_cone(t_rt *rt, char *line, int *id);
+void				parse_camera(t_rt *rt, char *line, int *id);
+void				parse_light(t_rt *rt, char *line, int *id);
+void				parse_ambient_light(t_rt *rt, char *line, int *id);
+void				load_normal_maps(t_rt *rt);
+void				free_normal_maps(t_rt *rt);
+void				load_texture_maps(t_rt *rt);
+void				free_texture_maps(t_rt *rt);
 
 #endif

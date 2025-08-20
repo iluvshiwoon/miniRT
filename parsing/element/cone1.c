@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cone1.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/20 15:02:39 by kgriset           #+#    #+#             */
+/*   Updated: 2025/08/20 15:02:40 by kgriset          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../miniRT.h"
 
 char	*append_cone_dims(t_rt *rt, char *r_value, t_cone *cone)
@@ -37,15 +49,13 @@ char	*append_optional_maps_co(t_rt *rt, char *r_value,
 
 void	parse_cone_optional1(t_rt *rt, char **tab, int *id)
 {
-    if (tab[9])
-    {
-        if (ft_strncmp(tab[9], ".", 2) != 0)
-            rt->scene.objects[*id].texture_map_path = rt_ft_strdup(rt,
-                                                                   tab[9]);
-        if (tab[10])
-            rt->scene.objects[*id].texture_scale = parse_vec(rt,
-                                                             tab[10]);
-    }
+	if (tab[9])
+	{
+		if (ft_strncmp(tab[9], ".", 2) != 0)
+			rt->scene.objects[*id].texture_map_path = rt_ft_strdup(rt, tab[9]);
+		if (tab[10])
+			rt->scene.objects[*id].texture_scale = parse_vec(rt, tab[10]);
+	}
 }
 
 void	parse_cone_optional(t_rt *rt, char **tab, int *id)
@@ -64,7 +74,7 @@ void	parse_cone_optional(t_rt *rt, char **tab, int *id)
 				if (ft_strncmp(tab[8], ".", 2) != 0)
 					rt->scene.objects[*id].normal_map_path = rt_ft_strdup(rt,
 							tab[8]);
-                parse_cone_optional1(rt, tab, id);
+				parse_cone_optional1(rt, tab, id);
 			}
 		}
 	}
@@ -72,7 +82,7 @@ void	parse_cone_optional(t_rt *rt, char **tab, int *id)
 
 void	rotate_cone_local(t_rt *rt, int id, t_rvec rvec)
 {
-    t_rc_local r;
+	t_rc_local	r;
 
 	r.cone = rt->scene.objects[id].obj;
 	r.axis = normalize(r.cone->dir);
