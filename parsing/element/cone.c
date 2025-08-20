@@ -76,7 +76,7 @@ static void	parse_cone_optional(t_rt *rt, char **tab, int *id)
 				if (ft_strncmp(tab[8], ".", 2) != 0)
 					rt->scene.objects[*id].normal_map_path = rt_ft_strdup(rt,
 							tab[8]);
-                parse_cone_optional(rt, tab, id);
+                parse_cone_optional1(rt, tab, id);
 			}
 		}
 	}
