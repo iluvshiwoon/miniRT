@@ -933,5 +933,11 @@ char	*append_optional_maps_co(t_rt *rt, char *r_value,
 void	parse_cone_optional1(t_rt *rt, char **tab, int *id);
 void	parse_cone_optional(t_rt *rt, char **tab, int *id);
 void	rotate_cone_local(t_rt *rt, int id, t_rvec rvec);
+char	*append_cylinder_dims(t_rt *rt, char *r_value, t_cylinder *cylinder);
+char	*append_optional_maps_cy(t_rt *rt, char *r_value,
+		const struct s_object object);
+void	parse_cylinder_optional1(t_rt *rt, char **tab, int *id);
+void	parse_cylinder_optional(t_rt *rt, char **tab, int *id);
+void	rotate_cylinder_local(t_rt *rt, int id, t_rvec rvec);
 
 #endif
