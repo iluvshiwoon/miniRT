@@ -12,110 +12,20 @@
 
 #include "../../miniRT.h"
 
-static char	*append_optional_maps_pl(t_rt *rt, char *r_value, \
-    const struct s_object object)
+void    parse_optional_plane1(t_rt *rt, char **tab, int *id)
 {
-    if (object.normal_map_path || object.texture_map_path || \
-        object.texture_scale.x != 1.0 || object.texture_scale.y != 1.0)
+    if (tab[7])
     {
-        r_value = rt_ft_strjoin(rt, r_value, " ");
-        if (object.normal_map_path)
-            r_value = rt_ft_strjoin(rt, r_value, object.normal_map_path);
-        else
-            r_value = rt_ft_strjoin(rt, r_value, ".");
-        r_value = rt_ft_strjoin(rt, r_value, " ");
-        if (object.texture_map_path)
-            r_value = rt_ft_strjoin(rt, r_value, object.texture_map_path);
-        else
-            r_value = rt_ft_strjoin(rt, r_value, ".");
-        r_value = rt_ft_strjoin(rt, r_value, " ");
-        r_value = rt_ft_strjoin(rt, r_value, \
-            vec_toa(rt, object.texture_scale));
+        if (ft_strncmp(tab[7], ".", 2) != 0)
+            rt->scene.objects[*id].texture_map_path = rt_ft_strdup(rt, tab[7]);
+        if (tab[8])
+            rt->scene.objects[*id].texture_scale = parse_vec(rt, tab[8]);
     }
-    return (r_value);
 }
 
-void	rotate_plane_local(t_rt *rt, int id, t_rvec rvec)
+void    parse_optional_plane(t_rt *rt, char **tab, int *id)
 {
-	t_rot_plane	r;
-
-	r.pl = rt->scene.objects[id].obj;
-	r.norm = normalize(r.pl->normal);
-	r.temp = (t_vec){0, 1, 0};
-	if (fabs(r.norm.y) > 0.99)
-		r.temp = (t_vec){1, 0, 0};
-	r.right = normalize(cross(r.temp, r.norm));
-	r.forward = cross(r.norm, r.right);
-	if (fabs(rvec.pitch) > 1e-6)
-	{
-		r.pitch_r = create_rotation_axis(r.right, rvec.pitch);
-		r.pl->normal = normalize(mat3_multiply_vec(r.pitch_r, r.pl->normal));
-	}
-	if (fabs(rvec.yaw) > 1e-6)
-	{
-		r.yaw_r = create_rotation_axis(r.forward, rvec.yaw);
-		r.pl->normal = normalize(mat3_multiply_vec(r.yaw_r, r.pl->normal));
-	}
-	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
-			rt->scene.objects[id]);
-	if (rvec.roll == 0)
-        atomic_store(&rt->state.re_render_scene, true);
-}
-
-void	translate_plane(t_rt *rt, int id, t_vec vec)
-{
-	t_plane	*plane;
-
-	plane = rt->scene.objects[id].obj;
-	plane->origin = vec_plus(plane->origin, vec);
-	rt->scene.objects[id].string = rt->scene.objects[id].display_string(rt,
-			rt->scene.objects[id]);
-    atomic_store(&rt->state.re_render_scene, true);
-}
-
-char	*string_plane(t_rt *rt, const struct s_object object)
-{
-	char	*r_value;
-	t_plane	*plane;
-
-	plane = object.obj;
-	r_value = rt_ft_strjoin(rt, "pl  ", vec_toa(rt, plane->origin));
-	r_value = rt_ft_strjoin(rt, r_value, " ");
-	r_value = rt_ft_strjoin(rt, r_value, vec_toa(rt, plane->normal));
-	r_value = rt_ft_strjoin(rt, r_value, " ");
-	r_value = rt_ft_strjoin(rt, r_value, color_toa(rt, object.albedo));
-	r_value = rt_ft_strjoin(rt, r_value, " ");
-	r_value = rt_ft_strjoin(rt, r_value, color_toa(rt, object.specular));
-	r_value = rt_ft_strjoin(rt, r_value, " ");
-	char	dest[24 + 1];
-	ft_memset(dest, 0, sizeof(dest));
-	fpconv_dtoa(object.shininess, dest);
-	r_value = rt_ft_strjoin(rt, r_value, dest);
-    r_value = append_optional_maps_pl(rt, r_value, object);
-	return (r_value);
-}
-
-void	parse_plane(t_rt *rt, char *line, int *id)
-{
-	char	**tab;
-	t_plane	*plane;
-
-	plane = wrap_malloc(rt, sizeof(*plane));
-	tab = rt_ft_split(rt, line, ' ');
-	if (tab[1] && tab[2] && tab[3])
-	{
-		rt->scene.objects[*id].texture_map_path = NULL;
-		rt->scene.objects[*id].normal_map_path = NULL;
-		plane->origin = parse_vec(rt, tab[1]);
-		plane->normal = normalize(parse_vec(rt, tab[2]));
-		rt->scene.objects[*id].is_intersection = &is_intersection_plane;
-		rt->scene.objects[*id].albedo = vec_mult(1.0 / 255, parse_color(rt,
-					tab[3]));
-		rt->scene.objects[*id].specular = (t_vec){0.5, 0.5, 0.5};
-		rt->scene.objects[*id].shininess = 32.0;
-		rt->scene.objects[*id].texture_scale = (t_vec){1.0, 1.0, 1.0};
-		rt->scene.objects[*id].checkerboard = false;
-		if (tab[4])
+	if (tab[4])
 		{
 			if (ft_strncmp(tab[4], ".", 2) != 0)
 				rt->scene.objects[*id].specular = vec_mult(1.0 / 255, parse_color(rt, tab[4]));
@@ -127,24 +37,23 @@ void	parse_plane(t_rt *rt, char *line, int *id)
 				{
 					if (ft_strncmp(tab[6], ".", 2) != 0)
 						rt->scene.objects[*id].normal_map_path = rt_ft_strdup(rt, tab[6]);
-					if (tab[7])
-					{
-						if (ft_strncmp(tab[7], ".", 2) != 0)
-							rt->scene.objects[*id].texture_map_path = rt_ft_strdup(rt, tab[7]);
-						if (tab[8])
-							rt->scene.objects[*id].texture_scale = parse_vec(rt, tab[8]);
-					}
+                    parse_optional_plane1(rt, tab, id);
 				}
 			}
 		}
-		rt->scene.objects[*id].obj = plane;
-		rt->scene.objects[*id].id = *id;
-		rt->scene.objects[*id].type = pl;
-		rt->scene.objects[*id].display_string = &string_plane;
-		rt->scene.objects[*id].rotate = &rotate_plane_local;
-		rt->scene.objects[*id].translate = &translate_plane;
-		rt->scene.objects[*id].string = string_plane(rt,
-				rt->scene.objects[*id]);
+}
+
+void	parse_plane(t_rt *rt, char *line, int *id)
+{
+	char	**tab;
+	t_plane	*plane;
+
+	plane = wrap_malloc(rt, sizeof(*plane));
+	tab = rt_ft_split(rt, line, ' ');
+	if (tab[1] && tab[2] && tab[3])
+	{
+        fill_plane(rt, tab, plane, id);
+        parse_optional_plane(rt, tab, id);
 		(*id)++;
 		return ;
 	}

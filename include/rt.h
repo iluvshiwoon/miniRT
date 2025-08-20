@@ -939,5 +939,11 @@ char	*append_optional_maps_cy(t_rt *rt, char *r_value,
 void	parse_cylinder_optional1(t_rt *rt, char **tab, int *id);
 void	parse_cylinder_optional(t_rt *rt, char **tab, int *id);
 void	rotate_cylinder_local(t_rt *rt, int id, t_rvec rvec);
+char	*append_optional_maps_pl(t_rt *rt, char *r_value, \
+    const struct s_object object);
+void	rotate_plane_local(t_rt *rt, int id, t_rvec rvec);
+void	translate_plane(t_rt *rt, int id, t_vec vec);
+char	*string_plane(t_rt *rt, const struct s_object object);
+void    fill_plane(t_rt *rt, char **tab, t_plane *plane, int *id);
 
 #endif
