@@ -193,8 +193,8 @@ void	parse_cone(t_rt *rt, char *line, int *id)
 		rt->scene.objects[*id].is_intersection = &is_intersection_cone;
 		rt->scene.objects[*id].albedo = vec_mult(1.0 / 255, parse_color(rt,
 					tab[5]));
-		parse_cone_optional(rt, tab, id);
 		fill_co(rt, cone, *id);
+		parse_cone_optional(rt, tab, id);
 		(*id)++;
 		return ;
 	}
