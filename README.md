@@ -1,2 +1,0 @@
-# miniRT
-RayTracer in C
