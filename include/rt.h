@@ -945,5 +945,10 @@ void	rotate_plane_local(t_rt *rt, int id, t_rvec rvec);
 void	translate_plane(t_rt *rt, int id, t_vec vec);
 char	*string_plane(t_rt *rt, const struct s_object object);
 void    fill_plane(t_rt *rt, char **tab, t_plane *plane, int *id);
-
+char	*append_optional_maps_sp(t_rt *rt, char *r_value, \
+    const struct s_object object);
+void	translate_sphere(t_rt *rt, int id, t_vec vec);
+char	*string_sphere(t_rt *rt, const struct s_object object);
+void	fill_sphere(t_rt *rt, t_sphere *sphere, int id);
+void    parse_sphere_optional1(t_rt *rt, char **tab, int *id);
 #endif
