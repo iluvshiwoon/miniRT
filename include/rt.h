@@ -6,7 +6,7 @@
 /*   By: kgriset <kgriset@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 15:06:07 by kgriset           #+#    #+#             */
-/*   Updated: 2025/08/18 11:45:08 by kgriset          ###   ########.fr       */
+/*   Updated: 2025/08/20 15:17:21 by kgriset          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,10 @@
 # define EXPMAX -32
 # define EXPMIN -60
 # include "../42_MyLibC/mylibc.h"
-# include <stdbool.h>
-# include <stdint.h>
 # include <pthread.h>
 # include <stdatomic.h>
-
+# include <stdbool.h>
+# include <stdint.h>
 
 typedef struct s_fp
 {
@@ -134,8 +133,8 @@ typedef struct s_pass_config
 typedef struct s_ray				t_ray;
 typedef struct s_render_state
 {
-	atomic_bool							re_render_scene;
-	atomic_bool							render_paused;
+	atomic_bool						re_render_scene;
+	atomic_bool						render_paused;
 	int								pass;
 	int								*shuffled_pixels;
 	t_ray							*rays;
@@ -268,9 +267,9 @@ struct								s_object
 	void							(*rotate)(t_rt *rt, int id, t_rvec rvec);
 	void							(*translate)(t_rt *rt, int id, t_vec vec);
 	char							*(*display_string)(t_rt *, \
-									const struct s_object);
+	const struct s_object);
 	int								(*is_intersection)(const t_ray, \
-									const struct s_object, t_intersection *);
+	const struct s_object, t_intersection *);
 };
 
 typedef struct s_scene
@@ -294,7 +293,7 @@ typedef struct s_pcg_state_setseq_64
 {
 	uint64_t						state;
 	uint64_t						inc;
-} t_pcg32_random;
+}									t_pcg32_random;
 
 typedef struct s_cylinder_inter
 {
@@ -436,40 +435,44 @@ typedef struct s_render
 	t_vec							pixel_intensity;
 }									t_render;
 
-typedef struct s_chunk{
-    int start_pixel;
-    int end_pixel;
-} t_chunk;
+typedef struct s_chunk
+{
+	int								start_pixel;
+	int								end_pixel;
+}									t_chunk;
 
-typedef struct s_worker t_worker;
+typedef struct s_worker				t_worker;
 
-typedef struct s_shared{
-    t_rt *rt;
-    pthread_mutex_t display_mutex;
-    pthread_mutex_t work_mutex;
-    pthread_cond_t work_available;
-    pthread_cond_t to_display;
-    atomic_bool should_exit;
-    atomic_bool work_paused;
-    atomic_int  paused_threads;
-    atomic_bool work_ready;
-    atomic_int  current_pass;
-    int num_threads;
-    t_chunk * chunks;
-} t_shared; 
+typedef struct s_shared
+{
+	t_rt							*rt;
+	pthread_mutex_t					display_mutex;
+	pthread_mutex_t					work_mutex;
+	pthread_cond_t					work_available;
+	pthread_cond_t					to_display;
+	atomic_bool						should_exit;
+	atomic_bool						work_paused;
+	atomic_int						paused_threads;
+	atomic_bool						work_ready;
+	atomic_int						current_pass;
+	int								num_threads;
+	t_chunk							*chunks;
+}									t_shared;
 
-typedef struct s_thread_data {
-	t_pcg32_random	rng;
-    int start_pixel;
-    int end_pixel;
-    int thread_id;
-} t_thread_data;
+typedef struct s_thread_data
+{
+	t_pcg32_random					rng;
+	int								start_pixel;
+	int								end_pixel;
+	int								thread_id;
+}									t_thread_data;
 
-typedef struct s_worker {
-    t_shared * shared;
-    pthread_t thread;
-    t_thread_data data;
-} t_worker;
+typedef struct s_worker
+{
+	t_shared						*shared;
+	pthread_t						thread;
+	t_thread_data					data;
+}									t_worker;
 
 typedef struct s_rt
 {
@@ -489,8 +492,8 @@ typedef struct s_rt
 	t_scene							scene;
 	t_object						selected;
 	t_pass_config					*config;
-    t_shared                        *shared;
-    t_worker                        *workers;
+	t_shared						*shared;
+	t_worker						*workers;
 }									t_rt;
 
 typedef struct s_rot_plane
@@ -517,137 +520,142 @@ typedef struct s_cl
 
 typedef struct s_checker_idx
 {
-    int a;
-    int b;
-}   t_checker_idx;
+	int								a;
+	int								b;
+}									t_checker_idx;
 
 typedef struct s_chk3
 {
-    int checker_x;
-    int checker_y;
-    int checker_z;
-    double scale;
-}   t_chk3;
+	int								checker_x;
+	int								checker_y;
+	int								checker_z;
+	double							scale;
+}									t_chk3;
 
 typedef struct s_sph_chk
 {
-    double u;
-    double v;
-    int checker_u;
-    int checker_v;
-    double scale;
-}   t_sph_chk;
+	double							u;
+	double							v;
+	int								checker_u;
+	int								checker_v;
+	double							scale;
+}									t_sph_chk;
 
 typedef struct s_cyl_idx_args
 {
-    t_cylinder *cylinder;
-    t_vec to_point;
-    t_vec axis;
-    t_vec right;
-    t_vec up;
-}   t_cyl_idx_args;
+	t_cylinder						*cylinder;
+	t_vec							to_point;
+	t_vec							axis;
+	t_vec							right;
+	t_vec							up;
+}									t_cyl_idx_args;
 
 typedef struct s_cone_idx_args
 {
-    t_cone *cone;
-    t_vec to_point;
-    t_vec axis;
-    t_vec right;
-    t_vec up;
-}   t_cone_idx_args;
+	t_cone							*cone;
+	t_vec							to_point;
+	t_vec							axis;
+	t_vec							right;
+	t_vec							up;
+}									t_cone_idx_args;
 
-typedef struct s_cone_idx {
-	double			x;
-	double			y;
-	double			z;
-	double			theta;
-	double			height_ratio;
-}t_cone_idx;
+typedef struct s_cone_idx
+{
+	double							x;
+	double							y;
+	double							z;
+	double							theta;
+	double							height_ratio;
+}									t_cone_idx;
 
-typedef struct s_checkboard{
-	t_vec			axis;
-	t_vec			right;
-	t_vec			up;
-	t_vec			to_point;
-}t_checkboard;
+typedef struct s_checkboard
+{
+	t_vec							axis;
+	t_vec							right;
+	t_vec							up;
+	t_vec							to_point;
+}									t_checkboard;
 
-typedef struct s_calc_cone {
-	t_vec	to_point;
-	t_vec	axis_projection;
-	t_vec	radial;
-	double	height_proj;
-	double	tan_angle;
-	double	radius_at_height;
-	t_vec	temp;
-	t_vec	normal;
-}t_calc_cone;
+typedef struct s_calc_cone
+{
+	t_vec							to_point;
+	t_vec							axis_projection;
+	t_vec							radial;
+	double							height_proj;
+	double							tan_angle;
+	double							radius_at_height;
+	t_vec							temp;
+	t_vec							normal;
+}									t_calc_cone;
 
 typedef struct s_cone_solve
 {
-	double	cos_angle;
-	double	cos_angle_sq;
-	double	tan_angle;
+	double							cos_angle;
+	double							cos_angle_sq;
+	double							tan_angle;
 
-} t_cone_solve;
+}									t_cone_solve;
 
 typedef struct s_light_comp
 {
-	t_vec	direct_light;
-	t_vec	ambient_light;
-	t_vec	specular_light;
-	t_vec	view_direction;
-}			t_light_comp;
+	t_vec							direct_light;
+	t_vec							ambient_light;
+	t_vec							specular_light;
+	t_vec							view_direction;
+}									t_light_comp;
 
 typedef struct s_normal
 {
-	int		x;
-	int		y;
-	char	*dst;
-	t_vec	map_normal;
-	t_vec	tangent;
-	t_vec	bitangent;
-}t_normal;
+	int								x;
+	int								y;
+	char							*dst;
+	t_vec							map_normal;
+	t_vec							tangent;
+	t_vec							bitangent;
+}									t_normal;
 
-typedef struct s_cap_uv{
-	t_cone	*co;
-	t_vec	base_center;
-	t_vec	u_axis;
-	t_vec	v_axis;
-	t_vec	d;
-}t_cap_uv;
+typedef struct s_cap_uv
+{
+	t_cone							*co;
+	t_vec							base_center;
+	t_vec							u_axis;
+	t_vec							v_axis;
+	t_vec							d;
+}									t_cap_uv;
 
 typedef struct s_cone_uv
 {
-	t_cone	*co;
-	t_vec	d;
-	t_vec	u_axis;
-	t_vec	v_axis;
-	t_vec	axis_component;
-	t_vec	radial;
-	double	h;
-	double	theta;
-} t_cone_uv;
+	t_cone							*co;
+	t_vec							d;
+	t_vec							u_axis;
+	t_vec							v_axis;
+	t_vec							axis_component;
+	t_vec							radial;
+	double							h;
+	double							theta;
+}									t_cone_uv;
 
 typedef struct s_rot_cone
 {
-	t_cone	*cone;
-	t_vec	axis;
-	t_vec	temp;
-	t_vec	right;
-	t_vec	forward;
-	t_mat3	pitch_rot;
-	t_mat3	yaw_rot;
-} t_rot_cone;
+	t_cone							*cone;
+	t_vec							axis;
+	t_vec							temp;
+	t_vec							right;
+	t_vec							forward;
+	t_mat3							pitch_rot;
+	t_mat3							yaw_rot;
+}									t_rot_cone;
 
-typedef struct s_rc_local {
-	t_cone	*cone;
-	t_vec	axis;
-	t_vec	temp;
-	t_vec	right;
-	t_vec	forward;
-	t_mat3	pitch_rot;
-	t_mat3	yaw_rot;
-} t_rc_local;
+typedef struct s_rc_local
+{
+	t_cone							*cone;
+	t_vec							axis;
+	t_vec							temp;
+	t_vec							right;
+	t_vec							forward;
+	t_mat3							pitch_rot;
+	t_mat3							yaw_rot;
+}									t_rc_local;
 
 int									close_win(t_rt *rt);
 int									create_trgb(int t, int r, int g, int b);
@@ -667,16 +675,16 @@ void								free_heap(t_rt *rt);
 t_link_list							*init_alloc(t_link_list **list);
 bool								plane_intersection_solve(const t_ray ray,
 										const t_plane plane, double *t);
-int									is_intersection_sphere(const t_ray ray, \
+int									is_intersection_sphere(const t_ray ray,
 										const t_object obj,
 										t_intersection *intersection);
-int									is_intersection_plane(const t_ray ray, \
+int									is_intersection_plane(const t_ray ray,
 										const t_object obj,
 										t_intersection *intersection);
-int									is_intersection_cylinder(const t_ray ray, \
+int									is_intersection_cylinder(const t_ray ray,
 										const t_object obj,
 										t_intersection *intersection);
-void								save_img(t_rt *rt, \
+void								save_img(t_rt *rt,
 										const unsigned char *pixels, int W,
 										int H);
 void								exit_error(t_rt *rt, char *msg);
@@ -698,24 +706,21 @@ double								uniform_uint32(t_mt_state *state);
 uint32_t							pcg_rotr_32(uint32_t value,
 										unsigned int rot);
 uint32_t							pcg_output_xsh_rr_64_32(uint64_t state);
-uint32_t							pcg_setseq_64_xsh_rr_32_random_r(\
-		struct s_pcg_state_setseq_64 *rng);
+uint32_t							pcg_setseq_64_xsh_rr_32_random_r( \
+struct s_pcg_state_setseq_64 *rng);
 uint64_t							pcg_advance_lcg_64(uint64_t state,
 										uint64_t delta, uint64_t cur_mult,
 										uint64_t cur_plus);
-void								pcg_setseq_64_advance_r(\
-		struct s_pcg_state_setseq_64 *rng,
-										uint64_t delta);
-uint32_t							pcg_setseq_64_xsh_rr_32_boundedrand_r(\
-		struct s_pcg_state_setseq_64 *rng,
-										uint32_t bound);
+void								pcg_setseq_64_advance_r( \
+struct s_pcg_state_setseq_64 *rng, uint64_t delta);
+uint32_t							pcg_setseq_64_xsh_rr_32_boundedrand_r( \
+struct s_pcg_state_setseq_64 *rng, uint32_t bound);
 double								double_rng(t_pcg32_random *rng);
 bool								entropy_getbytes(void *dest, size_t size);
-void								pcg_setseq_64_step_r(\
-		struct s_pcg_state_setseq_64 *rng);
-void								pcg_setseq_64_srandom_r(\
-		struct s_pcg_state_setseq_64 *rng,
-										uint64_t initstate, uint64_t initseq);
+void								pcg_setseq_64_step_r( \
+struct s_pcg_state_setseq_64 *rng);
+void								pcg_setseq_64_srandom_r( \
+struct s_pcg_state_setseq_64 *rng, uint64_t initstate, uint64_t initseq);
 int									fpconv_dtoa(double fp, char dest[24]);
 char								*vec_toa(t_rt *rt, t_vec vec);
 char								*color_toa(t_rt *rt, t_vec vec);
@@ -739,84 +744,81 @@ t_vec								calculate_ambient_lighting(t_rt *rt,
 										t_get_color *gc);
 t_vec								calculate_specular_reflection(t_rt *rt,
 										t_get_color *gc, t_vec view_direction);
-t_vec								get_checkerboard_color(t_vec point, t_vec albedo);
-t_vec								get_plane_checkerboard(t_vec point, t_vec albedo, t_plane *plane);
-t_vec								get_sphere_checkerboard(t_vec point, t_vec albedo, t_sphere *sphere);
-t_vec								get_cylinder_checkerboard(t_vec point, t_vec albedo, t_cylinder *cylinder);
-t_vec								get_cylinder_cap_checkerboard(t_vec point, t_vec albedo, t_cylinder *cylinder);
-t_vec								get_cone_checkerboard(t_vec point, t_vec albedo, t_cone *cone);
-t_vec								get_cone_cap_checkerboard(t_vec point, t_vec albedo, t_cone *cone);
-t_vec								get_material_color(t_object *obj, t_vec point, t_intersection *intersection);
-t_vec								generate_random_hemisphere_direction(\
-										t_vec normal, t_pcg32_random *rng);
-t_vec								calculate_recursive_reflection(t_rt *rt,
-										t_get_color *gc, int nb_rebound, t_pcg32_random *rng);
-bool								visible_intersection(const t_ray ray,
-										t_scene scene,
-										t_intersection *intersection,
-										int *obj_id);
-void								determine_closest_intersection(\
-		t_cylinder_inter *cy);
-t_vec								calculate_body_normal(\
-		const t_cylinder_inter *cy, const t_vec intersection_point);
-t_vec								calculate_intersection_normal(\
-		const t_cylinder_inter *cy, \
-		const t_vec intersection_point, const t_ray ray);
-void								fill_intersection_data(\
-		t_intersection *intersection, \
-		const t_cylinder_inter *cy, const t_ray ray);
-bool								cylinder_intersection_solve1(\
-		t_cylinder_inter_solve *cy, \
-		const t_ray ray, const t_cylinder cylinder);
-bool								cylinder_intersection_solve(\
-		const t_ray ray, const t_cylinder cylinder, double *t);
-void								cylinder_cap_calc(t_cylinder_cap *cy,
-										const t_ray ray,
-										const t_cylinder cylinder,
-										t_vec *normal);
-bool								cylinder_cap_intersection(const t_ray ray,
-										const t_cylinder cylinder, double *t,
-										t_vec *normal);
-void								init_cylinder_intersection(\
-		t_cylinder_inter *cy, const t_object obj);
-
-// Cone intersection functions
-int									is_intersection_cone(const t_ray ray, \
-										const t_object obj,
+t_vec								get_checkerboard_color(t_vec point,
+										t_vec albedo);
+t_vec								get_plane_checkerboard(t_vec point,
+										t_vec albedo, t_plane *plane);
+t_vec								get_sphere_checkerboard(t_vec point,
+										t_vec albedo, t_sphere *sphere);
+t_vec								get_cylinder_checkerboard(t_vec point,
+										t_vec albedo, t_cylinder *cylinder);
+t_vec								get_cylinder_cap_checkerboard(t_vec point,
+										t_vec albedo, t_cylinder *cylinder);
+t_vec								get_cone_checkerboard(t_vec point,
+										t_vec albedo, t_cone *cone);
+t_vec								get_cone_cap_checkerboard(t_vec point,
+										t_vec albedo, t_cone *cone);
+t_vec								get_material_color(t_object *obj,
+										t_vec point,
 										t_intersection *intersection);
-void								determine_closest_cone_intersection(\
-		t_cone_inter *co);
-t_vec								calculate_cone_body_normal(\
-		const t_cone_inter *co, const t_vec intersection_point);
-t_vec								calculate_cone_intersection_normal(\
-		const t_cone_inter *co, \
-		const t_vec intersection_point, const t_ray ray);
-void								fill_cone_intersection_data(\
-		t_intersection *intersection, \
-		const t_cone_inter *co, const t_ray ray);
-bool								cone_intersection_solve1(\
-		t_cone_inter_solve *co, \
-		const t_ray ray, const t_cone cone);
-bool								cone_intersection_solve(\
-					const t_ray ray, const t_cone cone, double *t);
+t_vec								generate_random_hemisphere_direction( \
+t_vec normal, t_pcg32_random *rng);
+t_vec								calculate_recursive_reflection(t_rt *rt,
+										t_get_color *gc, int nb_rebound,
+										t_pcg32_random *rng);
+bool								visible_intersection( \
+const t_ray ray, t_scene scene, t_intersection *intersection, int *obj_id);
+void								determine_closest_intersection( \
+t_cylinder_inter *cy);
+t_vec								calculate_body_normal( \
+const t_cylinder_inter *cy, const t_vec intersection_point);
+t_vec								calculate_intersection_normal( \
+const t_cylinder_inter *cy, const t_vec intersection_point, const t_ray ray);
+void								fill_intersection_data( \
+t_intersection *intersection, const t_cylinder_inter *cy, const t_ray ray);
+bool								cylinder_intersection_solve1( \
+t_cylinder_inter_solve *cy, const t_ray ray, const t_cylinder cylinder);
+bool								cylinder_intersection_solve( \
+const t_ray ray, const t_cylinder cylinder, double *t);
+void								cylinder_cap_calc( \
+t_cylinder_cap *cy, const t_ray ray, const t_cylinder cylinder, t_vec *normal);
+bool								cylinder_cap_intersection( \
+const t_ray ray, const t_cylinder cylinder, double *t, t_vec *normal);
+void								init_cylinder_intersection( \
+t_cylinder_inter *cy, const t_object obj);
+int									is_intersection_cone( \
+const t_ray ray, const t_object obj, t_intersection *intersection);
+void								determine_closest_cone_intersection( \
+t_cone_inter *co);
+t_vec								calculate_cone_body_normal( \
+const t_cone_inter *co, const t_vec intersection_point);
+t_vec								calculate_cone_intersection_normal( \
+const t_cone_inter *co, const t_vec intersection_point, const t_ray ray);
+void								fill_cone_intersection_data( \
+t_intersection *intersection, const t_cone_inter *co, const t_ray ray);
+bool								cone_intersection_solve1( \
+t_cone_inter_solve *co, const t_ray ray, const t_cone cone);
+bool								cone_intersection_solve( \
+const t_ray ray, const t_cone cone, double *t);
+
 typedef struct s_co_cap_calc_args
 {
-	t_cone_cap							*co;
-	t_ray								ray;
-	t_cone								cone;
-	t_vec								*normal;
-} t_co_cap_calc_args;
+	t_cone_cap						*co;
+	t_ray							ray;
+	t_cone							cone;
+	t_vec							*normal;
+}									t_co_cap_calc_args;
 void								cone_cap_calc_s(t_co_cap_calc_args args);
 typedef struct s_co_cap_args
 {
-	t_ray								ray;
-	t_cone								cone;
-	double								*t;
-	t_vec								*normal;
-} t_co_cap_args;
+	t_ray							ray;
+	t_cone							cone;
+	double							*t;
+	t_vec							*normal;
+}									t_co_cap_args;
 bool								cone_cap_intersection_s(t_co_cap_args args);
-void								init_cone_intersection(\
-		t_cone_inter *co, const t_object obj);
+void								init_cone_intersection(t_cone_inter *co,
+										const t_object obj);
 int									fpconv_dtoa(double fp, char dest[24]);
 t_fp								find_cachedpow10(int exp, int *k);
 uint64_t							get_dbits(double d);
@@ -855,7 +857,7 @@ t_vec								handle_movement_keys(int keycode);
 void								apply_movement(t_rt *rt, int id,
 										enum e_type type, t_vec local_movement);
 void								handle_rotation_keys(t_rt *rt, int id,
-										 int keycode);
+										int keycode);
 bool								handle_toggle_keys(t_rt *rt, int keycode);
 bool								handle_navigation_keys(t_rt *rt,
 										int keycode);
@@ -879,76 +881,122 @@ void								finalize_camera_rotation(t_rt *rt, int id,
 void								setup_camera_orientation(t_camera *camera);
 void								setup_camera_object(t_rt *rt,
 										t_camera *camera, int *id);
-void    init_multi_threading(t_rt * rt);
-t_vec	get_color(t_ray ray, t_rt *rt, int nb_rebound, t_pcg32_random *rng);
-int	key_events(int keycode, t_rt *rt);
-void	get_uv(t_object *obj, t_intersection *intersection, double *u, double *v);
-t_vec	get_normal_from_map(t_object *obj, double u, double v, t_vec normal);
-t_vec	get_texture_color(t_object *obj, double u, double v);
-void	write_to_file(t_rt *rt);
-void    get_cone_uv(t_object *obj, t_intersection *intersection, double *u, double *v);
-void    fill_chunk_index(t_rt * rt, t_chunk * chunks, int num_threads);
-void * worker_thread_loop(void * arg);
-t_vec	cylinder_checker_color_from_idx(t_checker_idx idx, t_vec albedo);
-void	cone_local_basis(t_cone *cone, t_vec *axis, t_vec *right, t_vec *up);
-t_checker_idx	cone_checker_indices(t_cone_idx_args a);
-void	cone_compute_params(const t_ray ray, const t_cone cone,
-		t_cone_solve * c);
-void	cone_prepare_projections(t_cone_inter_solve *co, const t_ray ray,
-		const t_cone cone);
-void	cone_compute_quadratic(t_cone_inter_solve *co, t_cone_solve c, const t_cone cone);
-void	cone_check_first_root(t_cone_inter_solve *co, const t_ray ray,
-		const t_cone cone);
-bool	cone_cap_intersection_s(t_co_cap_args args);
-void	init_cone_intersection(t_cone_inter *co, const t_object obj);
-void	cyl_prepare_oc_proj(t_cylinder_inter_solve *cy, const t_ray ray,
-		const t_cylinder cylinder);
-void	cyl_prepare_ray_proj(t_cylinder_inter_solve *cy, const t_ray ray,
-		const t_cylinder cylinder);
-void	cyl_compute_quadratic(t_cylinder_inter_solve *cy,
-		const t_cylinder cylinder);
-void	cyl_check_first_root(t_cylinder_inter_solve *cy, const t_ray ray,
-		const t_cylinder cylinder);
-void	update_best_intersection(t_intersection *intersection,
-		t_intersection *local_intersection, int *obj_id, int current_index);
-void	put_pixel_gamma_corrected(t_rt *rt, int x, int y, t_vec intensity);
-void	accumulate_pixel_intensity(t_rt *rt, t_worker *worker, t_render *r);
-void	fill_chunk_index(t_rt *rt, t_chunk *chunks, int num_threads);
-void	process_one_pixel(t_rt *rt, t_worker *worker, t_render *r);
-void	render_chunk(t_rt *rt, t_worker *worker, int pass);
-void	get_cylinder_cap_uv(t_object *obj, t_vec p, double *u, double *v);
-void	get_cylinder_uv(t_object *obj, t_intersection *intersection, double *u,
-		double *v);
-void	get_sphere_uv(t_object *obj, t_vec p, double *u, double *v);
-void	get_plane_uv(t_object *obj, t_vec p, double *u, double *v);
-void	get_cylinder_body_uv(t_object *obj, t_vec p, double *u, double *v);
-void	wait_for_work_available(t_shared *shared);
-void	handle_pause_state(t_shared *shared, int *pass);
-void	get_cylinder_cap_uv(t_object *obj, t_vec p, double *u, double *v);
-void	get_cylinder_uv(t_object *obj, t_intersection *intersection, double *u,
-		double *v);
-char	*append_cone_dims(t_rt *rt, char *r_value, t_cone *cone);
-char	*append_optional_maps_co(t_rt *rt, char *r_value,
-		const struct s_object object);
-void	parse_cone_optional1(t_rt *rt, char **tab, int *id);
-void	parse_cone_optional(t_rt *rt, char **tab, int *id);
-void	rotate_cone_local(t_rt *rt, int id, t_rvec rvec);
-char	*append_cylinder_dims(t_rt *rt, char *r_value, t_cylinder *cylinder);
-char	*append_optional_maps_cy(t_rt *rt, char *r_value,
-		const struct s_object object);
-void	parse_cylinder_optional1(t_rt *rt, char **tab, int *id);
-void	parse_cylinder_optional(t_rt *rt, char **tab, int *id);
-void	rotate_cylinder_local(t_rt *rt, int id, t_rvec rvec);
-char	*append_optional_maps_pl(t_rt *rt, char *r_value, \
-    const struct s_object object);
-void	rotate_plane_local(t_rt *rt, int id, t_rvec rvec);
-void	translate_plane(t_rt *rt, int id, t_vec vec);
-char	*string_plane(t_rt *rt, const struct s_object object);
-void    fill_plane(t_rt *rt, char **tab, t_plane *plane, int *id);
-char	*append_optional_maps_sp(t_rt *rt, char *r_value, \
-    const struct s_object object);
-void	translate_sphere(t_rt *rt, int id, t_vec vec);
-char	*string_sphere(t_rt *rt, const struct s_object object);
-void	fill_sphere(t_rt *rt, t_sphere *sphere, int id);
-void    parse_sphere_optional1(t_rt *rt, char **tab, int *id);
+void								init_multi_threading(t_rt *rt);
+t_vec								get_color(t_ray ray, t_rt *rt,
+										int nb_rebound, t_pcg32_random *rng);
+int									key_events(int keycode, t_rt *rt);
+void								get_uv(t_object *obj,
+										t_intersection *intersection, double *u,
+										double *v);
+t_vec								get_normal_from_map(t_object *obj, double u,
+										double v, t_vec normal);
+t_vec								get_texture_color(t_object *obj, double u,
+										double v);
+void								write_to_file(t_rt *rt);
+void								get_cone_uv(t_object *obj,
+										t_intersection *intersection, double *u,
+										double *v);
+void								fill_chunk_index(t_rt *rt, t_chunk *chunks,
+										int num_threads);
+void								*worker_thread_loop(void *arg);
+t_vec								cylinder_checker_color_from_idx( \
+t_checker_idx idx, t_vec albedo);
+void								cone_local_basis( \
+t_cone *cone, t_vec *axis, t_vec *right, t_vec *up);
+t_checker_idx						cone_checker_indices(t_cone_idx_args a);
+void								cone_compute_params( \
+const t_ray ray, const t_cone cone, t_cone_solve *c);
+void								cone_prepare_projections( \
+t_cone_inter_solve *co, const t_ray ray, const t_cone cone);
+void								cone_compute_quadratic( \
+t_cone_inter_solve *co, t_cone_solve c, const t_cone cone);
+void								cone_check_first_root( \
+t_cone_inter_solve *co, const t_ray ray, const t_cone cone);
+bool								cone_cap_intersection_s( \
+t_co_cap_args args);
+void								init_cone_intersection(t_cone_inter *co,
+										const t_object obj);
+void								cyl_prepare_oc_proj( \
+t_cylinder_inter_solve *cy, const t_ray ray, const t_cylinder cylinder);
+void								cyl_prepare_ray_proj( \
+t_cylinder_inter_solve *cy, const t_ray ray, const t_cylinder cylinder);
+void								cyl_compute_quadratic( \
+t_cylinder_inter_solve *cy, const t_cylinder cylinder);
+void								cyl_check_first_root( \
+t_cylinder_inter_solve *cy, const t_ray ray, const t_cylinder cylinder);
+void								update_best_intersection( \
+t_intersection *intersection, t_intersection *local_intersection, int *obj_id, \
+int current_index);
+void								put_pixel_gamma_corrected(t_rt *rt, int x,
+										int y, t_vec intensity);
+void								accumulate_pixel_intensity(t_rt *rt,
+										t_worker *worker, t_render *r);
+void								fill_chunk_index(t_rt *rt, t_chunk *chunks,
+										int num_threads);
+void								process_one_pixel(t_rt *rt,
+										t_worker *worker, t_render *r);
+void								render_chunk(t_rt *rt, t_worker *worker,
+										int pass);
+void								get_cylinder_cap_uv(t_object *obj, t_vec p,
+										double *u, double *v);
+void								get_cylinder_uv(t_object *obj,
+										t_intersection *intersection, double *u,
+										double *v);
+void								get_sphere_uv(t_object *obj, t_vec p,
+										double *u, double *v);
+void								get_plane_uv(t_object *obj, t_vec p,
+										double *u, double *v);
+void								get_cylinder_body_uv(t_object *obj, t_vec p,
+										double *u, double *v);
+void								wait_for_work_available(t_shared *shared);
+void								handle_pause_state(t_shared *shared,
+										int *pass);
+void								get_cylinder_cap_uv(t_object *obj, t_vec p,
+										double *u, double *v);
+void								get_cylinder_uv(t_object *obj,
+										t_intersection *intersection, double *u,
+										double *v);
+char								*append_cone_dims(t_rt *rt, char *r_value,
+										t_cone *cone);
+char								*append_optional_maps_co(t_rt *rt,
+										char *r_value,
+										const struct s_object object);
+void								parse_cone_optional1(t_rt *rt, char **tab,
+										int *id);
+void								parse_cone_optional(t_rt *rt, char **tab,
+										int *id);
+void								rotate_cone_local(t_rt *rt, int id,
+										t_rvec rvec);
+char								*append_cylinder_dims(t_rt *rt,
+										char *r_value, t_cylinder *cylinder);
+char								*append_optional_maps_cy(t_rt *rt,
+										char *r_value,
+										const struct s_object object);
+void								parse_cylinder_optional1(t_rt *rt,
+										char **tab, int *id);
+void								parse_cylinder_optional(t_rt *rt,
+										char **tab, int *id);
+void								rotate_cylinder_local(t_rt *rt, int id,
+										t_rvec rvec);
+char								*append_optional_maps_pl( \
+t_rt *rt, char *r_value, const struct s_object object);
+void								rotate_plane_local(t_rt *rt, int id,
+										t_rvec rvec);
+void								translate_plane(t_rt *rt, int id,
+										t_vec vec);
+char								*string_plane(t_rt *rt,
+										const struct s_object object);
+void								fill_plane(t_rt *rt, char **tab,
+										t_plane *plane, int *id);
+char								*append_optional_maps_sp(t_rt *rt,
+										char *r_value,
+										const struct s_object object);
+void								translate_sphere(t_rt *rt, int id,
+										t_vec vec);
+char								*string_sphere(t_rt *rt,
+										const struct s_object object);
+void								fill_sphere(t_rt *rt, t_sphere *sphere,
+										int id);
+void								parse_sphere_optional1(t_rt *rt, char **tab,
+										int *id);
 #endif
